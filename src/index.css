@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* Tokens visuales migrados desde figma/src/index.css */
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --color-ink: #0f172a;
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-pressed: #1e40af;
+  --color-deep: #172554;
+  --color-soft: #eff6ff;
+  --color-canvas: #f4f7fc;
+  --color-line: #dbeafe;
+  --color-control: #64748b;
+  --color-muted: #475569;
+  --color-mid: #bfdbfe;
+  --color-disabled: #e2e8f0;
+  --shadow-card: 0 6px 24px rgba(15, 23, 42, 0.06);
+}
+
+html, body, #root { background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-sans); font-size: 14px; }
+*:focus-visible { outline: none; box-shadow: 0 0 0 4px #bfdbfe; border-radius: 10px; }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+@keyframes page-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes sheet-in { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes up-in { from { transform: translateY(100%); } to { transform: none; } }
+.page-in { animation: page-in 180ms ease-out; }
+.sheet-in { animation: sheet-in 200ms ease-out; }
+.up-in { animation: up-in 200ms ease-out; }
+@media (min-width: 768px) { .up-in { animation: page-in 180ms ease-out; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
