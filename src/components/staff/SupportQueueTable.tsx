@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Button, Card, EmptyState, Pager, StatusBadge } from '@/components/ui'
 import { formatAge, formatDateTime } from '@/lib/format'
 import { cn } from '@/lib/utils'
+import { monoClassName } from '@/styles/tokens.layout'
+import { tableClassName } from '@/styles/tokens.table'
 import type { Incident } from '@/types/domain.types'
 import PriorAISuggestionBadge from './PriorAISuggestionBadge'
 
@@ -36,29 +38,29 @@ export default function SupportQueueTable({ mode, incidents, isFiltered, onOpen,
 
   return (
     <Card className="overflow-hidden">
-      <table className="w-full text-left text-[13.5px]">
-        <caption className="sr-only">{mode === 'queue' ? 'Cola de atención humana, más antiguos primero' : 'Incidencias registradas, más recientes primero'} ({incidents.length})</caption>
-        <thead className="hidden border-b border-line bg-canvas text-[12px] text-muted xl:table-header-group">
+      <table className={tableClassName.table}>
+        <caption className={tableClassName.caption}>{mode === 'queue' ? 'Cola de atención humana, más antiguos primero' : 'Incidencias registradas, más recientes primero'} ({incidents.length})</caption>
+        <thead className={cn(tableClassName.thead, 'hidden bg-canvas xl:table-header-group')}>
           <tr>
             {['Referencia', 'Título', 'Activo', 'Reportante', 'Estado', 'Antigüedad', 'Sugerencia IA previa'].map((h) => (
-              <th key={h} scope="col" className="px-3 py-3 font-medium first:pl-5">{h}</th>
+              <th key={h} scope="col" className={tableClassName.dense.th}>{h}</th>
             ))}
-            <th scope="col" className="px-3 py-3 pr-5"><span className="sr-only">Acción</span></th>
+            <th scope="col" className={tableClassName.dense.th}><span className="sr-only">Acción</span></th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-line">
+        <tbody className={tableClassName.tbody}>
           {rows.map((i) => (
             <tr key={i.id} className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 p-4 hover:bg-soft xl:table-row xl:p-0">
-              <td className="xl:px-3 xl:py-3 xl:pl-5"><span className="font-mono text-[12.5px] text-primary-pressed">{i.reference}</span></td>
-              <th scope="row" className="col-start-1 max-w-72 font-semibold xl:px-3 xl:py-3 xl:font-medium">{i.title}</th>
-              <td className="col-start-1 text-[12.5px] text-muted xl:px-3 xl:py-3 xl:text-[13.5px]">{i.assetName ?? 'Activo fuera del catálogo'}</td>
-              <td className="col-start-1 text-[12.5px] text-muted xl:px-3 xl:py-3 xl:text-[13.5px]">{i.reporter.name}</td>
-              <td className="col-start-2 row-start-1 xl:px-3 xl:py-3"><StatusBadge status={i.status} /></td>
-              <td className="col-start-1 text-[12px] text-muted xl:px-3 xl:py-3 xl:text-[13.5px]" title={formatDateTime(i.registeredAt)}>
+              <td className={tableClassName.dense.cellXl}><span className={monoClassName}>{i.reference}</span></td>
+              <th scope="row" className={cn('col-start-1 max-w-72 font-semibold xl:font-medium', tableClassName.dense.cellXl)}>{i.title}</th>
+              <td className={cn('col-start-1 text-xs text-muted xl:text-sm', tableClassName.dense.cellXl)}>{i.assetName ?? 'Activo fuera del catálogo'}</td>
+              <td className={cn('col-start-1 text-xs text-muted xl:text-sm', tableClassName.dense.cellXl)}>{i.reporter.name}</td>
+              <td className={cn('col-start-2 row-start-1', tableClassName.dense.cellXl)}><StatusBadge status={i.status} /></td>
+              <td className={cn('col-start-1 text-xs text-muted xl:text-sm', tableClassName.dense.cellXl)} title={formatDateTime(i.registeredAt)}>
                 <span className="xl:hidden">Hace </span>{formatAge(i.registeredAt)}
               </td>
-              <td className="col-start-1 xl:px-3 xl:py-3"><PriorAISuggestionBadge incident={i} /></td>
-              <td className={cn('col-span-2 pt-2 xl:px-3 xl:py-3 xl:pr-5 xl:pt-3 xl:text-right')}>
+              <td className={cn('col-start-1', tableClassName.dense.cellXl)}><PriorAISuggestionBadge incident={i} /></td>
+              <td className={cn(tableClassName.dense.cellXl, 'col-span-2 pt-2 xl:pt-3 xl:text-right')}>
                 <Button size="sm" full className="xl:w-auto" variant={mode === 'queue' ? 'primary' : 'secondary'} onClick={() => onOpen(i.id)} aria-label={`${mode === 'queue' ? 'Atender' : 'Ver'} ${i.reference}: ${i.title}`}>
                   {mode === 'queue' ? 'Atender' : 'Ver'}
                 </Button>

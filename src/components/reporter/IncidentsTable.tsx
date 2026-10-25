@@ -3,7 +3,10 @@ import { ChevronRight, Search } from 'lucide-react'
 import { Button, Card, Chips, EmptyState, Pager, StatusBadge } from '@/components/ui'
 import { formatDate } from '@/lib/format'
 import { INCIDENT_STATUS_LABEL } from '@/lib/labels'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+import { inputClassName } from '@/styles/tokens.form'
+import { monoClassName } from '@/styles/tokens.layout'
+import { tableClassName } from '@/styles/tokens.table'
 import type { Incident, IncidentStatus } from '@/types/domain.types'
 
 const PAGE_SIZE = 8
@@ -48,9 +51,9 @@ export default function IncidentsTable({ incidents, onOpen }: { incidents: Incid
             action={incidents.length ? <Button variant="secondary" onClick={reset}>Limpiar filtros</Button> : undefined} />
         ) : (
           <>
-            <table className="w-full text-left text-[14px]">
-              <caption className="sr-only">Mis incidencias ({filtered.length})</caption>
-              <thead className="hidden border-b border-line text-[12px] text-muted lg:table-header-group">
+            <table className={cn(tableClassName.table, 'text-base')}>
+              <caption className={tableClassName.caption}>Mis incidencias ({filtered.length})</caption>
+              <thead className={cn(tableClassName.thead, 'hidden lg:table-header-group')}>
                 <tr>
                   <th scope="col" className="px-5 py-3 font-medium">Referencia</th>
                   <th scope="col" className="py-3 font-medium">Título</th>
@@ -61,15 +64,15 @@ export default function IncidentsTable({ incidents, onOpen }: { incidents: Incid
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-line">
+              <tbody className={tableClassName.tbody}>
                 {rows.map((i) => (
                   <tr key={i.id} className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 px-4 py-3 hover:bg-soft lg:table-row lg:p-0">
                     <td className="lg:px-5 lg:py-3">
-                      <button type="button" onClick={() => onOpen(i.id)} className="font-mono text-[12.5px] text-primary-pressed hover:underline" aria-label={`Abrir ${i.reference}: ${i.title}`}>{i.reference}</button>
-                      <span className="ml-2 text-[12px] text-muted lg:hidden">{formatDate(i.registeredAt)}</span>
+                      <button type="button" onClick={() => onOpen(i.id)} className={cn(monoClassName, 'hover:underline')} aria-label={`Abrir ${i.reference}: ${i.title}`}>{i.reference}</button>
+                      <span className="ml-2 text-xs text-muted lg:hidden">{formatDate(i.registeredAt)}</span>
                     </td>
                     <td className="col-start-1 font-medium lg:py-3">{i.title}</td>
-                    <td className="col-start-1 text-[13px] text-muted lg:py-3">{i.assetName ?? 'Activo no especificado'}</td>
+                    <td className="col-start-1 text-sm text-muted lg:py-3">{i.assetName ?? 'Activo no especificado'}</td>
                     <td className="col-start-2 row-span-3 row-start-1 self-center lg:py-3">
                       <span className="flex items-center gap-2"><StatusBadge status={i.status} /><ChevronRight size={18} className="text-control lg:hidden" aria-hidden /></span>
                     </td>

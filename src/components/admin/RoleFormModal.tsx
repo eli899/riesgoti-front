@@ -3,9 +3,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Dialog, Field } from '@/components/ui'
 import FormAlert from '@/components/forms/FormAlert'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
 import { roleFormSchema, type RoleFormValues } from '@/schemas/role.schema'
+import { fieldClassName, inputClassName } from '@/styles/tokens.form'
 
 const FIELDS = ['codigo', 'nombre', 'activo', 'permisos'] as const
 
@@ -47,7 +48,7 @@ function RoleForm({ isSaving, onClose, onSubmit }: Omit<RoleFormModalProps, 'ope
       <Field id="role-codigo" label="Código" error={errors.codigo?.message} help="MAYÚSCULAS, dígitos y guion bajo. No podrá cambiarse en roles del sistema.">
         <input id="role-codigo" placeholder="AUDITOR_TI" {...register('codigo', { setValueAs: (v: string) => v.toUpperCase() })} aria-invalid={!!errors.codigo} className={cn(input(!!errors.codigo), 'font-mono uppercase')} />
       </Field>
-      <footer className="flex flex-col-reverse gap-2 border-t border-line pt-4 sm:flex-row sm:justify-end">
+      <footer className={fieldClassName.footer}>
         <Button variant="secondary" onClick={onClose}>Cancelar</Button>
         <Button type="submit" disabled={isSaving}>{isSaving ? 'Creando…' : 'Crear rol'}</Button>
       </footer>

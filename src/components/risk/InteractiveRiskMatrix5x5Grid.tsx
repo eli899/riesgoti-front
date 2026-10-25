@@ -53,7 +53,7 @@ export default function InteractiveRiskMatrix5x5Grid({ probabilityCriteria, impa
   return (
     <div className="overflow-x-auto">
       <table role="grid" aria-label="Matriz de riesgo 5×5: probabilidad por impacto" aria-readonly={!interactive}
-        className="w-full min-w-[480px] border-separate border-spacing-1 text-[11px]">
+        className="w-full min-w-[480px] border-separate border-spacing-1 text-2xs">
         <thead>
           <tr role="row">
             <th scope="col" className="w-28 text-left font-medium text-muted">Probabilidad \ Impacto</th>
@@ -79,9 +79,10 @@ export default function InteractiveRiskMatrix5x5Grid({ probabilityCriteria, impa
                       onFocus={() => setFocus({ row: r, col: c })}
                       onKeyDown={(e) => onKeyDown(e, r, c)}
                       onClick={() => onSelect?.(p.value, i.value)}
-                      className={cn('flex min-h-11 w-full items-center justify-center gap-1 rounded-[8px] border font-semibold transition-shadow',
+                      className={cn('flex min-h-11 w-full items-center justify-center gap-1 rounded-inset border font-semibold transition-shadow',
                         level ? levelCellStyle[level] : 'border-line bg-canvas text-muted',
-                        isSelected && 'outline-3 outline-offset-1 outline-ink outline',
+                        // Selección: contorno ink de 3px. Con foco por teclado pasa al color de foco para distinguirlos.
+                        isSelected && 'outline-3 outline-offset-1 outline-ink focus-visible:outline-focus',
                         interactive ? 'cursor-pointer hover:shadow-card' : 'cursor-default')}
                     >
                       {isSelected && <Check size={12} aria-hidden />}{level ? RISK_LEVEL_LABEL[level] : '—'}

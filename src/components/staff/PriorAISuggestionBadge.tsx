@@ -29,7 +29,7 @@ function priorReasonOf(i: Incident): PriorReason {
 export default function PriorAISuggestionBadge({ incident }: { incident: Incident }) {
   const reason = REASONS[priorReasonOf(incident)]
   return (
-    <span className={cn('inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-[11.5px] font-semibold', reason.className)}>
+    <span className={cn('inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-2xs font-semibold', reason.className)}>
       {reason.icon}{reason.label}
     </span>
   )

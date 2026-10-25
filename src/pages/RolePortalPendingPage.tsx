@@ -19,8 +19,8 @@ export default function RolePortalPendingPage() {
       <main id="main-content" className="page-in mx-auto max-w-xl px-4 py-12">
         <Card as="article" aria-labelledby="pending-title" className="p-6 text-center md:p-8">
           <span className="mx-auto mb-4 grid size-12 place-items-center rounded-full bg-soft text-primary" aria-hidden><Construction size={22} /></span>
-          <h1 id="pending-title" className="text-[22px] font-bold tracking-tight">Hola, {currentUser?.firstName}</h1>
-          <p className="mt-2 text-[14px] text-muted">
+          <h1 id="pending-title" className="text-2xl font-bold tracking-tight">Hola, {currentUser?.firstName}</h1>
+          <p className="mt-2 text-base text-muted">
             El portal del rol <strong>{roleName}</strong> se está migrando a la nueva plataforma y estará disponible en una próxima versión.
             Tu sesión y tus permisos ya están activos.
           </p>

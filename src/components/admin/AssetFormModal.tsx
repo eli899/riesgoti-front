@@ -4,9 +4,10 @@ import { Button, Dialog, Field } from '@/components/ui'
 import FormAlert from '@/components/forms/FormAlert'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
 import { RISK_LEVEL_LABEL } from '@/lib/labels'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
 import { assetFormSchema, type AssetFormValues } from '@/schemas/asset.schema'
+import { fieldClassName, inputClassName } from '@/styles/tokens.form'
 import type { AssetType } from '@/types/domain.types'
 
 const CRITICALITY_OPTIONS = [
@@ -73,7 +74,7 @@ function AssetForm({ defaultValues, assetTypes, isSaving, onClose, onSubmit }: O
       <Field id="asset-descripcion" label="Descripción" optional error={errors.descripcion?.message}>
         <textarea id="asset-descripcion" rows={3} {...register('descripcion')} className={cn(inputClassName(!!errors.descripcion), 'py-2')} />
       </Field>
-      <footer className="flex flex-col-reverse gap-2 border-t border-line pt-4 sm:flex-row sm:justify-end">
+      <footer className={fieldClassName.footer}>
         <Button variant="secondary" onClick={onClose}>Cancelar</Button>
         <Button type="submit" disabled={isSaving}>{isSaving ? 'Guardando…' : 'Guardar'}</Button>
       </footer>

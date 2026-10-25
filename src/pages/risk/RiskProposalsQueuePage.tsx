@@ -23,7 +23,7 @@ export default function RiskProposalsQueuePage({ onOpen }: { onOpen: (versionId:
       <main id="main-content" className="page-in">
         <PageHeader title="Propuestas de riesgo" sub="Preparadas por IA a partir de incidencias. El analista conserva la decisión final." />
         {q.readOnly && (
-          <p role="note" className="mb-4 flex items-start gap-2 rounded-[12px] border border-dashed border-control bg-canvas p-3 text-[13px] text-muted">
+          <p role="note" className="mb-4 flex items-start gap-2 rounded-tile border border-dashed border-control bg-canvas p-3 text-sm text-muted">
             <Lock size={16} className="mt-0.5 shrink-0" aria-hidden />
             Modo lectura: la revisión, evaluación y validación de riesgos están reservadas al rol Analista (segregación de funciones ISO/IEC 27001).
           </p>

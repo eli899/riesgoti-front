@@ -41,7 +41,7 @@ export default function Matrix5x5EditorGrid({ probabilityCriteria, impactCriteri
   return (
     <div className="overflow-x-auto">
       <table role="grid" aria-label={`Matriz de riesgo ${rows.length}×${cols.length}: probabilidad por impacto`} aria-readonly={!editable}
-        className="w-full min-w-[520px] border-separate border-spacing-1 text-[11px]">
+        className="w-full min-w-[520px] border-separate border-spacing-1 text-2xs">
         <thead>
           <tr>
             <th scope="col" className="text-left font-medium text-muted">Probabilidad \ Impacto</th>
@@ -69,7 +69,7 @@ export default function Matrix5x5EditorGrid({ probabilityCriteria, impactCriteri
                       onFocus={() => setFocus({ row: r, col: c })}
                       onKeyDown={(e) => onKeyDown(e, r, c)}
                       onClick={() => onCycle?.(p.value, i.value)}
-                      className={cn('flex min-h-11 w-full items-center justify-center rounded-[10px] border p-1 transition-colors',
+                      className={cn('flex min-h-11 w-full items-center justify-center rounded-control border p-1 transition-colors',
                         changed ? 'border-2 border-dashed border-primary bg-soft' : 'border-transparent',
                         editable ? 'cursor-pointer hover:bg-soft' : 'cursor-default')}
                     >

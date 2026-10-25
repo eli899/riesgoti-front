@@ -35,7 +35,7 @@ export default function DocsPage() {
           actions={<Button icon={<Upload size={18} aria-hidden />} onClick={() => setUpload({ seed: null })}>Cargar PDF</Button>}
         />
         {kb.isPolling && (
-          <p role="status" className="mb-4 inline-flex items-center gap-2 rounded-full bg-soft px-3 py-1.5 text-[12px] font-medium text-primary">
+          <p role="status" className="mb-4 inline-flex items-center gap-2 rounded-full bg-soft px-3 py-1.5 text-xs font-medium text-primary">
             <Loader2 size={14} className="animate-spin" aria-hidden />Actualizando el estado cada 3 segundos mientras haya PDFs en procesamiento
           </p>
         )}

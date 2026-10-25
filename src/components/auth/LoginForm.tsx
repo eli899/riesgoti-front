@@ -5,9 +5,10 @@ import { Eye, EyeOff, LogIn } from 'lucide-react'
 import { Button, Field, IconButton } from '@/components/ui'
 import FormAlert from '@/components/forms/FormAlert'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
 import { loginFormSchema, type LoginFormValues } from '@/schemas/auth.schema'
+import { inputClassName } from '@/styles/tokens.form'
 
 interface LoginFormProps {
   isSubmitting: boolean
@@ -55,9 +56,9 @@ export default function LoginForm({ isSubmitting, onSubmit, demoAccounts = [], o
       <Button type="submit" full icon={<LogIn size={18} aria-hidden />} disabled={isSubmitting}>{isSubmitting ? 'Ingresando…' : 'Ingresar'}</Button>
 
       {demoAccounts.length > 0 && (
-        <fieldset className="rounded-[12px] border border-dashed border-mid p-3">
-          <legend className="px-1 text-[12px] font-semibold text-muted">Perfiles semilla (entorno de desarrollo)</legend>
-          <p className="mb-2 text-[11.5px] text-muted">{onDemoLogin ? 'Inicia sesión con un JWT real del perfil elegido.' : 'Precarga el correo; ingresa la contraseña semilla.'}</p>
+        <fieldset className="rounded-tile border border-dashed border-mid p-3">
+          <legend className="px-1 text-xs font-semibold text-muted">Perfiles semilla (entorno de desarrollo)</legend>
+          <p className="mb-2 text-2xs text-muted">{onDemoLogin ? 'Inicia sesión con un JWT real del perfil elegido.' : 'Precarga el correo; ingresa la contraseña semilla.'}</p>
           <ul className="grid gap-2 sm:grid-cols-2">
             {demoAccounts.map((a) => (
               <li key={a.email}>

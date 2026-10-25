@@ -44,7 +44,7 @@ export default function DocumentPreviewModal({ version, preview, isLoading, erro
       ) : isLoading || !preview ? (
         <section className="space-y-2 p-5" aria-busy="true" aria-label="Cargando fragmentos"><Skeleton className="h-6 w-1/3" /><Skeleton className="h-40" /></section>
       ) : preview.fragments.length === 0 ? (
-        <p className="p-5 text-[13px] text-muted">La versión no generó fragmentos.</p>
+        <p className="p-5 text-sm text-muted">La versión no generó fragmentos.</p>
       ) : (
         <FragmentBrowser key={preview.id} preview={preview} />
       )}
@@ -64,10 +64,10 @@ function FragmentBrowser({ preview }: { preview: DocumentPreview }) {
           {preview.fragments.map((f) => (
             <li key={f.id}>
               <button type="button" aria-current={f.id === selected.id ? 'true' : undefined} onClick={() => setSelectedId(f.id)}
-                className={cn('flex w-full items-center justify-between gap-2 rounded-[10px] px-3 py-2 text-left text-[13px] transition-colors',
+                className={cn('flex w-full items-center justify-between gap-2 rounded-control px-3 py-2 text-left text-sm transition-colors',
                   f.id === selected.id ? 'bg-soft font-semibold text-primary-pressed' : 'text-muted hover:bg-canvas hover:text-ink')}>
                 <span>Fragmento #{f.order}</span>
-                <span className="rounded-full bg-white px-2 py-0.5 font-mono text-[11px] text-primary-pressed">{pagesLabel(f.pageStart, f.pageEnd)}</span>
+                <span className="rounded-full bg-white px-2 py-0.5 font-mono text-2xs text-primary-pressed">{pagesLabel(f.pageStart, f.pageEnd)}</span>
               </button>
             </li>
           ))}
@@ -78,7 +78,7 @@ function FragmentBrowser({ preview }: { preview: DocumentPreview }) {
         {tab === 'rendered' ? (
           <MarkdownViewer content={selected.content} className="pb-5" />
         ) : (
-          <pre className="mb-5 overflow-x-auto whitespace-pre-wrap rounded-[10px] bg-canvas p-3 font-mono text-xs">{selected.content}</pre>
+          <pre className="mb-5 overflow-x-auto whitespace-pre-wrap rounded-control bg-canvas p-3 font-mono text-xs">{selected.content}</pre>
         )}
       </article>
     </section>

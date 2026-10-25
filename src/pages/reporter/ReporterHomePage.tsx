@@ -24,15 +24,15 @@ export default function ReporterHomePage({ reporter, onReport, onOpenIncident, o
       <PageMeta title="Mis incidencias operativas" description="Portal de reporte y seguimiento de incidencias TI con orientación asistida por IA." />
       <main id="main-content" className="page-in">
         <header className="mb-6">
-          <p className="text-[14px] text-muted">Hola,</p>
-          <h1 className="text-[28px] font-bold leading-tight tracking-tight">{currentUser?.firstName}</h1>
+          <p className="text-base text-muted">Hola,</p>
+          <h1 className="text-3xl font-bold leading-tight tracking-tight">{currentUser?.firstName}</h1>
         </header>
         <ReportCallToAction canReport={reporter.canReport} onReport={onReport} />
         <AsyncContent isLoading={reporter.isLoading} error={reporter.loadError} onRetry={reporter.retryLoad} label="tus incidencias">
           <ReporterStatsSection stats={reporter.stats} />
           <section aria-labelledby="incidents-list-heading">
             <header className="mb-4 flex items-center justify-between">
-              <h2 id="incidents-list-heading" className="text-[18px] font-bold">Reportes recientes</h2>
+              <h2 id="incidents-list-heading" className="text-xl font-bold">Reportes recientes</h2>
               {reporter.incidents.length > 0 && <Button size="sm" variant="ghost" onClick={onSeeAll}>Ver todos <ChevronRight size={17} aria-hidden /></Button>}
             </header>
             {recent.length === 0 ? (

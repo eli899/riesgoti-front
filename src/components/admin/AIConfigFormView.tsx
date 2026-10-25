@@ -4,9 +4,10 @@ import { Activity, Save } from 'lucide-react'
 import { Button, Field } from '@/components/ui'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
 import FormAlert from '@/components/forms/FormAlert'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
 import { aiConfigFormSchema, type AIConfigFormValues } from '@/schemas/aiConfig.schema'
+import { inputClassName } from '@/styles/tokens.form'
 
 const LLM_PROVIDERS = [
   { id: 'GEMINI', label: 'Google Gemini' },
@@ -47,8 +48,8 @@ export default function AIConfigFormView({ defaultValues, llmKeyMask, embeddingK
     <form onSubmit={submit} noValidate className="space-y-5" aria-label="Configuración IA/RAG">
       <FormAlert message={errors.root?.server?.message} />
 
-      <fieldset className="grid gap-4 rounded-[14px] border border-line p-4 md:grid-cols-2 md:p-5">
-        <legend className="px-1 text-[14px] font-semibold">Modelo de lenguaje (LLM)</legend>
+      <fieldset className="grid gap-4 rounded-card border border-line p-4 md:grid-cols-2 md:p-5">
+        <legend className="px-1 text-base font-semibold">Modelo de lenguaje (LLM)</legend>
         <Field id="proveedor_llm" label="Proveedor" error={errors.proveedor_llm?.message}>
           <select id="proveedor_llm" {...register('proveedor_llm')} className={input(!!errors.proveedor_llm)}>
             {LLM_PROVIDERS.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
@@ -65,8 +66,8 @@ export default function AIConfigFormView({ defaultValues, llmKeyMask, embeddingK
         </Field>
       </fieldset>
 
-      <fieldset className="grid gap-4 rounded-[14px] border border-line p-4 md:grid-cols-2 md:p-5">
-        <legend className="px-1 text-[14px] font-semibold">Embeddings (espacio vectorial FAISS)</legend>
+      <fieldset className="grid gap-4 rounded-card border border-line p-4 md:grid-cols-2 md:p-5">
+        <legend className="px-1 text-base font-semibold">Embeddings (espacio vectorial FAISS)</legend>
         <Field id="proveedor_embedding" label="Proveedor" error={errors.proveedor_embedding?.message}>
           <select id="proveedor_embedding" {...register('proveedor_embedding')} className={input(!!errors.proveedor_embedding)}>
             {EMBEDDING_PROVIDERS.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
@@ -80,8 +81,8 @@ export default function AIConfigFormView({ defaultValues, llmKeyMask, embeddingK
         </Field>
       </fieldset>
 
-      <fieldset className="grid gap-4 rounded-[14px] border border-line p-4 sm:grid-cols-2 md:p-5 xl:grid-cols-4">
-        <legend className="px-1 text-[14px] font-semibold">Parámetros de recuperación RAG</legend>
+      <fieldset className="grid gap-4 rounded-card border border-line p-4 sm:grid-cols-2 md:p-5 xl:grid-cols-4">
+        <legend className="px-1 text-base font-semibold">Parámetros de recuperación RAG</legend>
         <Field id="chunk_size" label="Tamaño de fragmento" error={errors.chunk_size?.message} help="256 a 2048 tokens.">
           <input id="chunk_size" type="number" inputMode="numeric" min={256} max={2048} {...register('chunk_size', { valueAsNumber: true })} aria-invalid={!!errors.chunk_size} aria-describedby={describedBy('chunk_size', !!errors.chunk_size)} className={input(!!errors.chunk_size)} />
         </Field>

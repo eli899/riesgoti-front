@@ -4,7 +4,7 @@ import Matrix5x5EditorGrid from '@/components/admin/Matrix5x5EditorGrid'
 import MatrixCriteriaList from '@/components/admin/MatrixCriteriaList'
 import PublishMatrixDialog from '@/components/admin/PublishMatrixDialog'
 import PageMeta from '@/components/seo/PageMeta'
-import { Button, Card, PageHeader, Tabs } from '@/components/ui'
+import { Button, Card, PageHeader, SectionTitle, Tabs } from '@/components/ui'
 import { useAuthSession } from '@/hooks/useAuthSession'
 import { useMatrixConfigManager } from '@/hooks/admin/useMatrixConfigManager'
 import { formatDateTime } from '@/lib/format'
@@ -36,8 +36,8 @@ export default function MatrixPage() {
               {tab === 'impact' && <MatrixCriteriaList title="Criterios de impacto" criteria={m.matrix.impactCriteria} />}
               {tab === 'matrix' && (
                 <Card aria-labelledby="matrix-grid-title" className="p-4 md:p-5">
-                  <h2 id="matrix-grid-title" className="text-[15px] font-semibold">Niveles por celda</h2>
-                  <p className="mb-3 mt-1 text-[13px] text-muted">
+                  <SectionTitle id="matrix-grid-title">Niveles por celda</SectionTitle>
+                  <p className="mb-3 mt-1 text-sm text-muted">
                     {canEdit
                       ? 'Selecciona una celda (o usa las flechas y Enter) para cambiar su nivel. Guardar crea una nueva configuración sin alterar las evaluaciones históricas.'
                       : 'Modo consulta: solo un administrador puede modificar la matriz.'}
@@ -53,7 +53,7 @@ export default function MatrixPage() {
                     <footer className="mt-4 flex flex-wrap items-center gap-2">
                       <Button disabled={!m.isDirty} onClick={() => setConfirming(true)}>Guardar como nueva versión</Button>
                       <Button variant="ghost" disabled={!m.isDirty} onClick={m.discard}>Descartar cambios</Button>
-                      {m.isDirty && <span role="status" className="text-[12px] text-muted">{m.changedCells} {m.changedCells === 1 ? 'celda modificada' : 'celdas modificadas'}</span>}
+                      {m.isDirty && <span role="status" className="text-xs text-muted">{m.changedCells} {m.changedCells === 1 ? 'celda modificada' : 'celdas modificadas'}</span>}
                     </footer>
                   )}
                 </Card>

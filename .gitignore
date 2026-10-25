@@ -37,3 +37,10 @@ roadmap/
 # Sistema operativo y Google Drive
 desktop.ini
 Thumbs.db
+
+# Playwright (E2E)
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/e2e/.auth/

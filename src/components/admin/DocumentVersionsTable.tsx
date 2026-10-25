@@ -3,8 +3,9 @@ import { AlertTriangle, CheckCircle2, Clock, Eye, FilePlus2, FileText, Loader2, 
 import { Button, Card, EmptyState } from '@/components/ui'
 import { formatDateTime } from '@/lib/format'
 import { DOCUMENT_PURPOSE_LABEL } from '@/lib/labels'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import type { DocumentAction } from '@/hooks/admin/useKnowledgeBaseManager'
+import { inputClassName } from '@/styles/tokens.form'
 import type { DocumentVersion } from '@/types/domain.types'
 
 type LifecycleState = 'PROCESANDO' | 'ERROR' | 'PENDIENTE_AUTORIZACION' | 'DISPONIBLE' | 'INACTIVO'
@@ -57,28 +58,28 @@ export default function DocumentVersionsTable({ versions, pendingAction, onPrevi
               <li key={v.id}>
                 <Card as="article" aria-labelledby={`doc-${v.id}-title`} className="flex h-full flex-col p-4">
                   <header className="flex items-start gap-3">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-soft text-primary" aria-hidden><FileText size={20} /></span>
+                    <span className="grid size-10 shrink-0 place-items-center rounded-control bg-soft text-primary" aria-hidden><FileText size={20} /></span>
                     <hgroup className="min-w-0">
                       <h3 id={`doc-${v.id}-title`} className="font-semibold leading-snug">{v.title}</h3>
-                      <p className="text-[12px] text-muted"><span className="font-mono text-primary-pressed">{v.code}</span> · versión {v.version}</p>
+                      <p className="text-xs text-muted"><span className="font-mono text-primary-pressed">{v.code}</span> · versión {v.version}</p>
                     </hgroup>
                   </header>
 
                   <p aria-live="polite" className="mt-3">
-                    <span className={cn('inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold', meta.className)}>{meta.icon}{meta.label}</span>
+                    <span className={cn('inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold', meta.className)}>{meta.icon}{meta.label}</span>
                   </p>
 
-                  <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-[12px]">
+                  <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
                     <dt className="text-muted">Finalidad</dt><dd className="font-medium">{DOCUMENT_PURPOSE_LABEL[v.purpose]}</dd>
                     <dt className="text-muted">Fragmentos</dt><dd className="font-medium">{v.fragmentCount}</dd>
                     <dt className="text-muted">Cargado</dt><dd className="font-medium">{formatDateTime(v.uploadedAt)} · {v.uploadedBy.name}</dd>
                     {v.authorizedBy && <><dt className="text-muted">Autorizado por</dt><dd className="font-medium">{v.authorizedBy.name}</dd></>}
                   </dl>
 
-                  {state === 'ERROR' && v.processingError && <p role="alert" className="mt-3 rounded-[10px] bg-soft p-2 text-[12px] text-deep">{v.processingError}</p>}
-                  {state === 'INACTIVO' && <p className="mt-3 text-[12px] text-muted">Las citas históricas en incidencias y riesgos se conservan.</p>}
+                  {state === 'ERROR' && v.processingError && <p role="alert" className="mt-3 rounded-control bg-soft p-2 text-xs text-deep">{v.processingError}</p>}
+                  {state === 'INACTIVO' && <p className="mt-3 text-xs text-muted">Las citas históricas en incidencias y riesgos se conservan.</p>}
                   {v.requiresReindex && (
-                    <p className="mt-3 flex items-start gap-1.5 text-[12px] font-medium text-deep">
+                    <p className="mt-3 flex items-start gap-1.5 text-xs font-medium text-deep">
                       <AlertTriangle size={14} className="mt-0.5 shrink-0" aria-hidden />Indexado con otro modelo de embedding ({v.embeddingModel ?? 'desconocido'}).
                     </p>
                   )}

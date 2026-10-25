@@ -26,12 +26,12 @@ export default function UsersTable({ users, currentUserId, togglingUserId, deact
               <Avatar name={u.fullName} />
               <p className="min-w-0 flex-1">
                 <span className="block font-semibold">
-                  {u.fullName}{u.id === currentUserId && <span className="ml-2 text-[11px] font-normal text-muted">(tú)</span>}
+                  {u.fullName}{u.id === currentUserId && <span className="ml-2 text-2xs font-normal text-muted">(tú)</span>}
                 </span>
-                <span className="block truncate text-[12px] text-muted">{u.email}</span>
+                <span className="block truncate text-xs text-muted">{u.email}</span>
               </p>
-              <span className="rounded-full bg-soft px-2.5 py-1 text-[12px] font-semibold text-primary-pressed">{u.roleName}</span>
-              <span className={cn('w-16 text-[12px] font-semibold', u.active ? 'text-primary-pressed' : 'text-muted')}>{u.active ? 'Activo' : 'Inactivo'}</span>
+              <span className="rounded-full bg-soft px-2.5 py-1 text-xs font-semibold text-primary-pressed">{u.roleName}</span>
+              <span className={cn('w-16 text-xs font-semibold', u.active ? 'text-primary-pressed' : 'text-muted')}>{u.active ? 'Activo' : 'Inactivo'}</span>
               <Button size="sm" variant="ghost" aria-label={`Editar a ${u.fullName}`} icon={<Pencil size={15} aria-hidden />} onClick={() => onEdit(u)} />
               <span title={block ?? undefined}>
                 <Switch checked={u.active} disabled={!!block || togglingUserId === u.id}

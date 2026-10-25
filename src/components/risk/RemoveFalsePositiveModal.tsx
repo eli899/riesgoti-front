@@ -5,8 +5,9 @@ import FormAlert from '@/components/forms/FormAlert'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
 import { Button, Dialog, Field } from '@/components/ui'
 import type { SubmitResult } from '@/lib/apiErrors'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { removeIncidentFromGroupSchema, type RemoveIncidentFromGroupValues } from '@/schemas/riskEvaluation.schema'
+import { inputClassName } from '@/styles/tokens.form'
 import type { RiskLinkedIncident } from '@/types/domain.types'
 
 interface RemoveFalsePositiveModalProps {
@@ -39,7 +40,7 @@ function RemoveForm({ incident, isSubmitting, onClose, onSubmit }: RemoveFalsePo
 
   return (
     <form noValidate aria-label="Motivo del retiro del falso positivo" onSubmit={submit} className="space-y-4">
-      <p className="text-[13px] text-muted">
+      <p className="text-sm text-muted">
         La incidencia no se elimina: queda en «Excluidas de la agrupación» con tu motivo como evidencia de la revisión.
         Si la agrupación ya estaba confirmada, deberás confirmarla de nuevo.
       </p>

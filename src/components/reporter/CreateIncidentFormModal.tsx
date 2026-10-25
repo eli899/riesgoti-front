@@ -7,9 +7,10 @@ import { Button, Dialog, Field, IconButton } from '@/components/ui'
 import FormAlert from '@/components/forms/FormAlert'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
 import { formatSize } from '@/lib/format'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import type { ApiFailure } from '@/lib/apiErrors'
 import { EVIDENCE_EXTENSIONS, incidentFormSchema, MAX_EVIDENCES_PER_INCIDENT, MAX_EVIDENCE_SIZE_BYTES, type IncidentFormValues } from '@/schemas/incident.schema'
+import { fieldClassName, inputClassName } from '@/styles/tokens.form'
 import type { Asset } from '@/types/domain.types'
 
 const FIELDS = ['titulo', 'descripcion', 'activo_reportado_id', 'activo_texto', 'evidencias'] as const
@@ -84,7 +85,7 @@ function IncidentForm({ assets, isSubmitting, onCancel, onSubmit }: Omit<CreateI
       <Controller control={control} name="evidencias" render={({ field }) => (
         <EvidenceDropzone files={field.value ?? []} error={errors.evidencias?.message} onChange={field.onChange} />
       )} />
-      <footer className="flex flex-col-reverse gap-2 border-t border-line pt-4 sm:flex-row sm:justify-end">
+      <footer className={fieldClassName.footer}>
         <Button variant="secondary" onClick={onCancel}>Cancelar</Button>
         <Button type="submit" icon={<Send size={17} aria-hidden />} disabled={isSubmitting}>{isSubmitting ? 'Registrando…' : 'Registrar incidencia'}</Button>
       </footer>
@@ -100,22 +101,22 @@ function EvidenceDropzone({ files, error, onChange }: { files: File[]; error?: s
   })
   return (
     <fieldset>
-      <legend className="mb-1.5 text-[13px] font-semibold">Evidencias <span className="font-normal text-muted">(opcional)</span></legend>
+      <legend className="mb-1.5 text-sm font-semibold">Evidencias <span className="font-normal text-muted">(opcional)</span></legend>
       <section {...getRootProps({ 'aria-label': 'Zona para arrastrar o seleccionar evidencias' })}
-        className={cn('flex min-h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-[12px] border-2 border-dashed p-4 text-center text-[13px] transition-colors',
+        className={cn('flex min-h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-tile border-2 border-dashed p-4 text-center text-sm transition-colors',
           isDragActive ? 'border-primary bg-line' : error ? 'border-deep bg-soft' : 'border-mid bg-soft hover:border-primary')}>
         <input {...getInputProps()} />
         <Paperclip size={20} className="text-primary-pressed" aria-hidden />
         <span className="font-semibold text-primary-pressed">{isDragActive ? 'Suelta los archivos aquí' : 'Adjuntar capturas, logs o documentos'}</span>
-        <span className="text-[12px] text-muted">
+        <span className="text-xs text-muted">
           {EVIDENCE_EXTENSIONS.map((e) => e.slice(1).toUpperCase()).join(', ')} · máximo {MAX_EVIDENCE_SIZE_BYTES / (1024 * 1024)} MB por archivo y {MAX_EVIDENCES_PER_INCIDENT} archivos. Los archivos nunca se ejecutan.
         </span>
       </section>
-      {error && <p id="inc-evidencias-err" role="alert" className="mt-1 text-[12px] font-medium text-deep">{error}</p>}
+      {error && <p id="inc-evidencias-err" role="alert" className="mt-1 text-xs font-medium text-deep">{error}</p>}
       {files.length > 0 && (
         <ul className="mt-3 space-y-2" aria-label="Evidencias seleccionadas">
           {files.map((f, i) => (
-            <li key={`${f.name}-${i}`} className="flex items-center gap-2 rounded-[10px] border border-line p-2 text-[13px]">
+            <li key={`${f.name}-${i}`} className="flex items-center gap-2 rounded-control border border-line p-2 text-sm">
               <Paperclip size={16} className="shrink-0 text-primary" aria-hidden />
               <span className="min-w-0 flex-1 truncate font-medium">{f.name}</span>
               <span className="text-muted">{formatSize(f.size)}</span>

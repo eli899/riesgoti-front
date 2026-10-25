@@ -8,10 +8,10 @@ import type { RiskVersion } from '@/types/domain.types'
 export default function VersionCompareTable({ base, current }: { base: RiskVersion; current: RiskVersion }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[560px] text-left text-[13px]">
+      <table className="w-full min-w-[560px] text-left text-sm">
         <caption className="sr-only">Comparación de la versión {current.number} con la versión {base.number}</caption>
         <thead>
-          <tr className="text-[12px] text-muted">
+          <tr className="text-xs text-muted">
             <th scope="col" className="w-36 py-2 font-medium">Campo</th>
             <th scope="col" className="py-2 font-medium">Antes · v{base.number}</th>
             <th scope="col" className="py-2 font-medium">Después · v{current.number}</th>
@@ -30,7 +30,7 @@ export default function VersionCompareTable({ base, current }: { base: RiskVersi
                 </td>
                 <td className="whitespace-pre-line py-2.5">
                   {changed ? (
-                    <ins className="inline-flex gap-1 rounded-[8px] border-l-4 border-primary bg-soft px-2 py-1 font-medium no-underline">
+                    <ins className="inline-flex gap-1 rounded-inset border-l-4 border-primary bg-soft px-2 py-1 font-medium no-underline">
                       <Pencil size={14} className="mt-0.5 shrink-0 text-primary" aria-hidden />{after}
                     </ins>
                   ) : <span className="text-muted">Sin cambios</span>}

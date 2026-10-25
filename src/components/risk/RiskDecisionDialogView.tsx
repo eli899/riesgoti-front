@@ -6,12 +6,13 @@ import FormAlert from '@/components/forms/FormAlert'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
 import { Button, Dialog, Field, KV, RiskLevelBadge } from '@/components/ui'
 import type { SubmitResult } from '@/lib/apiErrors'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import {
   riskDecisionFormSchema,
   type CorrectableField,
   type RiskDecisionFormValues,
 } from '@/schemas/riskEvaluation.schema'
+import { inputClassName } from '@/styles/tokens.form'
 import type { RiskDecisionAction, RiskVersion } from '@/types/domain.types'
 
 interface RiskDecisionDialogViewProps {
@@ -73,8 +74,8 @@ function DecisionForm({ action, version, defaults, correctionDefaults, validatio
 
   return (
     <form noValidate aria-label={TITLE[action]} onSubmit={submit} className="space-y-4">
-      <section aria-label="Resumen de la versión" className="rounded-[12px] border border-line p-3">
-        <dl className="grid gap-x-4 text-[13px] sm:grid-cols-2">
+      <section aria-label="Resumen de la versión" className="rounded-tile border border-line p-3">
+        <dl className="grid gap-x-4 text-sm sm:grid-cols-2">
           <KV k="Activo confirmado" v={version.confirmedAsset?.name ?? 'Sin confirmar'} nd={!version.confirmedAsset} />
           <KV k="Evaluación" v={version.evaluation ? <RiskLevelBadge level={version.evaluation.levelCode} /> : 'Sin evaluación'} nd={!version.evaluation} />
           <KV k="Incidencias agrupadas" v={`${version.includedIncidentCount}`} />
@@ -83,7 +84,7 @@ function DecisionForm({ action, version, defaults, correctionDefaults, validatio
       </section>
 
       {isValidation && validationBlockers.length > 0 && (
-        <section role="alert" className="rounded-[10px] border-2 border-deep bg-soft p-3 text-[13px]">
+        <section role="alert" className="rounded-control border-2 border-deep bg-soft p-3 text-sm">
           <p className="mb-1 font-semibold text-deep">Antes de validar:</p>
           <ul className="list-inside list-disc">{validationBlockers.map((b) => <li key={b}>{b}</li>)}</ul>
         </section>
@@ -91,7 +92,7 @@ function DecisionForm({ action, version, defaults, correctionDefaults, validatio
       <FormAlert message={errors.root?.server?.message ?? (preconditionErrors.length ? preconditionErrors.join(' ') : undefined)} />
 
       <fieldset className="min-w-0 space-y-3">
-        <legend className="mb-1 text-[13px] text-muted">
+        <legend className="mb-1 text-sm text-muted">
           {isValidation && 'Se registrará la validación con tu identidad y fecha. Validar no ejecuta controles ni cierra incidencias.'}
           {action === 'CORREGIDA' && `Se registrará la decisión sobre v${version.number} y se creará la versión v${version.number + 1} del analista con los campos modificados; la versión actual se conserva como antecedente.`}
           {action === 'RECHAZADA' && 'Rechazar no requiere evaluación ni confirmación del activo. La versión se conserva en el historial.'}
@@ -105,8 +106,8 @@ function DecisionForm({ action, version, defaults, correctionDefaults, validatio
         )}
 
         {action === 'CORREGIDA' && (
-          <fieldset className="min-w-0 space-y-3 rounded-[12px] border border-line p-3">
-            <legend className="px-1 text-[13px] font-semibold">Contenido corregido</legend>
+          <fieldset className="min-w-0 space-y-3 rounded-tile border border-line p-3">
+            <legend className="px-1 text-sm font-semibold">Contenido corregido</legend>
             {CORRECTION_FIELDS.map((f) => (
               <Field key={f.name} id={`decision-${f.name}`} label={f.label} error={errors[f.name]?.message} help={f.help}>
                 <textarea id={`decision-${f.name}`} rows={f.rows} {...register(f.name)} aria-invalid={!!errors[f.name]} className={area(!!errors[f.name])} />

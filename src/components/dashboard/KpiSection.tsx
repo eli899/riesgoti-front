@@ -16,10 +16,10 @@ export default function KpiSection({ kpis, id = 'kpis' }: { kpis: Kpi[]; id?: st
       <ul className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {kpis.map((k) => (
           <li key={k.label}>
-            <article className={cn('h-full rounded-[14px] border p-4 shadow-card', k.emphasis ? 'border-primary bg-soft' : 'border-line bg-white')}>
-              <h3 className="text-[12.5px] font-medium text-muted">{k.label}</h3>
-              <p className="mt-1 text-[26px] font-bold leading-tight tracking-tight">{k.value}</p>
-              <p className="mt-1 text-[12px] text-muted">{k.hint}</p>
+            <article className={cn('h-full rounded-card border p-4 shadow-card', k.emphasis ? 'border-primary bg-soft' : 'border-line bg-white')}>
+              <h3 className="text-xs font-medium text-muted">{k.label}</h3>
+              <p className="mt-1 text-2xl font-bold leading-tight tracking-tight">{k.value}</p>
+              <p className="mt-1 text-xs text-muted">{k.hint}</p>
             </article>
           </li>
         ))}

@@ -1,8 +1,10 @@
 import { RotateCcw, Search } from 'lucide-react'
 import { Button, Field } from '@/components/ui'
 import { INCIDENT_STATUS_LABEL } from '@/lib/labels'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import type { AgeFilter, SupportListFilters } from '@/hooks/incidents/useSupportQueue'
+import { inputClassName } from '@/styles/tokens.form'
+import { cardClassName } from '@/styles/tokens.layout'
 import type { Asset, IncidentStatus } from '@/types/domain.types'
 
 interface IncidentFiltersNavProps {
@@ -25,7 +27,7 @@ const AGE_OPTIONS: { id: AgeFilter; label: string }[] = [
 export default function IncidentFiltersNav({ filters, statuses, assets, isFiltered, onChange, onReset }: IncidentFiltersNavProps) {
   const select = cn(inputClassName(), 'h-11 md:h-10')
   return (
-    <search className="mb-4 block rounded-[18px] border border-line bg-white p-4 shadow-card md:rounded-[14px]">
+    <search className={cn(cardClassName.base, 'mb-4 block p-4')}>
       <form role="search" aria-label="Filtrar incidencias" onSubmit={(e) => e.preventDefault()} className="grid gap-3 md:grid-cols-[2fr_1fr_1fr_1fr_auto] md:items-end">
         <Field id="flt-q" label="Buscar">
           <span className="relative block">

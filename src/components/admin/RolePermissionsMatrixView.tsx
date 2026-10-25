@@ -42,11 +42,11 @@ export default function RolePermissionsMatrixView({ roles, permissions, selected
             {roles.map((r) => (
               <li key={r.id}>
                 <button type="button" aria-current={r.id === role?.id ? 'true' : undefined} onClick={() => onSelectRole(r.id)}
-                  className={cn('flex min-h-14 w-full items-center gap-3 rounded-[10px] px-3 text-left transition-colors', r.id === role?.id ? 'bg-soft text-primary-pressed' : 'hover:bg-canvas')}>
+                  className={cn('flex min-h-14 w-full items-center gap-3 rounded-control px-3 text-left transition-colors', r.id === role?.id ? 'bg-soft text-primary-pressed' : 'hover:bg-canvas')}>
                   <KeyRound size={18} className="shrink-0" aria-hidden />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-semibold">{r.name}</span>
-                    <span className="block text-[11px] text-muted">{r.system ? 'Rol del sistema' : 'Rol personalizado'} · {r.permissions.length} permisos · {r.userCount} usuarios</span>
+                    <span className="block text-2xs text-muted">{r.system ? 'Rol del sistema' : 'Rol personalizado'} · {r.permissions.length} permisos · {r.userCount} usuarios</span>
                   </span>
                 </button>
               </li>
@@ -104,14 +104,14 @@ function RoleEditor({ role, permissions, isSaving, onSave }: { role: Role; permi
           ['Usuarios', role.userCount],
         ].map(([label, value], index) => (
           <div key={label} className={cn('flex flex-col-reverse', index === 1 && 'border-x border-line')}>
-            <dt className="text-[11px] text-muted">{label}</dt>
-            <dd className="text-[18px] font-bold">{value}</dd>
+            <dt className="text-2xs text-muted">{label}</dt>
+            <dd className="text-xl font-bold">{value}</dd>
           </div>
         ))}
       </dl>
       <section className="space-y-2 p-4 md:p-5" aria-label={`Permisos de ${role.name}`}>
         {role.code === 'ADMIN' && (
-          <p className="flex items-start gap-2 rounded-[10px] border border-dashed border-primary bg-soft p-3 text-[12px] text-muted">
+          <p className="flex items-start gap-2 rounded-control border border-dashed border-primary bg-soft p-3 text-xs text-muted">
             <Lock size={14} className="mt-0.5 shrink-0 text-primary" aria-hidden />
             El rol Administrador no puede revisar agrupaciones, evaluar ni validar riesgos (Segregación de Funciones, ISO/IEC 27001 A.5.3).
           </p>
@@ -120,13 +120,13 @@ function RoleEditor({ role, permissions, isSaving, onSave }: { role: Role; permi
           const open = expanded.includes(g.module)
           const active = g.items.filter((i) => draft.includes(i.code)).length
           return (
-            <fieldset key={g.module} className="overflow-hidden rounded-[10px] border border-line">
+            <fieldset key={g.module} className="overflow-hidden rounded-control border border-line">
               <legend className="w-full">
                 <button type="button" aria-expanded={open} onClick={() => setExpanded(open ? expanded.filter((m) => m !== g.module) : [...expanded, g.module])}
                   className="flex min-h-12 w-full items-center gap-2 px-3 text-left hover:bg-canvas">
                   {open ? <ChevronDown size={17} aria-hidden /> : <ChevronRight size={17} aria-hidden />}
                   <span className="flex-1 font-semibold">{g.module}</span>
-                  <span className="text-[12px] text-muted">{active} de {g.items.length} activos</span>
+                  <span className="text-xs text-muted">{active} de {g.items.length} activos</span>
                 </button>
               </legend>
               {open && (
@@ -135,12 +135,12 @@ function RoleEditor({ role, permissions, isSaving, onSave }: { role: Role; permi
                     const on = draft.includes(item.code)
                     const lock = lockReason(role, draft, item.code)
                     return (
-                      <li key={item.code} className="flex items-center justify-between gap-3 rounded-[10px] px-2 py-2 hover:bg-canvas">
+                      <li key={item.code} className="flex items-center justify-between gap-3 rounded-control px-2 py-2 hover:bg-canvas">
                         <span className="min-w-0">
-                          <span className="block text-[14px] font-medium">{item.label}</span>
-                          <span className="font-mono text-[11px] text-muted">{item.code}</span>
-                          {descriptionOf(item.code) && descriptionOf(item.code) !== item.label && <span className="block text-[11px] text-muted">{descriptionOf(item.code)}</span>}
-                          {lock && <span className="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-primary-pressed"><Lock size={11} aria-hidden />{lock}</span>}
+                          <span className="block text-base font-medium">{item.label}</span>
+                          <span className="font-mono text-2xs text-muted">{item.code}</span>
+                          {descriptionOf(item.code) && descriptionOf(item.code) !== item.label && <span className="block text-2xs text-muted">{descriptionOf(item.code)}</span>}
+                          {lock && <span className="mt-0.5 flex items-center gap-1 text-2xs font-medium text-primary-pressed"><Lock size={11} aria-hidden />{lock}</span>}
                         </span>
                         <Switch checked={on} disabled={!!lock} label={lock ? `${item.label}: ${lock}` : item.label} onChange={(v) => toggle(item.code, v)} />
                       </li>
@@ -160,7 +160,7 @@ function RoleEditor({ role, permissions, isSaving, onSave }: { role: Role; permi
 
       <Dialog open={reviewing} onClose={() => setReviewing(false)} title="Resumen de cambios" sub={role.name}
         footer={<><Button variant="secondary" onClick={() => setReviewing(false)}>Cancelar</Button><Button disabled={isSaving} onClick={confirm}>{isSaving ? 'Guardando…' : 'Guardar permisos'}</Button></>}>
-        <section className="space-y-3 text-[13px]">
+        <section className="space-y-3 text-sm">
           {added.length > 0 && <article><h3 className="font-semibold">Se agregan</h3><ul className="list-inside list-disc">{added.map((p) => <li key={p}>{labelOf(p)}</li>)}</ul></article>}
           {removed.length > 0 && <article><h3 className="font-semibold">Se retiran</h3><ul className="list-inside list-disc">{removed.map((p) => <li key={p}>{labelOf(p)}</li>)}</ul></article>}
           <p className="text-muted">Los cambios aplican en el próximo inicio de sesión de los {role.userCount} usuarios con este rol.</p>

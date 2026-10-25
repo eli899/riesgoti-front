@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { ArrowLeft, Server } from 'lucide-react'
+import { Server } from 'lucide-react'
 import AsyncContent from '@/components/AsyncContent'
 import IncidentReportArticle from '@/components/incidents/IncidentReportArticle'
 import OperationalGuidanceSection from '@/components/incidents/OperationalGuidanceSection'
@@ -7,7 +7,7 @@ import OperationalStrategicStatusAside from '@/components/incidents/OperationalS
 import PageMeta from '@/components/seo/PageMeta'
 import HumanAttentionFormAside from '@/components/staff/HumanAttentionFormAside'
 import PriorAISuggestionBadge from '@/components/staff/PriorAISuggestionBadge'
-import { Button, CriticalityBadge, ErrorState, PageHeader, StatusBadge } from '@/components/ui'
+import { BackLink, Button, Card, CriticalityBadge, ErrorState, PageHeader, SectionTitle, StatusBadge } from '@/components/ui'
 import { useSupportCaseAttention } from '@/hooks/incidents/useSupportCaseAttention'
 import { useCitationDrawer } from '@/hooks/useCitationDrawer'
 import { formatDateTime } from '@/lib/format'
@@ -23,11 +23,7 @@ export default function SupportDetailPage({ incidentId, onBack, backLabel, onOpe
     closeDrawer()
   }, [closeDrawer])
 
-  const back = (
-    <button type="button" onClick={onBack} className="mb-3 flex min-h-11 items-center gap-1 text-[13px] font-medium text-primary-hover">
-      <ArrowLeft size={16} aria-hidden />{backLabel}
-    </button>
-  )
+  const back = <BackLink onClick={onBack}>{backLabel}</BackLink>
 
   if (incidentId === null || c.notFound) {
     return (
@@ -69,12 +65,12 @@ export default function SupportDetailPage({ incidentId, onBack, backLabel, onOpe
                 <aside aria-label="Gestión de atención humana N2 y estado estratégico" className="space-y-4 lg:self-start">
                   <OperationalStrategicStatusAside as="section" staff incident={incident} canRetry={c.canRetryStrategic} isRetrying={c.isRetrying} onRetry={c.retryStrategicAnalysis} onOpenRisk={onOpenRisk} />
                   {c.asset && (
-                    <section aria-labelledby="asset-title" className="rounded-[18px] border border-line bg-white p-4 shadow-card md:rounded-[14px]">
-                      <h2 id="asset-title" className="mb-2 flex items-center gap-2 text-[15px] font-semibold"><Server size={18} className="text-primary" aria-hidden />Activo</h2>
+                    <Card aria-labelledby="asset-title" className="p-4">
+                      <SectionTitle id="asset-title" icon={<Server size={18} className="text-primary" aria-hidden />} className="mb-2">Activo</SectionTitle>
                       <p className="font-medium">{c.asset.name}</p>
-                      <p className="mb-2 text-[12px] text-muted"><span className="font-mono">{c.asset.code}</span> · {c.asset.typeName}</p>
-                      {c.asset.criticality ? <CriticalityBadge criticality={c.asset.criticality} /> : <span className="text-[12px] text-muted">Sin criticidad registrada</span>}
-                    </section>
+                      <p className="mb-2 text-xs text-muted"><span className="font-mono">{c.asset.code}</span> · {c.asset.typeName}</p>
+                      {c.asset.criticality ? <CriticalityBadge criticality={c.asset.criticality} /> : <span className="text-xs text-muted">Sin criticidad registrada</span>}
+                    </Card>
                   )}
                   <HumanAttentionFormAside incident={incident} canAttend={c.canAttend} assignedToMe={c.assignedToMe}
                     isStarting={c.isStarting} isSaving={c.isSaving} onStart={c.start} onSave={c.saveAttention} />

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { ArrowLeft, Repeat, ShieldAlert } from 'lucide-react'
+import { Repeat, ShieldAlert } from 'lucide-react'
 import AsyncContent from '@/components/AsyncContent'
 import ClusterIncidentsSection from '@/components/risk/ClusterIncidentsSection'
 import DecisionReadinessArticle from '@/components/risk/DecisionReadinessArticle'
@@ -7,10 +7,11 @@ import RiskProposalSummarySection from '@/components/risk/RiskProposalSummarySec
 import StrategicSourcesAside from '@/components/risk/StrategicSourcesAside'
 import VersionHistorySection from '@/components/risk/VersionHistorySection'
 import PageMeta from '@/components/seo/PageMeta'
-import { Button, CriticalityBadge, ErrorState, KV, PageHeader, RiskLevelBadge, ValidationBadge } from '@/components/ui'
+import { BackLink, Button, Card, CriticalityBadge, ErrorState, KV, PageHeader, RiskLevelBadge, ValidationBadge } from '@/components/ui'
 import { useRiskVersionCompare } from '@/hooks/risks/useRiskVersionCompare'
 import { useCitationDrawer } from '@/hooks/useCitationDrawer'
 import { formatDateTime } from '@/lib/format'
+import { cardClassName } from '@/styles/tokens.layout'
 
 interface RiskDetailPageProps {
   riskId: number | null
@@ -29,11 +30,7 @@ export default function RiskDetailPage({ riskId, onBack, onOpenWorkspace }: Risk
     closeDrawer()
   }, [closeDrawer])
 
-  const back = (
-    <button type="button" onClick={onBack} className="mb-3 flex min-h-11 items-center gap-1 text-[13px] font-medium text-primary-hover">
-      <ArrowLeft size={16} aria-hidden />Registro de riesgos
-    </button>
-  )
+  const back = <BackLink onClick={onBack}>Registro de riesgos</BackLink>
 
   if (riskId === null || d.notFound) {
     return (
@@ -74,7 +71,7 @@ export default function RiskDetailPage({ riskId, onBack, onOpenWorkspace }: Risk
                 }
               />
               {d.validated && d.pending && (
-                <p role="note" className="mb-4 flex items-start gap-2 rounded-[12px] border border-dashed border-primary bg-soft p-3 text-[13px]">
+                <p role="note" className="mb-4 flex items-start gap-2 rounded-tile border border-dashed border-primary bg-soft p-3 text-sm">
                   <Repeat size={16} className="mt-0.5 shrink-0 text-primary-pressed" aria-hidden />
                   La versión {d.validated.number} está validada y vigente. Existe una nueva propuesta (v{d.pending.number}) pendiente de decisión.
                 </p>
@@ -82,7 +79,7 @@ export default function RiskDetailPage({ riskId, onBack, onOpenWorkspace }: Risk
 
               <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]" aria-label="Detalle del riesgo">
                 <section className="min-w-0 space-y-4" aria-label="Contenido, incidencias y versiones">
-                  <section aria-label="Activo y nivel" className="rounded-[18px] border border-line bg-white p-4 shadow-card md:rounded-[14px] md:p-5">
+                  <Card aria-label="Activo y nivel" className={cardClassName.padded}>
                     <dl className="grid gap-x-4 sm:grid-cols-3">
                       <span className="block"><KV k="Activo confirmado" nd={!shown.confirmedAsset}
                         v={shown.confirmedAsset ? <span className="flex flex-wrap items-center gap-2">{shown.confirmedAsset.name}{shown.confirmedAsset.criticality && <CriticalityBadge criticality={shown.confirmedAsset.criticality} />}</span> : 'Sin confirmar'} /></span>
@@ -90,7 +87,7 @@ export default function RiskDetailPage({ riskId, onBack, onOpenWorkspace }: Risk
                       <span className="block"><KV k="Probabilidad × impacto" nd={!shown.evaluation} v={shown.evaluation ? `P${shown.evaluation.probability} × I${shown.evaluation.impact} · ${shown.evaluation.matrix.name}` : 'Sin evaluar'} /></span>
                       {shown.evaluation?.justification && <span className="block sm:col-span-3"><KV k="Justificación de la evaluación" v={`${shown.evaluation.justification} — ${shown.evaluation.evaluator.name}, ${formatDateTime(shown.evaluation.evaluatedAt)}`} /></span>}
                     </dl>
-                  </section>
+                  </Card>
                   <RiskProposalSummarySection version={shown} />
                   <ClusterIncidentsSection included={shown.incidents.filter((i) => i.linkStatus !== 'RETIRADA')} excluded={shown.incidents.filter((i) => i.linkStatus === 'RETIRADA')}
                     editable={false} restoringAnalysisId={null} onRequestRemove={() => undefined} onRestore={() => undefined} />

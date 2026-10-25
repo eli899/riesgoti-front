@@ -33,7 +33,7 @@ export default function SupportListPage({ mode, onOpen }: { mode: SupportListMod
       <PageMeta title={copy.meta} description={copy.description} />
       <main id="main-content" className="page-in">
         <PageHeader title={copy.title} sub={copy.sub}
-          actions={list.isRefreshing && <span role="status" className="inline-flex items-center gap-1.5 text-[12px] text-muted"><RefreshCw size={14} className="animate-spin" aria-hidden />Actualizando</span>} />
+          actions={list.isRefreshing && <span role="status" className="inline-flex items-center gap-1.5 text-xs text-muted"><RefreshCw size={14} className="animate-spin" aria-hidden />Actualizando</span>} />
         <IncidentFiltersNav
           filters={list.filters}
           statuses={mode === 'queue' ? ['PENDIENTE_ATENCION_HUMANA', 'EN_ATENCION'] : ALL_STATUSES}

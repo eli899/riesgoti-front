@@ -13,7 +13,7 @@ export function HumanAttentionNotice({ incident }: { incident: IncidentDetail })
         <Headset className="shrink-0 text-primary" size={20} aria-hidden />
         <p>
           <strong className="block font-semibold">{attending ? `${incident.attention?.analyst.name ?? 'Un analista'} está atendiendo tu caso` : 'Tu caso está en la cola de atención'}</strong>
-          <span className="text-[13px] text-muted">{attending ? 'La resolución aparecerá aquí cuando se registre.' : 'Un analista revisará tu reporte, las evidencias y los pasos que ya intentaste.'}</span>
+          <span className="text-sm text-muted">{attending ? 'La resolución aparecerá aquí cuando se registre.' : 'Un analista revisará tu reporte, las evidencias y los pasos que ya intentaste.'}</span>
         </p>
       </Card>
     )
@@ -24,8 +24,8 @@ export function HumanAttentionNotice({ incident }: { incident: IncidentDetail })
         <Wrench className="shrink-0 text-primary" size={20} aria-hidden />
         <p>
           <strong className="block font-semibold">Resolución de la atención</strong>
-          <span className="block whitespace-pre-line text-[13px]">{incident.attention.resolutionNote}</span>
-          {incident.attention.closedAt && <span className="mt-1 block text-[12px] text-muted">{incident.attention.analyst.name} · {formatDateTime(incident.attention.closedAt)}</span>}
+          <span className="block whitespace-pre-line text-sm">{incident.attention.resolutionNote}</span>
+          {incident.attention.closedAt && <span className="mt-1 block text-xs text-muted">{incident.attention.analyst.name} · {formatDateTime(incident.attention.closedAt)}</span>}
         </p>
       </Card>
     )
@@ -53,17 +53,17 @@ export default function IncidentReportArticle({ incident, showReporter = false, 
         <div className="md:col-span-2"><KV k="Descripción" v={<span className="whitespace-pre-line">{incident.description}</span>} /></div>
       </dl>
       <section aria-labelledby="evidence-title" className="border-t border-line p-4 md:px-5">
-        <h3 id="evidence-title" className="mb-2 text-[12px] font-medium text-muted">Evidencias</h3>
+        <h3 id="evidence-title" className="mb-2 text-xs font-medium text-muted">Evidencias</h3>
         {incident.evidences.length ? (
           <ul className="space-y-2">
             {incident.evidences.map((e) => (
-              <li key={e.id} className="flex items-center gap-2 text-[13px]">
+              <li key={e.id} className="flex items-center gap-2 text-sm">
                 <Paperclip size={16} className="shrink-0 text-primary" aria-hidden />
                 <span className="min-w-0 truncate">{e.originalName}</span>
                 <span className="shrink-0 text-muted">{formatSize(e.bytes)} · {e.mimeType}</span>
                 {onDownloadEvidence && (
                   <button type="button" onClick={() => onDownloadEvidence(e)} aria-label={`Descargar ${e.originalName}`}
-                    className="ml-auto inline-flex min-h-9 shrink-0 items-center gap-1 rounded-[8px] px-2 text-[12px] font-semibold text-primary hover:bg-soft">
+                    className="ml-auto inline-flex min-h-9 shrink-0 items-center gap-1 rounded-inset px-2 text-xs font-semibold text-primary hover:bg-soft">
                     <Download size={15} aria-hidden />Descargar
                   </button>
                 )}
@@ -71,17 +71,17 @@ export default function IncidentReportArticle({ incident, showReporter = false, 
             ))}
           </ul>
         ) : (
-          <p className="text-[13px] text-muted">Sin evidencias adjuntas.</p>
+          <p className="text-sm text-muted">Sin evidencias adjuntas.</p>
         )}
       </section>
       <footer className="border-t border-line p-4 md:px-5">
-        <h3 className="mb-2 text-[12px] font-medium text-muted">Historial de estados</h3>
+        <h3 className="mb-2 text-xs font-medium text-muted">Historial de estados</h3>
         <ol className="space-y-2 border-l-2 border-line pl-4">
           {incident.history.map((h) => (
-            <li key={h.id} className="text-[13px]">
+            <li key={h.id} className="text-sm">
               <strong className="font-semibold">{INCIDENT_STATUS_LABEL[h.status]}</strong>
               <span className="text-muted"> · {formatDateTime(h.occurredAt)} · {h.actor.name}</span>
-              {h.reason && <span className="block text-[12px] text-muted">{h.reason}</span>}
+              {h.reason && <span className="block text-xs text-muted">{h.reason}</span>}
             </li>
           ))}
         </ol>

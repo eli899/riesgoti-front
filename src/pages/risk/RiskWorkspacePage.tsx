@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeft, Grid3X3, Lock, Repeat } from 'lucide-react'
+import { Grid3X3, Lock, Repeat } from 'lucide-react'
 import AsyncContent from '@/components/AsyncContent'
 import ClusterIncidentsSection from '@/components/risk/ClusterIncidentsSection'
 import DecisionReadinessArticle from '@/components/risk/DecisionReadinessArticle'
@@ -12,13 +12,14 @@ import RiskProposalSummarySection from '@/components/risk/RiskProposalSummarySec
 import StrategicSourcesAside from '@/components/risk/StrategicSourcesAside'
 import VersionHistorySection from '@/components/risk/VersionHistorySection'
 import PageMeta from '@/components/seo/PageMeta'
-import { Button, ErrorState, PageHeader, ValidationBadge } from '@/components/ui'
+import { BackLink, Button, Card, ErrorState, PageHeader, SectionTitle, ValidationBadge } from '@/components/ui'
 import { useRiskClusterReview } from '@/hooks/risks/useRiskClusterReview'
 import { useRiskDecisionFlow } from '@/hooks/risks/useRiskDecisionFlow'
 import { useRiskMatrixEvaluation } from '@/hooks/risks/useRiskMatrixEvaluation'
 import { useRiskVersionCompare } from '@/hooks/risks/useRiskVersionCompare'
 import { useCitationDrawer } from '@/hooks/useCitationDrawer'
 import { formatDateTime } from '@/lib/format'
+import { cardClassName } from '@/styles/tokens.layout'
 import type { RiskDecisionAction, RiskLinkedIncident } from '@/types/domain.types'
 
 interface RiskWorkspacePageProps {
@@ -49,11 +50,7 @@ export default function RiskWorkspacePage({ versionId, onBack, onOpenVersion, on
     closeDrawer()
   }, [closeDrawer])
 
-  const back = (
-    <button type="button" onClick={onBack} className="mb-3 flex min-h-11 items-center gap-1 text-[13px] font-medium text-primary-hover">
-      <ArrowLeft size={16} aria-hidden />Propuestas de riesgo
-    </button>
-  )
+  const back = <BackLink onClick={onBack}>Propuestas de riesgo</BackLink>
 
   if (versionId === null || cluster.notFound) {
     return (
@@ -90,18 +87,18 @@ export default function RiskWorkspacePage({ versionId, onBack, onOpenVersion, on
               />
 
               {cluster.isReadOnlyRole && (
-                <p role="note" className="mb-4 flex items-start gap-2 rounded-[12px] border border-dashed border-control bg-canvas p-3 text-[13px] text-muted">
+                <p role="note" className="mb-4 flex items-start gap-2 rounded-tile border border-dashed border-control bg-canvas p-3 text-sm text-muted">
                   <Lock size={16} className="mt-0.5 shrink-0" aria-hidden />
                   Modo lectura · Segregación de funciones (ISO/IEC 27001): el Administrador no revisa, evalúa ni valida riesgos.
                 </p>
               )}
               {!cluster.isReadOnlyRole && version.status !== 'PENDIENTE' && (
-                <p role="note" className="mb-4 flex items-start gap-2 rounded-[12px] bg-canvas p-3 text-[13px] text-muted">
+                <p role="note" className="mb-4 flex items-start gap-2 rounded-tile bg-canvas p-3 text-sm text-muted">
                   <Lock size={16} className="mt-0.5 shrink-0" aria-hidden />Esta versión ya tiene una decisión registrada y es inmutable.
                 </p>
               )}
               {version.possibleRecurrence && (
-                <p role="note" className="mb-4 flex items-start gap-2 rounded-[12px] border border-mid bg-soft p-3 text-[13px]">
+                <p role="note" className="mb-4 flex items-start gap-2 rounded-tile border border-mid bg-soft p-3 text-sm">
                   <Repeat size={16} className="mt-0.5 shrink-0 text-primary-pressed" aria-hidden />
                   Posible recurrencia de un riesgo ya validado: la versión vigente se mantiene hasta decidir esta propuesta (v{version.number}).
                 </p>
@@ -114,9 +111,9 @@ export default function RiskWorkspacePage({ versionId, onBack, onOpenVersion, on
                     restoringAnalysisId={cluster.restoringAnalysisId} onRequestRemove={setRemoving} onRestore={cluster.restoreIncident} />
                   <GroupingConfirmationFieldset version={version} assets={cluster.assets} reportedAssetIds={cluster.reportedAssetIds}
                     includedCount={cluster.included.length} editable={cluster.canReview} isSubmitting={cluster.isConfirming} onConfirm={cluster.confirmGrouping} />
-                  <section aria-labelledby="matrix-heading" className="rounded-[18px] border border-line bg-white p-4 shadow-card md:rounded-[14px] md:p-5">
-                    <h2 id="matrix-heading" className="mb-1 flex items-center gap-2 text-[15px] font-semibold"><Grid3X3 size={18} className="text-primary" aria-hidden />Evaluación en la matriz 5×5</h2>
-                    <p className="mb-4 text-[12px] text-muted">
+                  <Card aria-labelledby="matrix-heading" className={cardClassName.padded}>
+                    <SectionTitle id="matrix-heading" icon={<Grid3X3 size={18} className="text-primary" aria-hidden />} className="mb-1">Evaluación en la matriz 5×5</SectionTitle>
+                    <p className="mb-4 text-xs text-muted">
                       {matrix.matrix ? `Matriz activa: ${matrix.matrix.name} ${matrix.matrix.version}. ` : ''}
                       La recurrencia de incidencias orienta la probabilidad, pero no la determina automáticamente.
                     </p>
@@ -129,7 +126,7 @@ export default function RiskWorkspacePage({ versionId, onBack, onOpenVersion, on
                         />
                       )}
                     </AsyncContent>
-                  </section>
+                  </Card>
                   {history.versions.length > 0 && <VersionHistorySection versions={history.versions} highlightVersionId={version.id} onOpenWorkspace={(id) => id !== version.id && onOpenVersion(id)} />}
                 </section>
                 <aside aria-label="Fuentes y estado de la propuesta" className="space-y-4 lg:sticky lg:top-20 lg:self-start">

@@ -1,11 +1,10 @@
 import { useEffect } from 'react'
-import { ArrowLeft } from 'lucide-react'
 import AsyncContent from '@/components/AsyncContent'
 import IncidentReportArticle, { HumanAttentionNotice } from '@/components/incidents/IncidentReportArticle'
 import OperationalGuidanceSection from '@/components/incidents/OperationalGuidanceSection'
 import OperationalStrategicStatusAside from '@/components/incidents/OperationalStrategicStatusAside'
 import PageMeta from '@/components/seo/PageMeta'
-import { Button, ErrorState, PageHeader, StatusBadge } from '@/components/ui'
+import { BackLink, Button, ErrorState, PageHeader, StatusBadge } from '@/components/ui'
 import { useOperationalGuidance } from '@/hooks/incidents/useOperationalGuidance'
 import { useCitationDrawer } from '@/hooks/useCitationDrawer'
 import { formatDateTime } from '@/lib/format'
@@ -22,11 +21,7 @@ export default function IncidentDetailPage({ incidentId, onBack }: { incidentId:
     closeDrawer()
   }, [closeDrawer])
 
-  const back = (
-    <button type="button" onClick={onBack} className="mb-3 flex min-h-11 items-center gap-1 text-[13px] font-medium text-primary-hover">
-      <ArrowLeft size={16} aria-hidden />Mis incidencias
-    </button>
-  )
+  const back = <BackLink onClick={onBack}>Mis incidencias</BackLink>
 
   if (incidentId === null || detail.notFound) {
     return (

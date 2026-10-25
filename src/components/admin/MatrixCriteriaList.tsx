@@ -12,9 +12,9 @@ export default function MatrixCriteriaList({ title, criteria }: { title: string;
             <span className="grid size-8 shrink-0 place-items-center rounded-full bg-soft font-mono font-semibold text-primary" aria-hidden>{c.value}</span>
             <p className="min-w-0 flex-1">
               <strong className="block font-semibold">{c.value}. {c.name}</strong>
-              <span className="block text-[13px] text-muted">{c.description ?? 'Sin descripción registrada.'}</span>
+              <span className="block text-sm text-muted">{c.description ?? 'Sin descripción registrada.'}</span>
             </p>
-            <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-primary-pressed"><CheckCircle2 size={14} aria-hidden />Vigente</span>
+            <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary-pressed"><CheckCircle2 size={14} aria-hidden />Vigente</span>
           </li>
         ))}
       </ol>

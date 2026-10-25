@@ -15,7 +15,7 @@ export default function CitationChip({ citation, onInspect, compact = false }: {
       aria-label={`Ver cita ${citation.number}: ${citation.documentCode} ${citation.documentVersion}${pages ? `, ${pages}` : ''}`}
       className={cn(
         'inline-flex items-center gap-1 rounded-full border border-mid bg-soft font-semibold text-primary-pressed align-baseline transition-colors hover:border-primary hover:bg-line',
-        compact ? 'mx-0.5 px-1.5 py-px text-[11px]' : 'px-2.5 py-1 text-[12px]',
+        compact ? 'mx-0.5 px-1.5 py-px text-2xs' : 'px-2.5 py-1 text-xs',
       )}
     >
       {!compact && <BookOpen size={13} aria-hidden />}

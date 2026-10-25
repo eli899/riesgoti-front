@@ -38,7 +38,7 @@ export default function AIConfigPage() {
                 onTestConnection={ai.runConnectionTest}
               />
               <section aria-labelledby="ping-title" aria-live="polite" className="mt-6">
-                <h2 id="ping-title" className="mb-3 text-[16px] font-semibold">Diagnóstico de conectividad</h2>
+                <h2 id="ping-title" className="mb-3 text-lg font-semibold">Diagnóstico de conectividad</h2>
                 {ai.testError && <ErrorState title="La prueba no pudo ejecutarse" text={ai.testError} />}
                 {ai.testResult ? (
                   <section className="grid gap-3 md:grid-cols-2" aria-label="Resultados de la prueba">
@@ -46,7 +46,7 @@ export default function AIConfigPage() {
                     <AIConnectionPingCard title="Embeddings" check={ai.testResult.embedding} dimensions={ai.testResult.embedding.dimensions} />
                   </section>
                 ) : (
-                  !ai.testError && <p className="text-[13px] text-muted">{ai.isTesting ? 'Consultando a los proveedores…' : 'Pulsa «Probar conexión» para medir latencia y validar las credenciales con los valores del formulario.'}</p>
+                  !ai.testError && <p className="text-sm text-muted">{ai.isTesting ? 'Consultando a los proveedores…' : 'Pulsa «Probar conexión» para medir latencia y validar las credenciales con los valores del formulario.'}</p>
                 )}
               </section>
             </>

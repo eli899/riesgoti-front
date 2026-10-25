@@ -6,8 +6,9 @@ import { applyServerErrors } from '@/components/forms/applyServerErrors'
 import { Button, Field, RiskLevelBadge } from '@/components/ui'
 import type { SubmitResult } from '@/lib/apiErrors'
 import { formatDateTime } from '@/lib/format'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { riskEvaluateSchema, type RiskEvaluateValues } from '@/schemas/riskEvaluation.schema'
+import { inputClassName } from '@/styles/tokens.form'
 import type { MatrixConfig, RiskEvaluation, RiskLevelCode } from '@/types/domain.types'
 import InteractiveRiskMatrix5x5Grid from './InteractiveRiskMatrix5x5Grid'
 
@@ -77,8 +78,8 @@ export default function EvaluationFormFieldset({ matrix, levelAt, evaluation, ed
         <InteractiveRiskMatrix5x5Grid probabilityCriteria={matrix.probabilityCriteria} impactCriteria={matrix.impactCriteria} levelAt={levelAt}
           selected={selected} onSelect={editable ? pick : undefined} />
 
-        <output htmlFor="eval-probability eval-impact" aria-live="polite" className="flex flex-wrap items-center justify-between gap-2 rounded-[10px] border border-line p-3">
-          <span className="text-[13px] font-semibold">
+        <output htmlFor="eval-probability eval-impact" aria-live="polite" className="flex flex-wrap items-center justify-between gap-2 rounded-control border border-line p-3">
+          <span className="text-sm font-semibold">
             Nivel resultante{selected && <span className="ml-1 font-normal text-muted">· P{selected.probability} {pName} × I{selected.impact} {iName}</span>}
           </span>
           <RiskLevelBadge level={level} />
@@ -92,12 +93,12 @@ export default function EvaluationFormFieldset({ matrix, levelAt, evaluation, ed
       </fieldset>
 
       {evaluation && (
-        <p className="text-[12px] text-muted">
+        <p className="text-xs text-muted">
           Evaluación guardada por {evaluation.evaluator.name} · {formatDateTime(evaluation.evaluatedAt)} · Matriz {evaluation.matrix.name} {evaluation.matrix.version}
         </p>
       )}
       {evaluatedWithPreviousMatrix && (
-        <p className="flex items-start gap-2 rounded-[10px] bg-soft p-3 text-[12px] text-primary-pressed">
+        <p className="flex items-start gap-2 rounded-control bg-soft p-3 text-xs text-primary-pressed">
           <Info size={14} className="mt-0.5 shrink-0" aria-hidden />
           La evaluación guardada usa una matriz anterior y conserva su celda histórica. Guardar de nuevo la evaluará con la matriz activa ({matrix.name} {matrix.version}).
         </p>
@@ -109,7 +110,7 @@ export default function EvaluationFormFieldset({ matrix, levelAt, evaluation, ed
           </Button>
         </footer>
       )}
-      <p className="text-[11.5px] text-muted">Referencia de gestión: ISO/IEC 27005. La criticidad del activo es un dato de apoyo y no sustituye el impacto.</p>
+      <p className="text-2xs text-muted">Referencia de gestión: ISO/IEC 27005. La criticidad del activo es un dato de apoyo y no sustituye el impacto.</p>
     </form>
   )
 }

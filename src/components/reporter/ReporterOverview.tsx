@@ -11,10 +11,10 @@ interface ReporterStats {
 /** Llamado a la acción para reportar una incidencia. */
 export function ReportCallToAction({ canReport, onReport }: { canReport: boolean; onReport: () => void }) {
   return (
-    <section aria-labelledby="report-cta-title" className="mb-4 flex flex-col gap-5 rounded-[22px] bg-primary-pressed px-6 py-7 text-white md:flex-row md:items-center md:justify-between md:px-8 md:py-9">
+    <section aria-labelledby="report-cta-title" className="mb-4 flex flex-col gap-5 rounded-sheet bg-primary-pressed px-6 py-7 text-white md:flex-row md:items-center md:justify-between md:px-8 md:py-9">
       <hgroup>
-        <h2 id="report-cta-title" className="text-[23px] font-bold">¿Ocurrió un problema de TI?</h2>
-        <p className="mt-1 max-w-xl text-[14px] text-mid">Cuéntanos qué pasó y qué activo se vio afectado. Recibirás una orientación en segundos y tu reporte ayuda a identificar riesgos.</p>
+        <h2 id="report-cta-title" className="text-2xl font-bold tracking-tight">¿Ocurrió un problema de TI?</h2>
+        <p className="mt-1 max-w-xl text-base text-mid">Cuéntanos qué pasó y qué activo se vio afectado. Recibirás una orientación en segundos y tu reporte ayuda a identificar riesgos.</p>
       </hgroup>
       {canReport && <Button variant="inverse" icon={<Plus size={18} aria-hidden />} onClick={onReport} className="shrink-0">Reportar incidencia</Button>}
     </section>
@@ -33,9 +33,9 @@ export function ReporterStatsSection({ stats }: { stats: ReporterStats }) {
     <section aria-label="Resumen de mis reportes" className="mb-9">
       <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {items.map((x) => (
-          <div key={x.label} className="flex flex-col-reverse rounded-[18px] bg-white px-4 py-5 shadow-card md:rounded-[14px]">
-            <dt className="mt-2 text-[13px] text-muted">{x.label}</dt>
-            <dd className="text-[29px] font-bold leading-none">{x.value}</dd>
+          <div key={x.label} className="flex flex-col-reverse rounded-card-mobile bg-white px-4 py-5 shadow-card md:rounded-card">
+            <dt className="mt-2 text-sm text-muted">{x.label}</dt>
+            <dd className="text-3xl font-bold leading-none">{x.value}</dd>
           </div>
         ))}
       </dl>

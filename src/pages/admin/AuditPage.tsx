@@ -3,10 +3,11 @@ import { Search } from 'lucide-react'
 import AsyncContent from '@/components/AsyncContent'
 import AuditLogTable from '@/components/admin/AuditLogTable'
 import PageMeta from '@/components/seo/PageMeta'
-import { Button, Card, EmptyState, PageHeader, Pager } from '@/components/ui'
+import { Button, Card, EmptyState, PageHeader, Pager, SectionTitle } from '@/components/ui'
 import { useAuditLog } from '@/hooks/admin/useAuditLog'
 import { AUDIT_ACTION_LABEL } from '@/lib/labels'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+import { inputClassName } from '@/styles/tokens.form'
 
 /** Bitácora de auditoría transversal (EVENTO_AUDITORIA, ISO/IEC 27001): consulta de solo lectura. */
 export default function AuditPage() {
@@ -37,8 +38,8 @@ export default function AuditPage() {
         <AsyncContent isLoading={a.isLoading} error={a.loadError} onRetry={a.retryLoad} label="la bitácora de auditoría">
           <Card aria-labelledby="audit-heading" className={cn(a.isFetching && 'opacity-70')}>
             <header className="border-b border-line px-4 py-3 md:px-5">
-              <h2 id="audit-heading" className="text-[15px] font-semibold">Eventos</h2>
-              <p className="text-[12px] text-muted" aria-live="polite">{a.total} eventos encontrados</p>
+              <SectionTitle id="audit-heading">Eventos</SectionTitle>
+              <p className="text-xs text-muted" aria-live="polite">{a.total} eventos encontrados</p>
             </header>
             {a.events.length ? <AuditLogTable events={a.events} /> : <EmptyState title="Sin eventos" text="No hay eventos que coincidan con los filtros." />}
             <Pager page={a.filters.page} pages={a.pages} onChange={a.setPage} />

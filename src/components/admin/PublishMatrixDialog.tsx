@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { Button, Dialog, Field } from '@/components/ui'
 import FormAlert from '@/components/forms/FormAlert'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
+import { fieldClassName, inputClassName } from '@/styles/tokens.form'
 
 interface PublishMatrixDialogProps {
   open: boolean
@@ -36,7 +37,7 @@ function PublishForm({ currentName, changedCells, isPublishing, onClose, onPubli
 
   return (
     <form onSubmit={submit} noValidate aria-label="Publicación de matriz" className="space-y-4">
-      <p className="text-[14px]">
+      <p className="text-base">
         Se publicará una nueva configuración con <strong>{changedCells} {changedCells === 1 ? 'celda modificada' : 'celdas modificadas'}</strong>.
         Las evaluaciones registradas en EVALUACION_RIESGO conservan la celda y la matriz con las que se hicieron.
       </p>
@@ -44,7 +45,7 @@ function PublishForm({ currentName, changedCells, isPublishing, onClose, onPubli
         <input id="matrix-name" value={name} maxLength={100} onChange={(e) => { setName(e.target.value); setError(undefined) }} className={cn(inputClassName(!!error), 'h-11 md:h-10')} />
       </Field>
       <FormAlert message={error} />
-      <footer className="flex flex-col-reverse gap-2 border-t border-line pt-4 sm:flex-row sm:justify-end">
+      <footer className={fieldClassName.footer}>
         <Button variant="secondary" onClick={onClose}>Cancelar</Button>
         <Button type="submit" disabled={isPublishing}>{isPublishing ? 'Publicando…' : 'Publicar versión'}</Button>
       </footer>

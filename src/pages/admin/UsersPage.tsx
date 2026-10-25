@@ -31,7 +31,7 @@ export default function UsersPage() {
               onEdit={(user) => setEditing({ user })}
               onToggleActive={mgr.toggleUserActive}
             />
-            <p className="mt-3 text-[12px] text-muted">No se puede desactivar al último administrador activo ni retirarte tu propio acceso administrativo.</p>
+            <p className="mt-3 text-xs text-muted">No se puede desactivar al último administrador activo ni retirarte tu propio acceso administrativo.</p>
           </AsyncContent>
         </section>
       </main>

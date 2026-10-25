@@ -3,9 +3,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Dialog, Field } from '@/components/ui'
 import FormAlert from '@/components/forms/FormAlert'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
 import { userCreateSchema, userUpdateSchema, type UserFormValues } from '@/schemas/user.schema'
+import { fieldClassName, inputClassName } from '@/styles/tokens.form'
 import type { Role } from '@/types/domain.types'
 
 const FIELDS = ['nombres', 'apellidos', 'correo', 'rol_id', 'password', 'activo'] as const
@@ -67,7 +68,7 @@ function UserForm({ isNew, defaultValues, roles, isSaving, onClose, onSubmit }: 
         help={isNew ? 'Mínimo 8 caracteres; no puede parecerse al correo ni ser común.' : 'Déjala vacía para conservar la contraseña actual.'}>
         <input id="user-password" type="password" autoComplete="new-password" {...register('password')} aria-invalid={!!errors.password} className={input(!!errors.password)} />
       </Field>
-      <footer className="flex flex-col-reverse gap-2 border-t border-line pt-4 sm:flex-row sm:justify-end">
+      <footer className={fieldClassName.footer}>
         <Button variant="secondary" onClick={onClose}>Cancelar</Button>
         <Button type="submit" disabled={isSaving}>{isSaving ? 'Guardando…' : 'Guardar'}</Button>
       </footer>

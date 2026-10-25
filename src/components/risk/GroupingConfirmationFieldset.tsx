@@ -4,11 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckCircle2, GitMerge, Server } from 'lucide-react'
 import FormAlert from '@/components/forms/FormAlert'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
-import { Button, CriticalityBadge, Field } from '@/components/ui'
+import { Button, Card, CriticalityBadge, Field, SectionTitle } from '@/components/ui'
 import type { SubmitResult } from '@/lib/apiErrors'
 import { formatDateTime } from '@/lib/format'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { confirmGroupingFormSchema, type ConfirmGroupingValues } from '@/schemas/riskEvaluation.schema'
+import { inputClassName } from '@/styles/tokens.form'
+import { cardClassName } from '@/styles/tokens.layout'
 import type { Asset, RiskVersion } from '@/types/domain.types'
 
 interface GroupingConfirmationFieldsetProps {
@@ -28,19 +30,19 @@ export default function GroupingConfirmationFieldset({ version, assets, reported
   const showForm = editable && (!grouping.confirmed || correcting)
 
   return (
-    <section aria-labelledby="grouping-heading" className="rounded-[18px] border border-line bg-white p-4 shadow-card md:rounded-[14px] md:p-5">
-      <h2 id="grouping-heading" className="mb-1 flex items-center gap-2 text-[15px] font-semibold"><Server size={18} className="text-primary" aria-hidden />Activo afectado y confirmación de la agrupación</h2>
-      <p className="mb-3 text-[12px] text-muted">Activo identificado por la IA: <strong className="text-ink">{version.identifiedAsset ?? 'No determinado'}</strong></p>
+    <Card aria-labelledby="grouping-heading" className={cardClassName.padded}>
+      <SectionTitle id="grouping-heading" icon={<Server size={18} className="text-primary" aria-hidden />} className="mb-1">Activo afectado y confirmación de la agrupación</SectionTitle>
+      <p className="mb-3 text-xs text-muted">Activo identificado por la IA: <strong className="text-ink">{version.identifiedAsset ?? 'No determinado'}</strong></p>
 
       {grouping.confirmed && !correcting && (
-        <p className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[10px] bg-canvas p-3 text-[13px]" role="status">
+        <p className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-control bg-canvas p-3 text-sm" role="status">
           <CheckCircle2 size={16} className="text-primary" aria-hidden />
           <span>Activo confirmado: <strong>{confirmedAsset?.name ?? '—'}</strong></span>
           {confirmedAsset?.criticality && <CriticalityBadge criticality={confirmedAsset.criticality} />}
-          <span className="basis-full text-[12px] text-muted">Agrupación confirmada por {grouping.confirmedByName ?? '—'}{grouping.confirmedAt && ` · ${formatDateTime(grouping.confirmedAt)}`}</span>
+          <span className="basis-full text-xs text-muted">Agrupación confirmada por {grouping.confirmedByName ?? '—'}{grouping.confirmedAt && ` · ${formatDateTime(grouping.confirmedAt)}`}</span>
         </p>
       )}
-      {!grouping.confirmed && !editable && <p className="text-[13px] text-muted">La agrupación aún no ha sido confirmada por un analista.</p>}
+      {!grouping.confirmed && !editable && <p className="text-sm text-muted">La agrupación aún no ha sido confirmada por un analista.</p>}
 
       {showForm ? (
         <GroupingForm
@@ -57,7 +59,7 @@ export default function GroupingConfirmationFieldset({ version, assets, reported
       ) : editable && grouping.confirmed && (
         <Button size="sm" variant="ghost" onClick={() => setCorrecting(true)}>Cambiar activo confirmado</Button>
       )}
-    </section>
+    </Card>
   )
 }
 
@@ -98,7 +100,7 @@ function GroupingForm({ defaultAssetId, assets, reportedAssetIds, includedCount,
             {assets.map((a) => <option key={a.id} value={a.id}>{a.name}{reportedAssetIds.includes(a.id) ? ' (reportado)' : ''}</option>)}
           </select>
         </Field>
-        {selected?.criticality && <p className="flex items-center gap-2 text-[12px]" aria-live="polite"><CriticalityBadge criticality={selected.criticality} /></p>}
+        {selected?.criticality && <p className="flex items-center gap-2 text-xs" aria-live="polite"><CriticalityBadge criticality={selected.criticality} /></p>}
         {changed && (
           <Field id="grouping-justification" label="Justificación del cambio de activo" error={errors.justificacion_cambio_activo?.message}
             help="El activo elegido no coincide con el reportado en las incidencias.">

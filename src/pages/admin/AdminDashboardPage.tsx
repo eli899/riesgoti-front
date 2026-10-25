@@ -10,7 +10,7 @@ import { INCIDENT_STATUS_LABEL, RISK_LEVEL_LABEL } from '@/lib/labels'
 import type { IncidentStatus } from '@/types/domain.types'
 
 /** Sub-vista: panorama del administrador (indicadores agregados de RiskDashboardAggregationService). */
-export default function AdminDashboardPage({ onOpenSection }: { onOpenSection: (section: 'ai' | 'docs') => void }) {
+export default function AdminDashboardPage({ onOpenDocuments }: { onOpenDocuments: () => void }) {
   const overview = useAdminOverview()
   const d = overview.dashboard
 
@@ -54,7 +54,7 @@ export default function AdminDashboardPage({ onOpenSection }: { onOpenSection: (
                   <HorizontalBars unit="incidencias" emptyText="Aún no hay incidencias registradas."
                     data={d.incidentsByAsset.slice(0, 5).map((a) => ({ label: a.assetName, value: a.total }))} />
                 </ChartCard>
-                <SystemStatusArticle aiConfig={overview.aiConfig} knowledgeBase={overview.knowledgeBase} onOpenSection={onOpenSection} />
+                <SystemStatusArticle aiConfig={overview.aiConfig} knowledgeBase={overview.knowledgeBase} onOpenDocuments={onOpenDocuments} />
               </section>
             </>
           )}

@@ -18,11 +18,39 @@
   --color-muted: #475569;
   --color-mid: #bfdbfe;
   --color-disabled: #e2e8f0;
+  /* Anillo de foco: primario, contraste ≈ 5,2:1 sobre blanco y ≈ 4,9:1 sobre canvas (WCAG 1.4.11 exige 3:1). */
+  --color-focus: var(--color-primary);
   --shadow-card: 0 6px 24px rgba(15, 23, 42, 0.06);
+
+  /* Escala tipográfica en px (la raíz es 14px y la escala rem por defecto no cuadra). Se reinicia el espacio de
+     nombres para que ningún token fije line-height: el texto conserva el interlineado heredado. */
+  --text-*: initial;
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 24px;
+  --text-3xl: 28px;
+
+  /* Radios semánticos. */
+  --radius-bar: 4px;
+  --radius-inset: 8px;
+  --radius-control: 10px;
+  --radius-tile: 12px;
+  --radius-card: 14px;
+  --radius-card-mobile: 18px;
+  --radius-sheet: 22px;
 }
 
 html, body, #root { background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-sans); font-size: 14px; }
-*:focus-visible { outline: none; box-shadow: 0 0 0 4px #bfdbfe; border-radius: 10px; }
+
+/* En la capa base para que un componente pueda trasladar el indicador (p. ej. a su tarjeta contenedora). */
+@layer base {
+  :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+}
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 @keyframes page-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }

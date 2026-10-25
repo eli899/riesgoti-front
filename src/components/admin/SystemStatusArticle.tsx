@@ -14,16 +14,16 @@ export interface KnowledgeBaseSummary {
 interface SystemStatusArticleProps {
   aiConfig: AIConfig | null
   knowledgeBase: KnowledgeBaseSummary
-  onOpenSection: (section: 'ai' | 'docs') => void
+  onOpenDocuments: () => void
 }
 
 /** Estado operativo de la IA y de la base de conocimiento documental. */
-export default function SystemStatusArticle({ aiConfig, knowledgeBase, onOpenSection }: SystemStatusArticleProps) {
+export default function SystemStatusArticle({ aiConfig, knowledgeBase, onOpenDocuments }: SystemStatusArticleProps) {
   const attention = knowledgeBase.pendingAuthorization + knowledgeBase.failed + knowledgeBase.requiresReindex
   return (
     <Card as="article" aria-labelledby="system-status-title" className="overflow-hidden">
       <CardHeader titleId="system-status-title" title="Estado del sistema" icon={<Bot size={18} />} sub="IA/RAG y base de conocimiento" />
-      <dl className="divide-y divide-line px-4 text-[13px] md:px-5">
+      <dl className="divide-y divide-line px-4 text-sm md:px-5">
         <div className="flex items-center justify-between gap-3 py-3">
           <dt className="text-muted">Configuración IA vigente</dt>
           <dd className="text-right font-medium">{aiConfig ? `${aiConfig.version} · ${aiConfig.llmModel}` : '—'}</dd>
@@ -42,11 +42,11 @@ export default function SystemStatusArticle({ aiConfig, knowledgeBase, onOpenSec
         </div>
       </dl>
       {attention > 0 && (
-        <footer className="flex items-start gap-2 border-t border-line bg-soft px-4 py-3 text-[12px] md:px-5">
+        <footer className="flex items-start gap-2 border-t border-line bg-soft px-4 py-3 text-xs md:px-5">
           <AlertTriangle size={14} className="mt-0.5 shrink-0 text-deep" aria-hidden />
           <p className="flex-1 text-muted">
             {knowledgeBase.pendingAuthorization} por autorizar · {knowledgeBase.failed} con error · {knowledgeBase.requiresReindex} por reindexar.{' '}
-            <button type="button" onClick={() => onOpenSection('docs')} className="font-semibold text-primary underline-offset-2 hover:underline">Revisar documentos</button>
+            <button type="button" onClick={onOpenDocuments} className="font-semibold text-primary underline-offset-2 hover:underline">Revisar documentos</button>
           </p>
         </footer>
       )}

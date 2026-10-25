@@ -7,9 +7,10 @@ import FormAlert from '@/components/forms/FormAlert'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
 import { formatSize } from '@/lib/format'
 import { DOCUMENT_PURPOSE_LABEL } from '@/lib/labels'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
 import { documentUploadSchema, MAX_PDF_SIZE_BYTES, type DocumentUploadFormValues } from '@/schemas/document.schema'
+import { fieldClassName, inputClassName } from '@/styles/tokens.form'
 
 export interface DocumentUploadSeed {
   codigo: string
@@ -78,8 +79,8 @@ function UploadForm({ seed, isUploading, onCancel, onSubmit }: { seed: DocumentU
       <Controller control={control} name="archivo" render={({ field }) => (
         <PdfDropzone file={field.value ?? null} error={errors.archivo?.message} onChange={field.onChange} />
       )} />
-      <p className="text-[12px] text-muted">Las instrucciones contenidas en el documento nunca se tratan como órdenes para la IA.</p>
-      <footer className="flex flex-col-reverse gap-2 border-t border-line pt-4 sm:flex-row sm:justify-end">
+      <p className="text-xs text-muted">Las instrucciones contenidas en el documento nunca se tratan como órdenes para la IA.</p>
+      <footer className={fieldClassName.footer}>
         <Button variant="secondary" onClick={onCancel}>Cancelar</Button>
         <Button type="submit" icon={<Upload size={18} aria-hidden />} disabled={isUploading}>{isUploading ? 'Cargando…' : 'Cargar PDF'}</Button>
       </footer>
@@ -98,24 +99,24 @@ function PdfDropzone({ file, error, onChange }: { file: File | null; error?: str
 
   return (
     <fieldset>
-      <legend className="mb-1.5 block text-[13px] font-semibold">Archivo PDF</legend>
+      <legend className="mb-1.5 block text-sm font-semibold">Archivo PDF</legend>
       {file ? (
-        <p className={cn('flex items-center gap-3 rounded-[12px] border p-3', error ? 'border-2 border-deep bg-soft' : 'border-line bg-soft')}>
+        <p className={cn('flex items-center gap-3 rounded-tile border p-3', error ? 'border-2 border-deep bg-soft' : 'border-line bg-soft')}>
           <FileText size={20} className="shrink-0 text-primary" aria-hidden />
-          <span className="min-w-0 flex-1"><span className="block truncate text-[13px] font-semibold">{file.name}</span><span className="block text-[12px] text-muted">{formatSize(file.size)}</span></span>
+          <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold">{file.name}</span><span className="block text-xs text-muted">{formatSize(file.size)}</span></span>
           <IconButton label="Quitar archivo" onClick={() => onChange(undefined)}><X size={18} aria-hidden /></IconButton>
         </p>
       ) : (
         <section {...getRootProps({ 'aria-label': 'Zona para arrastrar o seleccionar un PDF' })}
-          className={cn('flex cursor-pointer flex-col items-center rounded-[14px] border-2 border-dashed px-4 py-8 text-center transition-colors',
+          className={cn('flex cursor-pointer flex-col items-center rounded-card border-2 border-dashed px-4 py-8 text-center transition-colors',
             isDragActive ? 'border-primary bg-soft' : error ? 'border-deep bg-soft' : 'border-mid hover:border-primary hover:bg-soft')}>
           <input {...getInputProps()} />
           <Upload size={24} className="mb-2 text-primary" aria-hidden />
-          <span className="text-[14px] font-semibold">{isDragActive ? 'Suelta el PDF aquí' : 'Arrastra un PDF o haz clic para seleccionarlo'}</span>
-          <span className="mt-1 text-[12px] text-muted">Máximo {MAX_PDF_SIZE_BYTES / (1024 * 1024)} MB</span>
+          <span className="text-base font-semibold">{isDragActive ? 'Suelta el PDF aquí' : 'Arrastra un PDF o haz clic para seleccionarlo'}</span>
+          <span className="mt-1 text-xs text-muted">Máximo {MAX_PDF_SIZE_BYTES / (1024 * 1024)} MB</span>
         </section>
       )}
-      {error && <p id="doc-archivo-err" role="alert" className="mt-1 text-[12px] font-medium text-deep">{error}</p>}
+      {error && <p id="doc-archivo-err" role="alert" className="mt-1 text-xs font-medium text-deep">{error}</p>}
     </fieldset>
   )
 }

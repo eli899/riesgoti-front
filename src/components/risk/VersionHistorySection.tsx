@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ChevronDown, FileText, GitCompare } from 'lucide-react'
-import { Button, KV, RiskLevelBadge, ValidationBadge } from '@/components/ui'
+import { Button, Card, KV, RiskLevelBadge, SectionTitle, ValidationBadge } from '@/components/ui'
 import { formatDateTime, NOT_DETERMINED } from '@/lib/format'
 import { RISK_VERSION_FIELDS } from '@/lib/labels'
 import { cn } from '@/lib/utils'
@@ -22,10 +22,10 @@ export default function VersionHistorySection({ versions, highlightVersionId, on
   const baseOf = (v: RiskVersion) => (v.previousVersionId ? byId.get(v.previousVersionId) : undefined) ?? versions.find((x) => x.number === v.number - 1)
 
   return (
-    <section aria-labelledby="versions-heading" className="min-w-0 rounded-[18px] border border-line bg-white shadow-card md:rounded-[14px]">
+    <Card aria-labelledby="versions-heading" className="min-w-0">
       <header className="border-b border-line px-4 py-3 md:px-5">
-        <h2 id="versions-heading" className="flex items-center gap-2 text-[15px] font-semibold"><FileText size={18} className="text-primary" aria-hidden />Versiones</h2>
-        <p className="text-[12px] text-muted">{versions.length} registros conservados. Las decisiones no modifican versiones anteriores.</p>
+        <SectionTitle id="versions-heading" icon={<FileText size={18} className="text-primary" aria-hidden />}>Versiones</SectionTitle>
+        <p className="text-xs text-muted">{versions.length} registros conservados. Las decisiones no modifican versiones anteriores.</p>
       </header>
       <ol className="divide-y divide-line">
         {versions.map((v) => {
@@ -38,7 +38,7 @@ export default function VersionHistorySection({ versions, highlightVersionId, on
                 className="grid w-full gap-2 p-4 text-left transition-colors hover:bg-soft sm:grid-cols-[90px_120px_1fr_auto] sm:items-center md:px-5">
                 <span className="font-semibold">Versión {v.number}</span>
                 <ValidationBadge status={v.status} />
-                <span className="text-[12px] text-muted">
+                <span className="text-xs text-muted">
                   {v.origin === 'IA' ? 'Origen IA' : `Origen analista · ${v.createdBy.name}`} · {formatDateTime(v.createdAt)}
                   {v.decision && ` · Decidida por ${v.decision.analyst.name}`}
                 </span>
@@ -68,7 +68,7 @@ export default function VersionHistorySection({ versions, highlightVersionId, on
                     {onOpenWorkspace && v.status === 'PENDIENTE' && <Button size="sm" onClick={() => onOpenWorkspace(v.id)}>Revisar propuesta v{v.number}</Button>}
                   </footer>
                   {comparing === v.id && base && (
-                    <section aria-label={`Comparación v${base.number} y v${v.number}`} className="mt-3 rounded-[12px] border border-line bg-white p-3">
+                    <section aria-label={`Comparación v${base.number} y v${v.number}`} className="mt-3 rounded-tile border border-line bg-white p-3">
                       <VersionCompareTable base={base} current={v} />
                     </section>
                   )}
@@ -78,6 +78,6 @@ export default function VersionHistorySection({ versions, highlightVersionId, on
           )
         })}
       </ol>
-    </section>
+    </Card>
   )
 }

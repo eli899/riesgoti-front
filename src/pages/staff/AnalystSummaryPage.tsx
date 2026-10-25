@@ -6,7 +6,8 @@ import PendingProposalsArticle from '@/components/staff/PendingProposalsArticle'
 import { Chips, PageHeader } from '@/components/ui'
 import { useAnalystSummary, type SummaryPeriod } from '@/hooks/incidents/useAnalystSummary'
 import { RISK_LEVEL_LABEL } from '@/lib/labels'
-import { cn, inputClassName } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+import { inputClassName } from '@/styles/tokens.form'
 
 const PERIODS: { id: SummaryPeriod; label: string }[] = [
   { id: '7', label: 'Últimos 7 días' },
