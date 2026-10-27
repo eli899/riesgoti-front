@@ -10,11 +10,12 @@ import {
   AlertTriangle, Archive, ArrowLeft, BookOpen, CheckCircle2, Circle, CircleDot, Clock, Headset, Inbox,
   Loader2, Pencil, ShieldCheck, Sparkles, Wrench, X, XCircle,
 } from 'lucide-react'
-import { INCIDENT_STATUS_LABEL, RISK_LEVEL_LABEL, RISK_VALIDATION_LABEL } from '@/lib/labels'
+import { INCIDENT_STATUS_LABEL, RISK_LEVEL_LABEL, RISK_VALIDATION_LABEL } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import { fieldClassName, inputClassName } from '@/styles/tokens.form'
 import { backLinkClassName, cardClassName, headerClassName, monoClassName, sectionTitleClassName } from '@/styles/tokens.layout'
 import type { AssetCriticality, IncidentStatus, RiskLevelCode, RiskValidationStatus } from '@/types/domain.types'
+import { UI_TIMINGS } from '@/constants/timing.constants'
 
 // ---------------------------------------------------------------------------
 // Identidad
@@ -287,7 +288,7 @@ function useFocusTrap<T extends HTMLElement>(open: boolean, onClose: () => void)
     const previous = document.activeElement as HTMLElement | null
     const el = containerRef.current
     const focusables = () => el ? Array.from(el.querySelectorAll<HTMLElement>('button:not([disabled]),input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])')) : []
-    const timer = setTimeout(() => (focusables()[0] ?? el)?.focus(), 10)
+    const timer = setTimeout(() => (focusables()[0] ?? el)?.focus(), UI_TIMINGS.DIALOG_FOCUS_DELAY_MS)
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onCloseRef.current()
       if (e.key !== 'Tab') return
@@ -356,13 +357,14 @@ export function SourceCard({ n, title, version, page, fragment, onOpen }: { n: n
 }
 
 const ANALYSIS_STEPS = ['Analizando reporte', 'Extrayendo elementos', 'Buscando coincidencias', 'Consultando fuentes', 'Preparando propuesta', 'Resultado listo']
+const FINAL_ANALYSIS_STEP = ANALYSIS_STEPS.length - 1
 
 export function AnalysisProgress({ stage, failed }: { stage: number; failed?: boolean }) {
   return (
     <ol aria-live="polite" className="space-y-2">
       {ANALYSIS_STEPS.map((s, i) => {
-        const done = i < stage || (i === 5 && stage >= 5)
-        const current = i === stage && !failed && stage < 5
+        const done = i < stage || (i === FINAL_ANALYSIS_STEP && stage >= FINAL_ANALYSIS_STEP)
+        const current = i === stage && !failed && stage < FINAL_ANALYSIS_STEP
         const error = failed && i === stage
         return (
           <li key={s} aria-current={current ? 'step' : undefined} className={cn('flex items-center gap-2 text-sm', done ? 'text-ink' : current ? 'font-semibold text-primary' : error ? 'font-semibold text-deep' : 'text-control')}>

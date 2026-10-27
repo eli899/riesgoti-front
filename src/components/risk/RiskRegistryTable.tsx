@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { monoClassName } from '@/styles/tokens.layout'
 import { tableClassName } from '@/styles/tokens.table'
 import type { RiskRegistryRow } from '@/types/domain.types'
+import { RISK_REGISTRY_CATEGORY } from '@/constants/domain.constants'
 
 const NewProposalBadge = ({ number }: { number: number }) => (
   <span className="mt-0.5 inline-flex items-center gap-1 rounded-full border border-dashed border-primary bg-soft px-2 py-0.5 text-2xs font-semibold text-primary-pressed">
@@ -31,7 +32,7 @@ export default function RiskRegistryTable({ rows, onOpen }: { rows: RiskRegistry
                 <td className={tableClassName.td}>
                   <span className="block font-medium">{r.title}</span>
                   <span className="text-2xs text-muted">Versión {r.versionNumber}</span>
-                  {r.category === 'VALIDADO' && r.pendingProposal && <span className="block"><NewProposalBadge number={r.pendingProposal.number} /></span>}
+                  {r.category === RISK_REGISTRY_CATEGORY.VALIDADO && r.pendingProposal && <span className="block"><NewProposalBadge number={r.pendingProposal.number} /></span>}
                 </td>
                 <td className={tableClassName.tdMuted}>{r.assetName ?? 'Activo sin confirmar'}</td>
                 <td className={tableClassName.td}><RiskLevelBadge level={r.levelCode} /></td>
@@ -50,7 +51,7 @@ export default function RiskRegistryTable({ rows, onOpen }: { rows: RiskRegistry
               <span className="flex items-center justify-between gap-2"><span className={monoClassName}>{r.riskCode} · v{r.versionNumber}</span><ValidationBadge status={r.status} /></span>
               <span className="mt-1 block font-semibold">{r.title}</span>
               <span className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">{r.assetName ?? 'Activo sin confirmar'} · {r.incidentCount} inc. <RiskLevelBadge level={r.levelCode} /></span>
-              {r.category === 'VALIDADO' && r.pendingProposal && <NewProposalBadge number={r.pendingProposal.number} />}
+              {r.category === RISK_REGISTRY_CATEGORY.VALIDADO && r.pendingProposal && <NewProposalBadge number={r.pendingProposal.number} />}
             </button>
           </li>
         ))}

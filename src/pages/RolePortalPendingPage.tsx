@@ -2,7 +2,7 @@ import { Construction, LogOut } from 'lucide-react'
 import PageMeta from '@/components/seo/PageMeta'
 import { Button, Card, Logo } from '@/components/ui'
 import { useAuthSession } from '@/hooks/useAuthSession'
-import { ROLE_LABEL } from '@/lib/labels'
+import { ROLE_LABEL } from '@/constants/labels.constants'
 
 /** Vista de respaldo para roles personalizados sin portal propio asignado. */
 export default function RolePortalPendingPage() {
@@ -21,8 +21,7 @@ export default function RolePortalPendingPage() {
           <span className="mx-auto mb-4 grid size-12 place-items-center rounded-full bg-soft text-primary" aria-hidden><Construction size={22} /></span>
           <h1 id="pending-title" className="text-2xl font-bold tracking-tight">Hola, {currentUser?.firstName}</h1>
           <p className="mt-2 text-base text-muted">
-            El portal del rol <strong>{roleName}</strong> se está migrando a la nueva plataforma y estará disponible en una próxima versión.
-            Tu sesión y tus permisos ya están activos.
+            El portal del rol <strong>{roleName}</strong>  se está migrando a la nueva plataforma y estará disponible en una próxima versión. Tu sesión y tus permisos ya están activos.
           </p>
         </Card>
       </main>

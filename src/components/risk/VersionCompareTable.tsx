@@ -1,6 +1,6 @@
 import { Pencil } from 'lucide-react'
 import { NOT_DETERMINED } from '@/lib/format'
-import { RISK_VERSION_FIELDS } from '@/lib/labels'
+import { RISK_VERSION_FIELDS } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import type { RiskVersion } from '@/types/domain.types'
 

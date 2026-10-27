@@ -15,7 +15,9 @@ import { fromApiAssetToDomain } from '@/mappers/admin.mapper'
 import { fromApiGuidanceToDomain, fromApiIncidentDetailToDomain, fromDomainAttentionToApi } from '@/mappers/incidents.mapper'
 import type { HumanAttentionFormValues } from '@/schemas/incident.schema'
 import type { Evidence } from '@/types/domain.types'
-import { STRATEGIC_POLLING_MS } from './useOperationalGuidance'
+import { AI_TASK_RUNNING_STATUSES, AI_TASK_STATUS } from '@/constants/domain.constants'
+import { PERMISSIONS } from '@/constants/rbac.constants'
+import { POLLING_INTERVALS_MS } from '@/constants/timing.constants'
 
 /**
  * Caso de uso de la consola N2: contexto completo del caso derivado (reporte, evidencias, orientación IA previa),
@@ -29,8 +31,8 @@ export function useSupportCaseAttention(incidentId: number | null) {
   const detailQuery = useGetIncidentQuery(incidentId ?? 0, { skip })
   const incident = useMemo(() => (detailQuery.data ? fromApiIncidentDetailToDomain(detailQuery.data) : null), [detailQuery.data])
   const strategicStatus = incident?.aiTasks.strategic?.status
-  const strategicRunning = strategicStatus === 'PENDIENTE' || strategicStatus === 'PROCESANDO'
-  useGetIncidentQuery(incidentId ?? 0, { skip: skip || !strategicRunning, pollingInterval: strategicRunning ? STRATEGIC_POLLING_MS : 0 })
+  const strategicRunning = strategicStatus != null && AI_TASK_RUNNING_STATUSES.includes(strategicStatus)
+  useGetIncidentQuery(incidentId ?? 0, { skip: skip || !strategicRunning, pollingInterval: strategicRunning ? POLLING_INTERVALS_MS.STRATEGIC_ANALYSIS : 0 })
 
   const guidanceQuery = useGetOperationalGuidanceQuery(incidentId ?? 0, { skip })
   const guidance = useMemo(() => (guidanceQuery.data ? fromApiGuidanceToDomain(guidanceQuery.data) : null), [guidanceQuery.data])
@@ -46,7 +48,7 @@ export function useSupportCaseAttention(incidentId: number | null) {
   const [retryStrategic, { isLoading: isRetrying }] = useRetryStrategicAnalysisMutation()
   const [downloadEvidence] = useDownloadEvidenceMutation()
 
-  const canAttend = hasPermission('atencion.atender')
+  const canAttend = hasPermission(PERMISSIONS.ATTENTION_ATTEND)
   const assignedToMe = incident?.attention?.analyst.id === currentUser?.id
 
   const start = useCallback(async () => {
@@ -98,7 +100,7 @@ export function useSupportCaseAttention(incidentId: number | null) {
     },
     canAttend,
     assignedToMe,
-    canRetryStrategic: canAttend && strategicStatus === 'ERROR',
+    canRetryStrategic: canAttend && strategicStatus === AI_TASK_STATUS.ERROR,
     start,
     isStarting,
     saveAttention,

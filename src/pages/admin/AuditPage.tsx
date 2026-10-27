@@ -5,7 +5,7 @@ import AuditLogTable from '@/components/admin/AuditLogTable'
 import PageMeta from '@/components/seo/PageMeta'
 import { Button, Card, EmptyState, PageHeader, Pager, SectionTitle } from '@/components/ui'
 import { useAuditLog } from '@/hooks/admin/useAuditLog'
-import { AUDIT_ACTION_LABEL } from '@/lib/labels'
+import { AUDIT_ACTION_LABEL } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import { inputClassName } from '@/styles/tokens.form'
 

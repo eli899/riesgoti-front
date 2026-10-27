@@ -8,6 +8,7 @@ import PageMeta from '@/components/seo/PageMeta'
 import { Button, PageHeader } from '@/components/ui'
 import { useDocumentPreview, useKnowledgeBaseManager } from '@/hooks/admin/useKnowledgeBaseManager'
 import type { DocumentVersion } from '@/types/domain.types'
+import { DOCUMENT_ACTIONS } from '@/constants/api.constants'
 
 /** Sub-vista: base de conocimiento documental (DOCUMENTO / VERSION_DOCUMENTO / FRAGMENTO_DOCUMENTO). */
 export default function DocsPage() {
@@ -22,7 +23,7 @@ export default function DocsPage() {
     setUpload({ seed: { codigo: v.code, titulo: v.title, descripcion: v.description ?? '', finalidad: v.purpose } })
 
   const authorize = async (id: number) => {
-    if (await kb.runAction(id, 'authorize')) setPreviewId(null)
+    if (await kb.runAction(id, DOCUMENT_ACTIONS.AUTHORIZE)) setPreviewId(null)
   }
 
   return (
@@ -58,7 +59,7 @@ export default function DocsPage() {
         preview={preview.preview}
         isLoading={preview.isLoading}
         error={preview.error}
-        isAuthorizing={kb.pendingAction?.id === previewId && kb.pendingAction?.action === 'authorize'}
+        isAuthorizing={kb.pendingAction?.id === previewId && kb.pendingAction?.action === DOCUMENT_ACTIONS.AUTHORIZE}
         onClose={() => setPreviewId(null)}
         onAuthorize={authorize}
       />

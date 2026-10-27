@@ -6,8 +6,9 @@ import PageMeta from '@/components/seo/PageMeta'
 import { PageHeader } from '@/components/ui'
 import { useAdminOverview } from '@/hooks/admin/useAdminOverview'
 import { formatDateTime } from '@/lib/format'
-import { INCIDENT_STATUS_LABEL, RISK_LEVEL_LABEL } from '@/lib/labels'
+import { INCIDENT_STATUS_LABEL, RISK_LEVEL_LABEL } from '@/constants/labels.constants'
 import type { IncidentStatus } from '@/types/domain.types'
+import { DASHBOARD_LIMITS } from '@/constants/ui.constants'
 
 /** Sub-vista: panorama del administrador (indicadores agregados de RiskDashboardAggregationService). */
 export default function AdminDashboardPage({ onOpenDocuments }: { onOpenDocuments: () => void }) {
@@ -50,9 +51,9 @@ export default function AdminDashboardPage({ onOpenDocuments }: { onOpenDocument
                   <HorizontalBars unit="riesgos" emptyText="Aún no hay riesgos validados."
                     data={[...d.currentRisksByLevel].sort((a, b) => b.order - a.order).map((l) => ({ label: RISK_LEVEL_LABEL[l.levelCode], value: l.total }))} />
                 </ChartCard>
-                <ChartCard id="by-asset" title="Activos con más incidencias" period="Todo el histórico" summary={d.incidentsByAsset.slice(0, 5).map((a) => `${a.assetName}: ${a.total}`).join(', ')}>
+                <ChartCard id="by-asset" title="Activos con más incidencias" period="Todo el histórico" summary={d.incidentsByAsset.slice(0, DASHBOARD_LIMITS.TOP_ITEMS).map((a) => `${a.assetName}: ${a.total}`).join(', ')}>
                   <HorizontalBars unit="incidencias" emptyText="Aún no hay incidencias registradas."
-                    data={d.incidentsByAsset.slice(0, 5).map((a) => ({ label: a.assetName, value: a.total }))} />
+                    data={d.incidentsByAsset.slice(0, DASHBOARD_LIMITS.TOP_ITEMS).map((a) => ({ label: a.assetName, value: a.total }))} />
                 </ChartCard>
                 <SystemStatusArticle aiConfig={overview.aiConfig} knowledgeBase={overview.knowledgeBase} onOpenDocuments={onOpenDocuments} />
               </section>

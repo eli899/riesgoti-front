@@ -5,14 +5,16 @@ import PageMeta from '@/components/seo/PageMeta'
 import PendingProposalsArticle from '@/components/staff/PendingProposalsArticle'
 import { Chips, PageHeader } from '@/components/ui'
 import { useAnalystSummary, type SummaryPeriod } from '@/hooks/incidents/useAnalystSummary'
-import { RISK_LEVEL_LABEL } from '@/lib/labels'
+import { RISK_LEVEL_LABEL } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import { inputClassName } from '@/styles/tokens.form'
+import { RISK_LEVELS_HIGH_OR_CRITICAL } from '@/constants/domain.constants'
+import { FILTER_ALL } from '@/constants/ui.constants'
 
 const PERIODS: { id: SummaryPeriod; label: string }[] = [
   { id: '7', label: 'Últimos 7 días' },
   { id: '30', label: 'Últimos 30 días' },
-  { id: 'all', label: 'Todo' },
+  { id: FILTER_ALL, label: 'Todo' },
 ]
 
 /** Resumen operativo del Analista: incidencias del periodo, cola N2 y estado del gobierno de riesgos. */
@@ -20,7 +22,7 @@ export default function AnalystSummaryPage({ onOpenProposal }: { onOpenProposal:
   const s = useAnalystSummary()
   const periodLabel = PERIODS.find((p) => p.id === s.period)!.label
   const d = s.dashboard
-  const highCritical = d ? d.currentRisksByLevel.filter((l) => l.levelCode === 'ALTO' || l.levelCode === 'CRITICO').reduce((a, l) => a + l.total, 0) : 0
+  const highCritical = d ? d.currentRisksByLevel.filter((l) => RISK_LEVELS_HIGH_OR_CRITICAL.includes(l.levelCode)).reduce((a, l) => a + l.total, 0) : 0
 
   return (
     <>
@@ -29,7 +31,7 @@ export default function AnalystSummaryPage({ onOpenProposal }: { onOpenProposal:
         <PageHeader title="Resumen" sub="Panorama operativo y estratégico. Los filtros afectan a los indicadores de incidencias." />
         <nav aria-label="Filtros del resumen" className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Chips label="Periodo" value={s.period} onChange={s.setPeriod} items={PERIODS} />
-          <select aria-label="Filtrar por activo" value={s.assetId} onChange={(e) => s.setAssetId(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+          <select aria-label="Filtrar por activo" value={s.assetId} onChange={(e) => s.setAssetId(e.target.value === FILTER_ALL ? FILTER_ALL : Number(e.target.value))}
             className={cn(inputClassName(), 'h-10 sm:w-64')}>
             <option value="all">Todos los activos</option>
             {s.assets.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}

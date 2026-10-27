@@ -1,16 +1,8 @@
 import { z } from 'zod'
+import { ADMIN_REQUIRED_PERMISSIONS, ADMINISTRATIVE_PERMISSIONS, ROLES, SOD_RISK_PERMISSIONS } from '@/constants/rbac.constants'
+import { FIELD_LIMITS as L, VALIDATION_MESSAGES } from '@/constants/validation.constants'
 
-/** Espejo de SOD_RISK_PERMISSIONS / ADMINISTRATIVE_PERMISSIONS (back/apps/accounts/permissions.py). */
-export const SOD_RISK_PERMISSIONS = ['riesgo.revisar_agrupacion', 'riesgo.evaluar', 'riesgo.validar'] as const
-export const ADMINISTRATIVE_PERMISSIONS = [
-  'usuario.administrar',
-  'rol.administrar',
-  'matriz.administrar',
-  'documento.administrar',
-  'activo.administrar',
-] as const
-/** Permisos que el rol ADMIN debe conservar para no perder el gobierno de la plataforma. */
-export const ADMIN_REQUIRED_PERMISSIONS = ['usuario.administrar', 'rol.administrar'] as const
+const M = VALIDATION_MESSAGES.ROLE
 
 const includesAny = (list: readonly string[], values: string[]) => values.some((v) => list.includes(v))
 
@@ -20,26 +12,26 @@ export const roleFormSchema = z
     codigo: z
       .string()
       .trim()
-      .min(2, 'Ingrese un código (ej. AUDITOR_TI)')
-      .max(50)
-      .regex(/^[A-Z][A-Z0-9_]*$/, 'Use MAYÚSCULAS, dígitos y guion bajo (ej. AUDITOR_TI)'),
-    nombre: z.string().trim().min(3, 'Ingrese un nombre de al menos 3 caracteres').max(100),
+      .min(L.ROLE_CODE_MIN, M.CODE_REQUIRED)
+      .max(L.ROLE_CODE_MAX)
+      .regex(/^[A-Z][A-Z0-9_]*$/, M.CODE_FORMAT),
+    nombre: z.string().trim().min(L.ROLE_NAME_MIN, M.NAME_MIN).max(L.ROLE_NAME_MAX),
     activo: z.boolean(),
     permisos: z.array(z.string()),
   })
   .superRefine((data, ctx) => {
     const issue = (path: string, message: string) => ctx.addIssue({ code: z.ZodIssueCode.custom, path: [path], message })
-    if (data.codigo === 'ADMIN') {
+    if (data.codigo === ROLES.ADMIN) {
       if (includesAny(SOD_RISK_PERMISSIONS, data.permisos)) {
-        issue('permisos', 'Segregación de Funciones: el rol ADMIN no puede recibir permisos de evaluación o validación de riesgos')
+        issue('permisos', M.SOD_ADMIN)
       }
       if (!ADMIN_REQUIRED_PERMISSIONS.every((p) => data.permisos.includes(p))) {
-        issue('permisos', 'El rol ADMIN debe conservar la administración de usuarios y de roles')
+        issue('permisos', M.ADMIN_REQUIRED)
       }
-      if (!data.activo) issue('activo', 'El rol ADMIN no puede desactivarse')
+      if (!data.activo) issue('activo', M.ADMIN_INACTIVE)
     }
     if (includesAny(SOD_RISK_PERMISSIONS, data.permisos) && includesAny(ADMINISTRATIVE_PERMISSIONS, data.permisos)) {
-      issue('permisos', 'Segregación de Funciones: un mismo rol no puede combinar permisos de administración con permisos de evaluación o decisión de riesgos')
+      issue('permisos', M.SOD_COMBINATION)
     }
   })
 

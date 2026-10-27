@@ -13,6 +13,8 @@ import { fromApiAssetToDomain } from '@/mappers/admin.mapper'
 import { fromApiRiskVersionToDomain, fromDomainConfirmGroupingToApi, fromDomainRemoveIncidentToApi } from '@/mappers/risks.mapper'
 import type { ConfirmGroupingValues, RemoveIncidentFromGroupValues } from '@/schemas/riskEvaluation.schema'
 import type { RiskLinkedIncident } from '@/types/domain.types'
+import { INCIDENT_LINK_STATUS, RISK_VALIDATION_STATUS } from '@/constants/domain.constants'
+import { PERMISSIONS, ROLES } from '@/constants/rbac.constants'
 
 /**
  * Caso de uso: depuración de la agrupación IA de una VERSION_RIESGO pendiente. Retirar o restaurar un vínculo
@@ -32,11 +34,11 @@ export function useRiskClusterReview(versionId: number | null) {
   const [restoreIncident, { isLoading: isRestoring, originalArgs: restoringArgs }] = useRestoreIncidentToRiskGroupMutation()
   const [confirmGrouping, { isLoading: isConfirming }] = useConfirmRiskGroupingMutation()
 
-  const isReadOnlyRole = roleCode === 'ADMIN'
-  const canReview = !isReadOnlyRole && hasPermission('riesgo.revisar_agrupacion') && version?.status === 'PENDIENTE'
+  const isReadOnlyRole = roleCode === ROLES.ADMIN
+  const canReview = !isReadOnlyRole && hasPermission(PERMISSIONS.RISK_REVIEW_GROUPING) && version?.status === RISK_VALIDATION_STATUS.PENDIENTE
 
-  const included = useMemo(() => version?.incidents.filter((i) => i.linkStatus !== 'RETIRADA') ?? [], [version])
-  const excluded = useMemo(() => version?.incidents.filter((i) => i.linkStatus === 'RETIRADA') ?? [], [version])
+  const included = useMemo(() => version?.incidents.filter((i) => i.linkStatus !== INCIDENT_LINK_STATUS.RETIRADA) ?? [], [version])
+  const excluded = useMemo(() => version?.incidents.filter((i) => i.linkStatus === INCIDENT_LINK_STATUS.RETIRADA) ?? [], [version])
 
   // El contrato de VERSION_INCIDENCIA expone el nombre del activo reportado; se resuelve contra el catálogo.
   const reportedAssetIds = useMemo(() => {

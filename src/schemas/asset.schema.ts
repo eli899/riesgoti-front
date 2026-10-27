@@ -1,12 +1,15 @@
 import { z } from 'zod'
+import { FIELD_LIMITS as L, VALIDATION_MESSAGES } from '@/constants/validation.constants'
+
+const M = VALIDATION_MESSAGES.ASSET
 
 /** Contrato de ACTIVO (espejo de ActivoInputSerializer). criticidad 1..4 = BAJO..CRITICO. */
 export const assetFormSchema = z.object({
-  tipo_id: z.number({ required_error: 'Seleccione el tipo de activo', invalid_type_error: 'Seleccione el tipo de activo' }).int().positive('Seleccione el tipo de activo'),
-  codigo: z.string().trim().min(2, 'Ingrese un código (ej. ACT-007)').max(50, 'Máximo 50 caracteres'),
-  nombre: z.string().trim().min(3, 'Ingrese un nombre de al menos 3 caracteres').max(150, 'Máximo 150 caracteres'),
+  tipo_id: z.number({ required_error: M.TYPE_REQUIRED, invalid_type_error: M.TYPE_REQUIRED }).int().positive(M.TYPE_REQUIRED),
+  codigo: z.string().trim().min(L.ASSET_CODE_MIN, M.CODE_REQUIRED).max(L.ASSET_CODE_MAX, M.CODE_MAX),
+  nombre: z.string().trim().min(L.ASSET_NAME_MIN, M.NAME_MIN).max(L.ASSET_NAME_MAX, M.NAME_MAX),
   descripcion: z.string().optional(),
-  criticidad: z.number().int().min(1).max(4).nullable(),
+  criticidad: z.number().int().min(L.ASSET_CRITICALITY_MIN).max(L.ASSET_CRITICALITY_MAX).nullable(),
   activo: z.boolean(),
 })
 

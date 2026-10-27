@@ -1,15 +1,16 @@
 import { RotateCcw, Search } from 'lucide-react'
 import { Button, Field } from '@/components/ui'
-import { INCIDENT_STATUS_LABEL } from '@/lib/labels'
+import { INCIDENT_STATUS_LABEL } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import type { AgeFilter, SupportListFilters } from '@/hooks/incidents/useSupportQueue'
 import { inputClassName } from '@/styles/tokens.form'
 import { cardClassName } from '@/styles/tokens.layout'
 import type { Asset, IncidentStatus } from '@/types/domain.types'
+import { FILTER_ALL } from '@/constants/ui.constants'
 
 interface IncidentFiltersNavProps {
   filters: SupportListFilters
-  statuses: IncidentStatus[]
+  statuses: readonly IncidentStatus[]
   assets: Asset[]
   isFiltered: boolean
   onChange: (patch: Partial<SupportListFilters>) => void
@@ -17,7 +18,7 @@ interface IncidentFiltersNavProps {
 }
 
 const AGE_OPTIONS: { id: AgeFilter; label: string }[] = [
-  { id: 'all', label: 'Cualquiera' },
+  { id: FILTER_ALL, label: 'Cualquiera' },
   { id: '1', label: 'Menos de 1 día' },
   { id: '7', label: 'Menos de 7 días' },
   { id: '30', label: 'Menos de 30 días' },
@@ -43,7 +44,7 @@ export default function IncidentFiltersNav({ filters, statuses, assets, isFilter
           </select>
         </Field>
         <Field id="flt-asset" label="Activo">
-          <select id="flt-asset" value={filters.assetId} onChange={(e) => onChange({ assetId: e.target.value === 'all' ? 'all' : Number(e.target.value) })} className={select}>
+          <select id="flt-asset" value={filters.assetId} onChange={(e) => onChange({ assetId: e.target.value === FILTER_ALL ? FILTER_ALL : Number(e.target.value) })} className={select}>
             <option value="all">Todos</option>
             {assets.map((a) => <option key={a.id} value={a.id}>{a.name}{a.active ? '' : ' (inactivo)'}</option>)}
           </select>

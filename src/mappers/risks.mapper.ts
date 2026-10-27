@@ -27,6 +27,7 @@ import type {
   RiskVersion,
   RiskVersionFilters,
 } from '@/types/domain.types'
+import { RISK_DECISION_ACTION, RISK_REGISTRY_CATEGORY, RISK_VALIDATION_STATUS } from '@/constants/domain.constants'
 import { fromApiCitationToDomain, fromApiCriticalityToDomain, optionalText, toUserRef } from './common.mapper'
 
 /** Centinela del análisis estratégico (llm_schemas.NO_DETERMINADO) para vectores no sustentados: el dominio usa null. */
@@ -132,7 +133,7 @@ export function fromDomainRiskFiltersToApi(filters: RiskVersionFilters = {}): Ri
 /** Precarga del formulario de decisión desde la VERSION_RIESGO vigente. */
 export function fromDomainRiskVersionToDecisionDefaults(version: RiskVersion): RiskDecisionFormValues {
   return {
-    accion: 'VALIDADA',
+    accion: RISK_DECISION_ACTION.VALIDADA,
     activo_confirmado_id: version.confirmedAsset?.id ?? null,
     agrupacion_confirmada: version.grouping.confirmed,
     probabilidad: version.evaluation?.probability ?? null,
@@ -166,10 +167,10 @@ export function fromDomainRiskDecisionToApi(values: RiskDecisionFormValues, orig
     accion: values.accion,
     observacion: optionalText(values.observacion),
   }
-  if (values.accion === 'VALIDADA' && !values.tiene_citas_estrategicas) {
+  if (values.accion === RISK_DECISION_ACTION.VALIDADA && !values.tiene_citas_estrategicas) {
     body.justificacion_sin_fuentes = optionalText(values.justificacion_sin_fuentes)
   }
-  if (values.accion === 'CORREGIDA') {
+  if (values.accion === RISK_DECISION_ACTION.CORREGIDA) {
     const changed = (field: CorrectableField) =>
       original && (values[field] ?? '').trim() === original[field].trim() ? undefined : optionalText(values[field])
     body.titulo = changed('titulo_corregido')
@@ -245,16 +246,16 @@ export function toRiskRegistryRows(dashboard: RiskDashboard, versions: RiskVersi
   const rows: RiskRegistryRow[] = []
   for (const latest of latestByRisk.values()) {
     const entry = validated.get(latest.riskId)
-    const pending = latest.status === 'PENDIENTE' ? { versionId: latest.id, number: latest.number } : null
+    const pending = latest.status === RISK_VALIDATION_STATUS.PENDIENTE ? { versionId: latest.id, number: latest.number } : null
     rows.push(entry
       ? {
-          riskId: entry.riskId, riskCode: entry.riskCode, category: 'VALIDADO', status: 'VALIDADA',
+          riskId: entry.riskId, riskCode: entry.riskCode, category: RISK_REGISTRY_CATEGORY.VALIDADO, status: RISK_VALIDATION_STATUS.VALIDADA,
           title: entry.title, assetName: entry.confirmedAssetName, levelCode: entry.levelCode,
           versionNumber: entry.currentVersionNumber, incidentCount: entry.incidentCount, updatedAt: entry.validatedAt,
           pendingProposal: entry.pendingProposal ? { versionId: entry.pendingProposal.id, number: entry.pendingProposal.number } : null,
         }
       : {
-          riskId: latest.riskId, riskCode: latest.riskCode, category: latest.status === 'RECHAZADA' ? 'RECHAZADO' : 'PENDIENTE',
+          riskId: latest.riskId, riskCode: latest.riskCode, category: latest.status === RISK_VALIDATION_STATUS.RECHAZADA ? RISK_REGISTRY_CATEGORY.RECHAZADO : RISK_REGISTRY_CATEGORY.PENDIENTE,
           status: latest.status, title: latest.title, assetName: latest.confirmedAsset?.name ?? latest.identifiedAsset,
           levelCode: latest.evaluation?.levelCode ?? null, versionNumber: latest.number, incidentCount: latest.includedIncidentCount,
           updatedAt: latest.decision?.decidedAt ?? latest.createdAt, pendingProposal: pending,

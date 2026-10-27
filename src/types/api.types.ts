@@ -7,48 +7,62 @@
 // ---------------------------------------------------------------------------
 // Catálogos de valores persistidos en bd.sql
 // ---------------------------------------------------------------------------
-export type RolCodigoDto = 'REPORTANTE' | 'ANALISTA' | 'ADMIN'
+import type {
+  AITaskBranch,
+  AITaskStatus,
+  DocumentProcessingStatus,
+  DocumentPurpose,
+  EmbeddingProvider,
+  GuidanceResult,
+  GuidanceType,
+  IncidentInbox,
+  IncidentLinkStatus,
+  IncidentStatus,
+  LlmProvider,
+  RiskDecisionAction,
+  RiskInbox,
+  RiskLevelCode,
+  RiskValidationStatus,
+} from '@/constants/domain.constants'
+import type { RoleCode } from '@/constants/rbac.constants'
+
+export type RolCodigoDto = RoleCode
 
 /** HISTORIAL_ESTADO_INCIDENCIA.estado */
-export type EstadoIncidenciaDto =
-  | 'REGISTRADA'
-  | 'EN_ANALISIS'
-  | 'PENDIENTE_ATENCION_HUMANA'
-  | 'EN_ATENCION'
-  | 'CERRADA'
+export type EstadoIncidenciaDto = IncidentStatus
 
 /** VERSION_DOCUMENTO.procesamiento */
-export type ProcesamientoDocumentoDto = 'PROCESANDO' | 'ERROR' | 'PENDIENTE_AUTORIZACION' | 'AUTORIZADO'
+export type ProcesamientoDocumentoDto = DocumentProcessingStatus
 
 /** VERSION_DOCUMENTO.finalidad */
-export type FinalidadDocumentoDto = 'OPERATIVA' | 'ESTRATEGICA' | 'AMBAS'
+export type FinalidadDocumentoDto = DocumentPurpose
 
 /** DECISION_RIESGO.accion */
-export type AccionDecisionRiesgoDto = 'VALIDADA' | 'CORREGIDA' | 'RECHAZADA'
+export type AccionDecisionRiesgoDto = RiskDecisionAction
 
 /** VERSION_RIESGO.estado ('PENDIENTE' mientras no exista DECISION_RIESGO). */
-export type EstadoVersionRiesgoDto = 'PENDIENTE' | AccionDecisionRiesgoDto
+export type EstadoVersionRiesgoDto = RiskValidationStatus
 
 /** NIVEL_RIESGO.codigo */
-export type NivelRiesgoCodigoDto = 'BAJO' | 'MEDIO' | 'ALTO' | 'CRITICO'
+export type NivelRiesgoCodigoDto = RiskLevelCode
 
 /** TAREA_IA.rama */
-export type RamaTareaDto = 'OPERATIVA' | 'ESTRATEGICA'
+export type RamaTareaDto = AITaskBranch
 
 /** TAREA_IA.estado */
-export type EstadoTareaDto = 'PENDIENTE' | 'PROCESANDO' | 'COMPLETADA' | 'ERROR'
+export type EstadoTareaDto = AITaskStatus
 
 /** ORIENTACION_OPERATIVA.tipo */
-export type TipoOrientacionDto = 'SUGERENCIA' | 'SENSIBLE' | 'SIN_RESPALDO'
+export type TipoOrientacionDto = GuidanceType
 
 /** RESPUESTA_ORIENTACION.resultado */
-export type ResultadoOrientacionDto = 'FUNCIONO' | 'NO_FUNCIONO'
+export type ResultadoOrientacionDto = GuidanceResult
 
 /** VERSION_INCIDENCIA.estado */
-export type EstadoVinculoDto = 'SUGERIDA' | 'CONFIRMADA' | 'RETIRADA'
+export type EstadoVinculoDto = IncidentLinkStatus
 
-export type ProveedorLlmDto = 'OPENAI' | 'GEMINI' | 'HUGGINGFACE_LOCAL'
-export type ProveedorEmbeddingDto = 'OPENAI' | 'GEMINI' | 'SENTENCE_TRANSFORMERS'
+export type ProveedorLlmDto = LlmProvider
+export type ProveedorEmbeddingDto = EmbeddingProvider
 
 // ---------------------------------------------------------------------------
 // Infraestructura (GET /health/ — HealthcheckOutputSerializer)
@@ -430,7 +444,7 @@ export interface IncidentListParamsDto {
   reportante_id?: number
   dias?: number
   q?: string
-  bandeja?: 'atencion'
+  bandeja?: IncidentInbox
   ordering?: string
 }
 
@@ -569,7 +583,7 @@ export interface RiskVersionListParamsDto {
   estado?: string
   riesgo_id?: number
   origen?: string
-  bandeja?: 'nuevas' | 'pendientes_revision' | 'rechazadas' | 'decididas'
+  bandeja?: RiskInbox
   q?: string
 }
 

@@ -17,10 +17,11 @@ import {
   fromDomainDocumentUploadToApi,
 } from '@/mappers/admin.mapper'
 import type { DocumentUploadFormValues } from '@/schemas/document.schema'
+import { DOCUMENT_PROCESSING_STATUS } from '@/constants/domain.constants'
+import { POLLING_INTERVALS_MS } from '@/constants/timing.constants'
+import type { DocumentAction } from '@/constants/api.constants'
 
-export const DOCUMENT_POLLING_MS = 3000
-
-export type DocumentAction = 'authorize' | 'activate' | 'deactivate' | 'retry' | 'reindex'
+export type { DocumentAction }
 
 const ACTION_MESSAGES: Record<DocumentAction, string> = {
   authorize: 'Versión autorizada y activada para consultas RAG',
@@ -34,10 +35,10 @@ const ACTION_MESSAGES: Record<DocumentAction, string> = {
 export function useKnowledgeBaseManager() {
   const { data, isLoading, error, refetch } = useGetDocumentVersionsQuery()
   const versions = useMemo(() => (data ?? []).map(fromApiDocumentVersionToDomain), [data])
-  const hasProcessing = versions.some((v) => v.processing === 'PROCESANDO')
+  const hasProcessing = versions.some((v) => v.processing === DOCUMENT_PROCESSING_STATUS.PROCESANDO)
 
   // Segunda suscripción a la misma caché: solo existe (y sondea cada 3 s) mientras haya documentos en proceso.
-  useGetDocumentVersionsQuery(undefined, { skip: !hasProcessing, pollingInterval: hasProcessing ? DOCUMENT_POLLING_MS : 0 })
+  useGetDocumentVersionsQuery(undefined, { skip: !hasProcessing, pollingInterval: hasProcessing ? POLLING_INTERVALS_MS.DOCUMENT_PROCESSING : 0 })
 
   const [upload, { isLoading: isUploading }] = useUploadDocumentVersionMutation()
   const [authorize] = useAuthorizeDocumentVersionMutation()

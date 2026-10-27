@@ -2,8 +2,20 @@ import { CheckCircle2, FileQuestion, Loader2, ShieldAlert, ThumbsDown, Unplug } 
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import type { Incident } from '@/types/domain.types'
+import { AI_TASK_RUNNING_STATUSES, AI_TASK_STATUS, GUIDANCE_RESULT, GUIDANCE_TYPE } from '@/constants/domain.constants'
 
-type PriorReason = 'SENSIBLE' | 'SIN_RESPALDO' | 'NO_FUNCIONO' | 'FUNCIONO' | 'FALLO_IA' | 'PENDIENTE' | 'SIN_RESPUESTA'
+/** Motivo de llegada a la cola N2: reutiliza el tipo o resultado de la orientación y añade los casos sin orientación. */
+const PRIOR_REASON = {
+  SENSIBLE: GUIDANCE_TYPE.SENSIBLE,
+  SIN_RESPALDO: GUIDANCE_TYPE.SIN_RESPALDO,
+  NO_FUNCIONO: GUIDANCE_RESULT.NO_FUNCIONO,
+  FUNCIONO: GUIDANCE_RESULT.FUNCIONO,
+  FALLO_IA: 'FALLO_IA',
+  PENDIENTE: 'PENDIENTE',
+  SIN_RESPUESTA: 'SIN_RESPUESTA',
+} as const
+
+type PriorReason = (typeof PRIOR_REASON)[keyof typeof PRIOR_REASON]
 
 const REASONS: Record<PriorReason, { label: string; icon: ReactNode; className: string }> = {
   SENSIBLE: { label: 'Escalada por seguridad', icon: <ShieldAlert size={13} aria-hidden />, className: 'bg-deep text-white' },
@@ -17,13 +29,13 @@ const REASONS: Record<PriorReason, { label: string; icon: ReactNode; className: 
 
 /** Por qué un caso llegó a la cola N2, según la orientación operativa previa (ORIENTACION_OPERATIVA / RESPUESTA_ORIENTACION). */
 function priorReasonOf(i: Incident): PriorReason {
-  if (i.guidanceType === 'SENSIBLE') return 'SENSIBLE'
-  if (i.guidanceType === 'SIN_RESPALDO') return 'SIN_RESPALDO'
-  if (i.guidanceResult === 'NO_FUNCIONO') return 'NO_FUNCIONO'
-  if (i.guidanceResult === 'FUNCIONO') return 'FUNCIONO'
-  if (i.operationalTaskStatus === 'ERROR') return 'FALLO_IA'
-  if (i.operationalTaskStatus === 'PENDIENTE' || i.operationalTaskStatus === 'PROCESANDO') return 'PENDIENTE'
-  return 'SIN_RESPUESTA'
+  if (i.guidanceType === GUIDANCE_TYPE.SENSIBLE) return PRIOR_REASON.SENSIBLE
+  if (i.guidanceType === GUIDANCE_TYPE.SIN_RESPALDO) return PRIOR_REASON.SIN_RESPALDO
+  if (i.guidanceResult === GUIDANCE_RESULT.NO_FUNCIONO) return PRIOR_REASON.NO_FUNCIONO
+  if (i.guidanceResult === GUIDANCE_RESULT.FUNCIONO) return PRIOR_REASON.FUNCIONO
+  if (i.operationalTaskStatus === AI_TASK_STATUS.ERROR) return PRIOR_REASON.FALLO_IA
+  if (i.operationalTaskStatus !== null && AI_TASK_RUNNING_STATUSES.includes(i.operationalTaskStatus)) return PRIOR_REASON.PENDIENTE
+  return PRIOR_REASON.SIN_RESPUESTA
 }
 
 export default function PriorAISuggestionBadge({ incident }: { incident: Incident }) {

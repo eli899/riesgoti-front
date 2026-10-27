@@ -12,6 +12,7 @@ import { useRiskVersionCompare } from '@/hooks/risks/useRiskVersionCompare'
 import { useCitationDrawer } from '@/hooks/useCitationDrawer'
 import { formatDateTime } from '@/lib/format'
 import { cardClassName } from '@/styles/tokens.layout'
+import { INCIDENT_LINK_STATUS, RISK_VALIDATION_STATUS } from '@/constants/domain.constants'
 
 interface RiskDetailPageProps {
   riskId: number | null
@@ -60,7 +61,7 @@ export default function RiskDetailPage({ riskId, onBack, onOpenWorkspace }: Risk
                 sub={
                   <span className="flex flex-wrap items-center gap-2">
                     <span className="font-mono text-primary-pressed">{shown.riskCode}</span>· Versión {shown.number}
-                    {shown.decision && <span>· {shown.status === 'VALIDADA' ? 'Validada' : 'Decidida'} el {formatDateTime(shown.decision.decidedAt)}</span>}
+                    {shown.decision && <span>· {shown.status === RISK_VALIDATION_STATUS.VALIDADA ? 'Validada' : 'Decidida'} el {formatDateTime(shown.decision.decidedAt)}</span>}
                   </span>
                 }
                 actions={
@@ -89,7 +90,7 @@ export default function RiskDetailPage({ riskId, onBack, onOpenWorkspace }: Risk
                     </dl>
                   </Card>
                   <RiskProposalSummarySection version={shown} />
-                  <ClusterIncidentsSection included={shown.incidents.filter((i) => i.linkStatus !== 'RETIRADA')} excluded={shown.incidents.filter((i) => i.linkStatus === 'RETIRADA')}
+                  <ClusterIncidentsSection included={shown.incidents.filter((i) => i.linkStatus !== INCIDENT_LINK_STATUS.RETIRADA)} excluded={shown.incidents.filter((i) => i.linkStatus === INCIDENT_LINK_STATUS.RETIRADA)}
                     editable={false} restoringAnalysisId={null} onRequestRemove={() => undefined} onRestore={() => undefined} />
                   <VersionHistorySection versions={d.versions} highlightVersionId={shown.id} onOpenWorkspace={d.canReview ? onOpenWorkspace : undefined} />
                 </section>

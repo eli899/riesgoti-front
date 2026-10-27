@@ -1,13 +1,14 @@
 import { Download, FileText, Headset, Paperclip, Wrench } from 'lucide-react'
 import { Card, CardHeader, KV } from '@/components/ui'
 import { formatDateTime, formatSize } from '@/lib/format'
-import { INCIDENT_STATUS_LABEL } from '@/lib/labels'
+import { INCIDENT_STATUS_LABEL } from '@/constants/labels.constants'
 import type { Evidence, IncidentDetail } from '@/types/domain.types'
+import { INCIDENT_HUMAN_QUEUE_STATUSES, INCIDENT_STATUS } from '@/constants/domain.constants'
 
 /** Avisos de atención humana N2 visibles para el reportante. */
 export function HumanAttentionNotice({ incident }: { incident: IncidentDetail }) {
-  if (incident.status === 'PENDIENTE_ATENCION_HUMANA' || incident.status === 'EN_ATENCION') {
-    const attending = incident.status === 'EN_ATENCION'
+  if (INCIDENT_HUMAN_QUEUE_STATUSES.includes(incident.status)) {
+    const attending = incident.status === INCIDENT_STATUS.EN_ATENCION
     return (
       <Card as="article" className="flex gap-3 p-4">
         <Headset className="shrink-0 text-primary" size={20} aria-hidden />
@@ -18,7 +19,7 @@ export function HumanAttentionNotice({ incident }: { incident: IncidentDetail })
       </Card>
     )
   }
-  if (incident.status === 'CERRADA' && incident.attention?.resolutionNote) {
+  if (incident.status === INCIDENT_STATUS.CERRADA && incident.attention?.resolutionNote) {
     return (
       <Card as="article" className="flex gap-3 p-4">
         <Wrench className="shrink-0 text-primary" size={20} aria-hidden />

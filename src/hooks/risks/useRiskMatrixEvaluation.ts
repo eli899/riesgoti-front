@@ -4,11 +4,12 @@ import { useGetActiveMatrixQuery } from '@/app/api/adminApi'
 import { useEvaluateRiskVersionMutation, useGetRiskVersionQuery } from '@/app/api/risksApi'
 import { useAuthSession } from '@/hooks/useAuthSession'
 import { runMutation, toApiFailure, type SubmitResult } from '@/lib/apiErrors'
-import { RISK_LEVEL_LABEL } from '@/lib/labels'
+import { RISK_LEVEL_LABEL } from '@/constants/labels.constants'
 import { fromApiMatrixToDomain } from '@/mappers/admin.mapper'
 import { fromApiRiskVersionToDomain, fromDomainRiskEvaluateToApi } from '@/mappers/risks.mapper'
 import type { RiskEvaluateValues } from '@/schemas/riskEvaluation.schema'
 import type { RiskLevelCode } from '@/types/domain.types'
+import { RISK_VALIDATION_STATUS } from '@/constants/domain.constants'
 
 /**
  * Caso de uso: evaluación de la VERSION_RIESGO en la CONFIGURACION_MATRIZ activa (EVALUACION_RIESGO). El backend
@@ -50,7 +51,7 @@ export function useRiskMatrixEvaluation(versionId: number | null) {
     evaluation,
     /** La evaluación guardada pertenece a una matriz anterior a la activa (se conserva su celda histórica). */
     evaluatedWithPreviousMatrix: Boolean(evaluation && matrix && evaluation.matrix.id !== matrix.id),
-    canEvaluate: canEvaluateRisks && version?.status === 'PENDIENTE',
+    canEvaluate: canEvaluateRisks && version?.status === RISK_VALIDATION_STATUS.PENDIENTE,
     evaluate,
     isSaving,
     isLoading: matrixQuery.isLoading,

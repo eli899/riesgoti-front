@@ -3,11 +3,12 @@ import { Button, SectionTitle, StatusBadge } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { cardClassName } from '@/styles/tokens.layout'
 import type { IncidentDetail } from '@/types/domain.types'
+import { AI_TASK_RUNNING_STATUSES, AI_TASK_STATUS, GUIDANCE_RESULT, INCIDENT_LINK_STATUS, INCIDENT_STATUS } from '@/constants/domain.constants'
 
 const operationalNote = (incident: IncidentDetail) => {
-  if (incident.status !== 'CERRADA') return null
+  if (incident.status !== INCIDENT_STATUS.CERRADA) return null
   if (incident.attention?.closedAt) return 'Cerrada por atención humana'
-  if (incident.guidanceResult === 'FUNCIONO') return 'Resuelta mediante orientación automática'
+  if (incident.guidanceResult === GUIDANCE_RESULT.FUNCIONO) return 'Resuelta mediante orientación automática'
   return 'Cerrada'
 }
 
@@ -30,12 +31,12 @@ interface OperationalStrategicStatusAsideProps {
  */
 export default function OperationalStrategicStatusAside({ incident, staff = false, as: As = 'aside', canRetry, isRetrying, onRetry, onOpenRisk }: OperationalStrategicStatusAsideProps) {
   const task = incident.aiTasks.strategic
-  const strategic = task?.status ?? 'PENDIENTE'
-  const running = strategic === 'PENDIENTE' || strategic === 'PROCESANDO'
-  const failed = strategic === 'ERROR'
+  const strategic = task?.status ?? AI_TASK_STATUS.PENDIENTE
+  const running = AI_TASK_RUNNING_STATUSES.includes(strategic)
+  const failed = strategic === AI_TASK_STATUS.ERROR
   const note = operationalNote(incident)
   const strategicLabel = running ? 'En curso' : failed ? (staff ? 'Falló el servicio de análisis' : 'En espera de reproceso') : staff ? 'Propuesta preparada' : 'Completado. Lo revisará un analista.'
-  const confirmedLinks = incident.linkedRisks.filter((r) => r.linkStatus !== 'RETIRADA')
+  const confirmedLinks = incident.linkedRisks.filter((r) => r.linkStatus !== INCIDENT_LINK_STATUS.RETIRADA)
 
   return (
     <As aria-labelledby="case-status-title" className={cn(cardClassName.base, 'p-4 lg:self-start')}>
@@ -82,12 +83,12 @@ export default function OperationalStrategicStatusAside({ incident, staff = fals
                   <button type="button" onClick={() => onOpenRisk(r.versionId)} aria-label={`Ver análisis de riesgo ${r.riskCode} v${r.versionNumber}`}
                     className="flex w-full items-center justify-between gap-2 rounded-control bg-soft px-3 py-2 text-left text-xs transition-colors hover:bg-line">
                     <span className="font-semibold text-primary-pressed">Ver análisis de riesgo <span className="font-mono">{r.riskCode}</span> · v{r.versionNumber}</span>
-                    <span className="text-muted">{r.linkStatus === 'CONFIRMADA' ? 'Agrupación confirmada' : 'Sugerida por IA'}</span>
+                    <span className="text-muted">{r.linkStatus === INCIDENT_LINK_STATUS.CONFIRMADA ? 'Agrupación confirmada' : 'Sugerida por IA'}</span>
                   </button>
                 ) : (
                   <p className="flex items-center justify-between gap-2 rounded-control bg-soft px-3 py-2 text-xs">
                     <span className="font-semibold text-primary-pressed"><span className="font-mono">{r.riskCode}</span> · v{r.versionNumber}</span>
-                    <span className="text-muted">{r.linkStatus === 'CONFIRMADA' ? 'Agrupación confirmada' : 'Sugerida por IA'}</span>
+                    <span className="text-muted">{r.linkStatus === INCIDENT_LINK_STATUS.CONFIRMADA ? 'Agrupación confirmada' : 'Sugerida por IA'}</span>
                   </p>
                 )}
               </li>
@@ -99,9 +100,9 @@ export default function OperationalStrategicStatusAside({ incident, staff = fals
           <p className="mt-3 text-xs text-muted">
             Tu respuesta sobre la orientación solo afecta la atención operativa: el análisis de riesgo continúa de forma independiente.
           </p>
-          {incident.linkedRisks.some((r) => r.linkStatus === 'CONFIRMADA') && (
+          {incident.linkedRisks.some((r) => r.linkStatus === INCIDENT_LINK_STATUS.CONFIRMADA) && (
             <p className="mt-3 rounded-control bg-soft p-3 text-xs text-primary-pressed">
-              Tu reporte ayudó a identificar {incident.linkedRisks.filter((r) => r.linkStatus === 'CONFIRMADA').length} riesgo(s) de seguridad.
+              Tu reporte ayudó a identificar {incident.linkedRisks.filter((r) => r.linkStatus === INCIDENT_LINK_STATUS.CONFIRMADA).length}  riesgo(s) de seguridad.
             </p>
           )}
         </>

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, type ComponentType } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import CitationDrawer from '@/components/CitationDrawer'
@@ -8,20 +8,31 @@ import { useAuthSession } from '@/hooks/useAuthSession'
 import { useCitationDrawer } from '@/hooks/useCitationDrawer'
 import LoginPage from '@/pages/LoginPage'
 import RolePortalPendingPage from '@/pages/RolePortalPendingPage'
+import { ROLES, type RoleCode } from '@/constants/rbac.constants'
 
 // Un fragmento JS por portal: cada rol descarga solo su propio portal.
 const AdminPortal = lazy(() => import('@/pages/admin/AdminPortal'))
 const AnalystPortal = lazy(() => import('@/pages/staff/AnalystPortal'))
 const ReporterPortal = lazy(() => import('@/pages/reporter/ReporterPortal'))
 
+/** Portal de cada rol de sistema; un rol personalizado sin portal propio ve RolePortalPendingPage. */
+const PORTAL_BY_ROLE: Record<RoleCode, ComponentType> = {
+  [ROLES.ADMIN]: AdminPortal,
+  [ROLES.ANALISTA]: AnalystPortal,
+  [ROLES.REPORTANTE]: ReporterPortal,
+}
+
+const isSystemRole = (code: string | null): code is RoleCode => code !== null && Object.prototype.hasOwnProperty.call(PORTAL_BY_ROLE, code)
+
 const PortalFallback = () => <p role="status" className="grid min-h-screen place-items-center text-sm text-muted">Cargando tu portal…</p>
 
 /** Portal del rol autenticado; cada uno declara sus propias rutas bajo `/`. */
 function RolePortal() {
   const { roleCode } = useAuthSession()
+  const Portal = isSystemRole(roleCode) ? PORTAL_BY_ROLE[roleCode] : RolePortalPendingPage
   return (
     <Suspense fallback={<PortalFallback />}>
-      {roleCode === 'ADMIN' ? <AdminPortal /> : roleCode === 'REPORTANTE' ? <ReporterPortal /> : roleCode === 'ANALISTA' ? <AnalystPortal /> : <RolePortalPendingPage />}
+      <Portal />
     </Suspense>
   )
 }

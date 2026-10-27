@@ -14,6 +14,7 @@ import {
 } from '@/schemas/riskEvaluation.schema'
 import { inputClassName } from '@/styles/tokens.form'
 import type { RiskDecisionAction, RiskVersion } from '@/types/domain.types'
+import { RISK_DECISION_ACTION } from '@/constants/domain.constants'
 
 interface RiskDecisionDialogViewProps {
   action: RiskDecisionAction | null
@@ -48,7 +49,7 @@ const PRECONDITION_FIELDS = ['activo_confirmado_id', 'agrupacion_confirmada', 'p
 export default function RiskDecisionDialogView(props: RiskDecisionDialogViewProps) {
   const { action, version, onClose } = props
   return (
-    <Dialog open={action !== null} onClose={onClose} size={action === 'CORREGIDA' ? 'lg' : 'md'}
+    <Dialog open={action !== null} onClose={onClose} size={action === RISK_DECISION_ACTION.CORREGIDA ? 'lg' : 'md'}
       title={action ? TITLE[action] : ''} sub={`${version.riskCode} v${version.number} · ${version.title}`}>
       {action && <DecisionForm key={action} {...props} action={action} />}
     </Dialog>
@@ -70,7 +71,7 @@ function DecisionForm({ action, version, defaults, correctionDefaults, validatio
 
   const preconditionErrors = PRECONDITION_FIELDS.map((f) => errors[f]?.message).filter(Boolean)
   const area = (hasError: boolean) => cn(inputClassName(hasError), 'py-2')
-  const isValidation = action === 'VALIDADA'
+  const isValidation = action === RISK_DECISION_ACTION.VALIDADA
 
   return (
     <form noValidate aria-label={TITLE[action]} onSubmit={submit} className="space-y-4">
@@ -94,8 +95,8 @@ function DecisionForm({ action, version, defaults, correctionDefaults, validatio
       <fieldset className="min-w-0 space-y-3">
         <legend className="mb-1 text-sm text-muted">
           {isValidation && 'Se registrará la validación con tu identidad y fecha. Validar no ejecuta controles ni cierra incidencias.'}
-          {action === 'CORREGIDA' && `Se registrará la decisión sobre v${version.number} y se creará la versión v${version.number + 1} del analista con los campos modificados; la versión actual se conserva como antecedente.`}
-          {action === 'RECHAZADA' && 'Rechazar no requiere evaluación ni confirmación del activo. La versión se conserva en el historial.'}
+          {action === RISK_DECISION_ACTION.CORREGIDA && `Se registrará la decisión sobre v${version.number} y se creará la versión v${version.number + 1} del analista con los campos modificados; la versión actual se conserva como antecedente.`}
+          {action === RISK_DECISION_ACTION.RECHAZADA && 'Rechazar no requiere evaluación ni confirmación del activo. La versión se conserva en el historial.'}
         </legend>
 
         {isValidation && !version.hasStrategicCitations && (
@@ -105,7 +106,7 @@ function DecisionForm({ action, version, defaults, correctionDefaults, validatio
           </Field>
         )}
 
-        {action === 'CORREGIDA' && (
+        {action === RISK_DECISION_ACTION.CORREGIDA && (
           <fieldset className="min-w-0 space-y-3 rounded-tile border border-line p-3">
             <legend className="px-1 text-sm font-semibold">Contenido corregido</legend>
             {CORRECTION_FIELDS.map((f) => (
@@ -116,7 +117,7 @@ function DecisionForm({ action, version, defaults, correctionDefaults, validatio
           </fieldset>
         )}
 
-        <Field id="decision-observation" label={action === 'RECHAZADA' ? 'Motivo del rechazo' : 'Observación'} error={errors.observacion?.message}
+        <Field id="decision-observation" label={action === RISK_DECISION_ACTION.RECHAZADA ? 'Motivo del rechazo' : 'Observación'} error={errors.observacion?.message}
           help="Mínimo 10 caracteres. Queda registrada en la decisión y en la auditoría.">
           <textarea id="decision-observation" rows={3} {...register('observacion')} aria-invalid={!!errors.observacion} className={area(!!errors.observacion)} />
         </Field>
@@ -125,8 +126,8 @@ function DecisionForm({ action, version, defaults, correctionDefaults, validatio
       <footer className="flex flex-col-reverse gap-2 border-t border-line pt-3 sm:flex-row sm:justify-end">
         <Button variant="secondary" onClick={onClose}>Cancelar</Button>
         {isValidation && <Button type="submit" icon={<CheckCircle2 size={18} aria-hidden />} disabled={isSubmitting || validationBlockers.length > 0}>{isSubmitting ? 'Registrando…' : 'Registrar validación'}</Button>}
-        {action === 'CORREGIDA' && <Button type="submit" icon={<Pencil size={18} aria-hidden />} disabled={isSubmitting}>{isSubmitting ? 'Guardando…' : 'Guardar corrección'}</Button>}
-        {action === 'RECHAZADA' && <Button type="submit" variant="danger" icon={<XCircle size={18} aria-hidden />} disabled={isSubmitting}>{isSubmitting ? 'Rechazando…' : 'Rechazar propuesta'}</Button>}
+        {action === RISK_DECISION_ACTION.CORREGIDA && <Button type="submit" icon={<Pencil size={18} aria-hidden />} disabled={isSubmitting}>{isSubmitting ? 'Guardando…' : 'Guardar corrección'}</Button>}
+        {action === RISK_DECISION_ACTION.RECHAZADA && <Button type="submit" variant="danger" icon={<XCircle size={18} aria-hidden />} disabled={isSubmitting}>{isSubmitting ? 'Rechazando…' : 'Rechazar propuesta'}</Button>}
       </footer>
     </form>
   )

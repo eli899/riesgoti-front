@@ -4,8 +4,9 @@ import { useGetActiveMatrixQuery, usePublishMatrixMutation } from '@/app/api/adm
 import { runMutation, toApiFailure, type SubmitResult } from '@/lib/apiErrors'
 import { fromApiMatrixToDomain, fromDomainMatrixToApi } from '@/mappers/admin.mapper'
 import type { RiskLevelCode } from '@/types/domain.types'
+import { RISK_LEVEL, RISK_LEVELS_ASCENDING } from '@/constants/domain.constants'
 
-export const LEVEL_CYCLE: RiskLevelCode[] = ['BAJO', 'MEDIO', 'ALTO', 'CRITICO']
+export const LEVEL_CYCLE: readonly RiskLevelCode[] = RISK_LEVELS_ASCENDING
 const cellKey = (probability: number, impact: number) => `${probability}-${impact}`
 
 /** Caso de uso: matriz 5x5 vigente, edición en borrador y publicación como nueva CONFIGURACION_MATRIZ. */
@@ -37,7 +38,7 @@ export function useMatrixConfigManager() {
 
   const cycleCell = useCallback(
     (probability: number, impact: number) => {
-      const current = levelAt(probability, impact) ?? 'BAJO'
+      const current = levelAt(probability, impact) ?? RISK_LEVEL.BAJO
       const next = LEVEL_CYCLE[(LEVEL_CYCLE.indexOf(current) + 1) % LEVEL_CYCLE.length]
       setOverrides((prev) => ({ ...prev, [cellKey(probability, impact)]: next }))
     },

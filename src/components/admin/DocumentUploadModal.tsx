@@ -6,11 +6,13 @@ import { Button, Dialog, Field, IconButton } from '@/components/ui'
 import FormAlert from '@/components/forms/FormAlert'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
 import { formatSize } from '@/lib/format'
-import { DOCUMENT_PURPOSE_LABEL } from '@/lib/labels'
+import { DOCUMENT_PURPOSE_LABEL } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
-import { documentUploadSchema, MAX_PDF_SIZE_BYTES, type DocumentUploadFormValues } from '@/schemas/document.schema'
+import { documentUploadSchema, type DocumentUploadFormValues } from '@/schemas/document.schema'
 import { fieldClassName, inputClassName } from '@/styles/tokens.form'
+import { DOCUMENT_PURPOSE } from '@/constants/domain.constants'
+import { BYTES_PER_MB, FILE_LIMITS } from '@/constants/validation.constants'
 
 export interface DocumentUploadSeed {
   codigo: string
@@ -42,7 +44,7 @@ export default function DocumentUploadModal({ open, seed, isUploading, onClose, 
 function UploadForm({ seed, isUploading, onCancel, onSubmit }: { seed: DocumentUploadSeed | null; isUploading: boolean; onCancel: () => void; onSubmit: DocumentUploadModalProps['onSubmit'] }) {
   const { register, control, handleSubmit, setError, formState: { errors } } = useForm<DocumentUploadFormValues>({
     resolver: zodResolver(documentUploadSchema),
-    defaultValues: { codigo: seed?.codigo ?? '', titulo: seed?.titulo ?? '', descripcion: seed?.descripcion ?? '', version: '', finalidad: seed?.finalidad ?? 'AMBAS' },
+    defaultValues: { codigo: seed?.codigo ?? '', titulo: seed?.titulo ?? '', descripcion: seed?.descripcion ?? '', version: '', finalidad: seed?.finalidad ?? DOCUMENT_PURPOSE.AMBAS },
   })
 
   const submit = handleSubmit(async (values) => {
@@ -113,7 +115,7 @@ function PdfDropzone({ file, error, onChange }: { file: File | null; error?: str
           <input {...getInputProps()} />
           <Upload size={24} className="mb-2 text-primary" aria-hidden />
           <span className="text-base font-semibold">{isDragActive ? 'Suelta el PDF aquí' : 'Arrastra un PDF o haz clic para seleccionarlo'}</span>
-          <span className="mt-1 text-xs text-muted">Máximo {MAX_PDF_SIZE_BYTES / (1024 * 1024)} MB</span>
+          <span className="mt-1 text-xs text-muted">Máximo {FILE_LIMITS.PDF_MAX_BYTES / BYTES_PER_MB} MB</span>
         </section>
       )}
       {error && <p id="doc-archivo-err" role="alert" className="mt-1 text-xs font-medium text-deep">{error}</p>}

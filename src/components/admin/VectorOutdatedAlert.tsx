@@ -15,8 +15,7 @@ export default function VectorOutdatedAlert({ embeddingModel, versions }: Vector
       <div className="min-w-0">
         <h2 id="vector-outdated-title" className="font-semibold text-deep">Documentos pendientes de reindexación</h2>
         <p className="mt-1 text-sm text-muted">
-          El modelo vigente es <code className="font-mono text-primary-pressed">{embeddingModel}</code>. Estas versiones se indexaron con otro
-          modelo y no participarán en las búsquedas hasta reindexarlas desde <strong>Documentos</strong>.
+          El modelo vigente es <code className="font-mono text-primary-pressed">{embeddingModel}</code>. Estas versiones se indexaron con otro modelo y no participarán en las búsquedas hasta reindexarlas desde <strong>Documentos</strong>.
         </p>
         <ul className="mt-2 space-y-1 text-sm">
           {versions.map((v) => (

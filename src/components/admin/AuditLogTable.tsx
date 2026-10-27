@@ -1,10 +1,11 @@
-import { AUDIT_ACTION_LABEL, AUDIT_TARGET_LABEL } from '@/lib/labels'
+import { AUDIT_ACTION_LABEL, AUDIT_TARGET_LABEL } from '@/constants/labels.constants'
 import { formatDateTime } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { tableClassName } from '@/styles/tokens.table'
 import type { AuditEvent } from '@/types/domain.types'
+import { isAuditAction } from '@/constants/audit.constants'
 
-const actionLabel = (action: string) => AUDIT_ACTION_LABEL[action] ?? action
+const actionLabel = (action: string) => (isAuditAction(action) ? AUDIT_ACTION_LABEL[action] : action)
 
 /** Bitácora de auditoría (EVENTO_AUDITORIA): fecha, actor, acción, entidades afectadas y detalle. Solo lectura. */
 export default function AuditLogTable({ events }: { events: AuditEvent[] }) {

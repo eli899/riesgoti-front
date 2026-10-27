@@ -1,5 +1,6 @@
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import type { SerializedError } from '@reduxjs/toolkit'
+import { FORM_ERROR_KEYS } from '@/constants/ui.constants'
 
 /** Error de API normalizado para la UI: mensaje global + errores por campo (formato DRF). */
 export interface ApiFailure {
@@ -27,7 +28,7 @@ function isFetchError(error: unknown): error is FetchBaseQueryError {
 }
 
 /** Convierte cualquier error de RTK Query / unwrap() en un ApiFailure legible. */
-export function toApiFailure(error: unknown, fallback = 'No se pudo completar la operación.'): ApiFailure {
+export function toApiFailure(error: unknown, fallback: string = 'No se pudo completar la operación.'): ApiFailure {
   if (!isFetchError(error)) {
     return { status: null, message: (error as SerializedError | undefined)?.message ?? fallback, fieldErrors: {} }
   }
@@ -42,7 +43,7 @@ export function toApiFailure(error: unknown, fallback = 'No se pudo completar la
     for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
       const text = firstMessage(value)
       if (!text) continue
-      if (key === 'detail' || key === 'non_field_errors') message ??= text
+      if (key === FORM_ERROR_KEYS.DETAIL || key === FORM_ERROR_KEYS.NON_FIELD_ERRORS) message ??= text
       else fieldErrors[key] = text
     }
   } else {

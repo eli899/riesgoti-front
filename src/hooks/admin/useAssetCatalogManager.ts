@@ -6,11 +6,12 @@ import { runMutation, toApiFailure, type SubmitResult } from '@/lib/apiErrors'
 import { fromApiAssetToDomain, fromApiAssetTypeToDomain, fromDomainAssetToApi } from '@/mappers/admin.mapper'
 import type { AssetFormValues } from '@/schemas/asset.schema'
 import type { Asset } from '@/types/domain.types'
+import { PERMISSIONS } from '@/constants/rbac.constants'
 
 /** Caso de uso: catálogo de ACTIVO (alta, edición y activación; nunca se elimina). */
 export function useAssetCatalogManager() {
   const { hasPermission } = useAuthSession()
-  const canManage = hasPermission('activo.administrar')
+  const canManage = hasPermission(PERMISSIONS.ASSET_ADMIN)
   const assetsQuery = useGetAssetsQuery()
   const typesQuery = useGetAssetTypesQuery()
   const [createAsset, { isLoading: isCreating }] = useCreateAssetMutation()

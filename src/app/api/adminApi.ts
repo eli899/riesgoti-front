@@ -1,3 +1,4 @@
+import { API_ENDPOINTS, API_TAGS, DOCUMENT_ACTIONS, HTTP_METHODS, type DocumentAction } from '@/constants/api.constants'
 import { baseApi } from './baseApi'
 import type {
   AIConfigDto,
@@ -21,124 +22,124 @@ import type {
   UserRequestDto,
 } from '@/types/api.types'
 
-const documentAction = (action: 'authorize' | 'activate' | 'deactivate' | 'retry' | 'reindex') => (id: number) => ({
-  url: `admin/document-versions/${id}/${action}/`,
-  method: 'POST' as const,
+const documentAction = (action: DocumentAction) => (id: number) => ({
+  url: API_ENDPOINTS.DOCUMENT_VERSION_ACTION(id, action),
+  method: HTTP_METHODS.POST,
 })
 
 export const adminApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // Auditoría transversal (permiso usuario.administrar); sin caché: cada consulta refleja la bitácora vigente.
     getAuditEvents: build.query<PaginatedResponseDto<AuditEventDto>, AuditEventListParamsDto>({
-      query: (params) => ({ url: 'admin/audit-events/', params }),
+      query: (params) => ({ url: API_ENDPOINTS.AUDIT_EVENTS, params }),
       keepUnusedDataFor: 0,
     }),
     // Configuración IA/RAG (permiso documento.administrar)
     getActiveAIConfig: build.query<AIConfigDto, void>({
-      query: () => 'admin/ai-config/',
-      providesTags: ['AIConfig'],
+      query: () => API_ENDPOINTS.AI_CONFIG,
+      providesTags: [API_TAGS.AI_CONFIG],
     }),
     updateAIConfig: build.mutation<AIConfigDto, AIConfigUpdateRequestDto>({
-      query: (body) => ({ url: 'admin/ai-config/', method: 'PUT', body }),
-      invalidatesTags: ['AIConfig', 'DocumentVersion'],
+      query: (body) => ({ url: API_ENDPOINTS.AI_CONFIG, method: HTTP_METHODS.PUT, body }),
+      invalidatesTags: [API_TAGS.AI_CONFIG, API_TAGS.DOCUMENT_VERSION],
     }),
     testAIConnection: build.mutation<AIConnectionTestDto, AIConnectionTestRequestDto>({
-      query: (body) => ({ url: 'admin/ai-config/test-connection/', method: 'POST', body }),
+      query: (body) => ({ url: API_ENDPOINTS.AI_CONFIG_TEST_CONNECTION, method: HTTP_METHODS.POST, body }),
     }),
 
     // Base de conocimiento (VERSION_DOCUMENTO)
     getDocumentVersions: build.query<DocumentVersionDto[], void>({
-      query: () => 'admin/document-versions/',
-      providesTags: ['DocumentVersion'],
+      query: () => API_ENDPOINTS.DOCUMENT_VERSIONS,
+      providesTags: [API_TAGS.DOCUMENT_VERSION],
     }),
     /** Cuerpo multipart armado por fromDomainDocumentUploadToApi. */
     uploadDocumentVersion: build.mutation<DocumentVersionDto, FormData>({
-      query: (body) => ({ url: 'admin/document-versions/upload/', method: 'POST', body }),
-      invalidatesTags: ['DocumentVersion'],
+      query: (body) => ({ url: API_ENDPOINTS.DOCUMENT_VERSION_UPLOAD, method: HTTP_METHODS.POST, body }),
+      invalidatesTags: [API_TAGS.DOCUMENT_VERSION],
     }),
     getDocumentPreview: build.query<DocumentPreviewDto, number>({
-      query: (id) => `admin/document-versions/${id}/preview/`,
-      providesTags: (_result, _error, id) => [{ type: 'DocumentVersion', id }],
+      query: (id) => API_ENDPOINTS.DOCUMENT_VERSION_PREVIEW(id),
+      providesTags: (_result, _error, id) => [{ type: API_TAGS.DOCUMENT_VERSION, id }],
     }),
     authorizeDocumentVersion: build.mutation<DocumentVersionDto, number>({
-      query: documentAction('authorize'),
-      invalidatesTags: ['DocumentVersion'],
+      query: documentAction(DOCUMENT_ACTIONS.AUTHORIZE),
+      invalidatesTags: [API_TAGS.DOCUMENT_VERSION],
     }),
     activateDocumentVersion: build.mutation<DocumentVersionDto, number>({
-      query: documentAction('activate'),
-      invalidatesTags: ['DocumentVersion'],
+      query: documentAction(DOCUMENT_ACTIONS.ACTIVATE),
+      invalidatesTags: [API_TAGS.DOCUMENT_VERSION],
     }),
     deactivateDocumentVersion: build.mutation<DocumentVersionDto, number>({
-      query: documentAction('deactivate'),
-      invalidatesTags: ['DocumentVersion'],
+      query: documentAction(DOCUMENT_ACTIONS.DEACTIVATE),
+      invalidatesTags: [API_TAGS.DOCUMENT_VERSION],
     }),
     retryDocumentVersion: build.mutation<DocumentVersionDto, number>({
-      query: documentAction('retry'),
-      invalidatesTags: ['DocumentVersion'],
+      query: documentAction(DOCUMENT_ACTIONS.RETRY),
+      invalidatesTags: [API_TAGS.DOCUMENT_VERSION],
     }),
     reindexDocumentVersion: build.mutation<DocumentVersionDto, number>({
-      query: documentAction('reindex'),
-      invalidatesTags: ['DocumentVersion'],
+      query: documentAction(DOCUMENT_ACTIONS.REINDEX),
+      invalidatesTags: [API_TAGS.DOCUMENT_VERSION],
     }),
 
     // Matriz 5x5 (CONFIGURACION_MATRIZ / CELDA_MATRIZ)
     getActiveMatrix: build.query<MatrixConfigDto, void>({
-      query: () => 'matrices/active/',
-      providesTags: ['MatrixConfig'],
+      query: () => API_ENDPOINTS.MATRIX_ACTIVE,
+      providesTags: [API_TAGS.MATRIX_CONFIG],
     }),
     publishMatrix: build.mutation<MatrixConfigDto, MatrixPublishRequestDto>({
-      query: (body) => ({ url: 'admin/matrices/publish/', method: 'POST', body }),
-      invalidatesTags: ['MatrixConfig'],
+      query: (body) => ({ url: API_ENDPOINTS.MATRIX_PUBLISH, method: HTTP_METHODS.POST, body }),
+      invalidatesTags: [API_TAGS.MATRIX_CONFIG],
     }),
 
     // Catálogo de activos (lectura: autenticado; escritura: activo.administrar)
     getAssets: build.query<AssetDto[], void>({
-      query: () => 'assets/',
-      providesTags: ['Asset'],
+      query: () => API_ENDPOINTS.ASSETS,
+      providesTags: [API_TAGS.ASSET],
     }),
     getAssetTypes: build.query<AssetTypeDto[], void>({
-      query: () => 'asset-types/',
-      providesTags: ['Asset'],
+      query: () => API_ENDPOINTS.ASSET_TYPES,
+      providesTags: [API_TAGS.ASSET],
     }),
     createAsset: build.mutation<AssetDto, AssetRequestDto>({
-      query: (body) => ({ url: 'assets/', method: 'POST', body }),
-      invalidatesTags: ['Asset'],
+      query: (body) => ({ url: API_ENDPOINTS.ASSETS, method: HTTP_METHODS.POST, body }),
+      invalidatesTags: [API_TAGS.ASSET],
     }),
     updateAsset: build.mutation<AssetDto, { id: number; body: Partial<AssetRequestDto> }>({
-      query: ({ id, body }) => ({ url: `assets/${id}/`, method: 'PATCH', body }),
-      invalidatesTags: ['Asset'],
+      query: ({ id, body }) => ({ url: API_ENDPOINTS.ASSET(id), method: HTTP_METHODS.PATCH, body }),
+      invalidatesTags: [API_TAGS.ASSET],
     }),
 
     // Usuarios (usuario.administrar)
     getUsers: build.query<UserDto[], void>({
-      query: () => 'admin/users/',
-      providesTags: ['User'],
+      query: () => API_ENDPOINTS.USERS,
+      providesTags: [API_TAGS.USER],
     }),
     createUser: build.mutation<UserDto, UserRequestDto>({
-      query: (body) => ({ url: 'admin/users/', method: 'POST', body }),
-      invalidatesTags: ['User', 'Role'],
+      query: (body) => ({ url: API_ENDPOINTS.USERS, method: HTTP_METHODS.POST, body }),
+      invalidatesTags: [API_TAGS.USER, API_TAGS.ROLE],
     }),
     updateUser: build.mutation<UserDto, { id: number; body: UserRequestDto }>({
-      query: ({ id, body }) => ({ url: `admin/users/${id}/`, method: 'PATCH', body }),
-      invalidatesTags: ['User', 'Role'],
+      query: ({ id, body }) => ({ url: API_ENDPOINTS.USER(id), method: HTTP_METHODS.PATCH, body }),
+      invalidatesTags: [API_TAGS.USER, API_TAGS.ROLE],
     }),
 
     // Roles y permisos (rol.administrar)
     getRoles: build.query<RoleDto[], void>({
-      query: () => 'admin/roles/',
-      providesTags: ['Role'],
+      query: () => API_ENDPOINTS.ROLES,
+      providesTags: [API_TAGS.ROLE],
     }),
     getPermissions: build.query<PermissionDto[], void>({
-      query: () => 'admin/permissions/',
-      providesTags: ['Role'],
+      query: () => API_ENDPOINTS.PERMISSIONS,
+      providesTags: [API_TAGS.ROLE],
     }),
     createRole: build.mutation<RoleDto, RoleRequestDto>({
-      query: (body) => ({ url: 'admin/roles/', method: 'POST', body }),
-      invalidatesTags: ['Role'],
+      query: (body) => ({ url: API_ENDPOINTS.ROLES, method: HTTP_METHODS.POST, body }),
+      invalidatesTags: [API_TAGS.ROLE],
     }),
     updateRole: build.mutation<RoleDto, { id: number; body: RoleRequestDto }>({
-      query: ({ id, body }) => ({ url: `admin/roles/${id}/`, method: 'PUT', body }),
-      invalidatesTags: ['Role', 'User'],
+      query: ({ id, body }) => ({ url: API_ENDPOINTS.ROLE(id), method: HTTP_METHODS.PUT, body }),
+      invalidatesTags: [API_TAGS.ROLE, API_TAGS.USER],
     }),
   }),
 })

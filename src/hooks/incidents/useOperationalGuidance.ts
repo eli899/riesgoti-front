@@ -5,11 +5,11 @@ import { useAuthSession } from '@/hooks/useAuthSession'
 import { runMutation, toApiFailure } from '@/lib/apiErrors'
 import { fromApiGuidanceToDomain, fromApiIncidentDetailToDomain, fromDomainOrientationFeedbackToApi } from '@/mappers/incidents.mapper'
 import type { AITaskStatus, Evidence, GuidanceResult } from '@/types/domain.types'
+import { AI_TASK_RUNNING_STATUSES, GUIDANCE_RESULT, GUIDANCE_TYPE, INCIDENT_STATUS } from '@/constants/domain.constants'
+import { PERMISSIONS } from '@/constants/rbac.constants'
+import { POLLING_INTERVALS_MS } from '@/constants/timing.constants'
 
-export const GUIDANCE_POLLING_MS = 2500
-export const STRATEGIC_POLLING_MS = 5000
-
-const isRunning = (status: AITaskStatus | null | undefined) => status === 'PENDIENTE' || status === 'PROCESANDO'
+const isRunning = (status: AITaskStatus | null | undefined) => status != null && AI_TASK_RUNNING_STATUSES.includes(status)
 
 /**
  * Caso de uso: detalle de una incidencia + orientación operativa RAG con polling de 2,5 s mientras la TAREA_IA
@@ -23,13 +23,17 @@ export function useOperationalGuidance(incidentId: number | null) {
   const guidanceQuery = useGetOperationalGuidanceQuery(incidentId ?? 0, { skip })
   const guidance = useMemo(() => (guidanceQuery.data ? fromApiGuidanceToDomain(guidanceQuery.data) : null), [guidanceQuery.data])
   const guidancePending = !guidance || guidance.isPending
-  useGetOperationalGuidanceQuery(incidentId ?? 0, { skip: skip || !guidancePending, pollingInterval: guidancePending ? GUIDANCE_POLLING_MS : 0 })
+  useGetOperationalGuidanceQuery(incidentId ?? 0, { skip: skip || !guidancePending, pollingInterval: guidancePending ? POLLING_INTERVALS_MS.OPERATIONAL_GUIDANCE : 0 })
 
   const detailQuery = useGetIncidentQuery(incidentId ?? 0, { skip })
   const incident = useMemo(() => (detailQuery.data ? fromApiIncidentDetailToDomain(detailQuery.data) : null), [detailQuery.data])
   const strategicPending = !incident || incident.aiTasks.strategic === null || isRunning(incident.aiTasks.strategic.status)
   // El detalle acompaña a la orientación mientras esta corre y luego sigue, más lento, a la rama estratégica.
-  const detailInterval = guidancePending ? GUIDANCE_POLLING_MS : strategicPending ? STRATEGIC_POLLING_MS : 0
+  const detailInterval = guidancePending
+    ? POLLING_INTERVALS_MS.OPERATIONAL_GUIDANCE
+    : strategicPending
+      ? POLLING_INTERVALS_MS.STRATEGIC_ANALYSIS
+      : 0
   useGetIncidentQuery(incidentId ?? 0, { skip: skip || detailInterval === 0, pollingInterval: detailInterval })
 
   const [submitFeedback, { isLoading: isSubmittingFeedback }] = useSubmitOrientationFeedbackMutation()
@@ -47,9 +51,9 @@ export function useOperationalGuidance(incidentId: number | null) {
   const isOwner = incident !== null && incident.reporter.id === currentUser?.id
   const canGiveFeedback =
     isOwner &&
-    hasPermission('incidencia.cerrar_propias_por_feedback') &&
-    incident?.status === 'EN_ANALISIS' &&
-    guidance?.guidance?.type === 'SUGERENCIA' &&
+    hasPermission(PERMISSIONS.INCIDENT_CLOSE_OWN_BY_FEEDBACK) &&
+    incident?.status === INCIDENT_STATUS.EN_ANALISIS &&
+    guidance?.guidance?.type === GUIDANCE_TYPE.SUGERENCIA &&
     !guidance.guidance.response
 
   const sendFeedback = useCallback(
@@ -60,7 +64,7 @@ export function useOperationalGuidance(incidentId: number | null) {
         toast.error('No se pudo registrar tu respuesta', { description: failure.message })
         return
       }
-      if (result === 'FUNCIONO') toast.success('Incidencia cerrada', { description: 'Gracias por confirmarlo. El análisis de riesgo continúa de forma independiente.' })
+      if (result === GUIDANCE_RESULT.FUNCIONO) toast.success('Incidencia cerrada', { description: 'Gracias por confirmarlo. El análisis de riesgo continúa de forma independiente.' })
       else toast.success('Caso escalado a un analista', { description: 'Un analista N2 revisará tu caso con los pasos que ya intentaste.' })
     },
     [incidentId, submitFeedback],

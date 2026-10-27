@@ -1,12 +1,13 @@
 import { ChartCard, HorizontalBars } from '@/components/dashboard/charts'
 import KpiSection from '@/components/dashboard/KpiSection'
-import { RISK_LEVEL_LABEL } from '@/lib/labels'
+import { RISK_LEVEL_LABEL } from '@/constants/labels.constants'
 import type { RiskDashboard } from '@/types/domain.types'
+import { RISK_LEVELS_HIGH_OR_CRITICAL } from '@/constants/domain.constants'
 
 /** Indicadores del gobierno de riesgos (GET /risks/dashboard/) calculados sobre la versión validada vigente por riesgo. */
 export default function RiskDashboardKpiSection({ dashboard }: { dashboard: RiskDashboard }) {
   const levels = [...dashboard.currentRisksByLevel].sort((a, b) => b.order - a.order)
-  const highCritical = levels.filter((l) => l.levelCode === 'ALTO' || l.levelCode === 'CRITICO').reduce((a, l) => a + l.total, 0)
+  const highCritical = levels.filter((l) => RISK_LEVELS_HIGH_OR_CRITICAL.includes(l.levelCode)).reduce((a, l) => a + l.total, 0)
 
   return (
     <>

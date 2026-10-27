@@ -5,6 +5,7 @@ import { formatDate, formatDateTime } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { monoClassName } from '@/styles/tokens.layout'
 import type { RiskLinkedIncident } from '@/types/domain.types'
+import { INCIDENT_STATUS } from '@/constants/domain.constants'
 
 const LOW_SIMILARITY = 0.65
 
@@ -23,7 +24,7 @@ interface ClusterIncidentsSectionProps {
  */
 export default function ClusterIncidentsSection({ included, excluded, editable, restoringAnalysisId, onRequestRemove, onRestore }: ClusterIncidentsSectionProps) {
   const [showExcluded, setShowExcluded] = useState(false)
-  const closed = included.filter((i) => i.incidentStatus === 'CERRADA').length
+  const closed = included.filter((i) => i.incidentStatus === INCIDENT_STATUS.CERRADA).length
   const dates = included.map((i) => i.registeredAt).sort()
 
   return (

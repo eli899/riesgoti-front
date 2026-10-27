@@ -2,27 +2,28 @@ import { useMemo, useState } from 'react'
 import { ChevronRight, Search } from 'lucide-react'
 import { Button, Card, Chips, EmptyState, Pager, StatusBadge } from '@/components/ui'
 import { formatDate } from '@/lib/format'
-import { INCIDENT_STATUS_LABEL } from '@/lib/labels'
+import { INCIDENT_STATUS_LABEL } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import { inputClassName } from '@/styles/tokens.form'
 import { monoClassName } from '@/styles/tokens.layout'
 import { tableClassName } from '@/styles/tokens.table'
 import type { Incident, IncidentStatus } from '@/types/domain.types'
+import { FILTER_ALL, type FilterAll } from '@/constants/ui.constants'
 
 const PAGE_SIZE = 8
-type StatusFilter = 'all' | IncidentStatus
+type StatusFilter = FilterAll | IncidentStatus
 
 /** Bandeja de incidencias propias con búsqueda, filtro por estado, orden por fecha y paginación. */
 export default function IncidentsTable({ incidents, onOpen }: { incidents: Incident[]; onOpen: (id: number) => void }) {
   const [query, setQuery] = useState('')
-  const [status, setStatus] = useState<StatusFilter>('all')
+  const [status, setStatus] = useState<StatusFilter>(FILTER_ALL)
   const [ascending, setAscending] = useState(false)
   const [page, setPage] = useState(1)
 
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase()
     return incidents
-      .filter((i) => status === 'all' || i.status === status)
+      .filter((i) => status === FILTER_ALL || i.status === status)
       .filter((i) => !term || `${i.reference} ${i.title} ${i.description}`.toLowerCase().includes(term))
       .sort((a, b) => (ascending ? 1 : -1) * (new Date(a.registeredAt).getTime() - new Date(b.registeredAt).getTime()))
   }, [incidents, query, status, ascending])
@@ -30,7 +31,7 @@ export default function IncidentsTable({ incidents, onOpen }: { incidents: Incid
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const current = Math.min(page, pages)
   const rows = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE)
-  const reset = () => { setQuery(''); setStatus('all'); setPage(1) }
+  const reset = () => { setQuery(''); setStatus(FILTER_ALL); setPage(1) }
 
   return (
     <>
@@ -41,7 +42,7 @@ export default function IncidentsTable({ incidents, onOpen }: { incidents: Incid
             placeholder="Buscar por referencia, título o descripción" className={cn(inputClassName(), 'h-11 pl-10 md:h-10')} />
         </p>
         <Chips label="Filtrar por estado" value={status} onChange={(v) => { setStatus(v); setPage(1) }}
-          items={[{ id: 'all', label: 'Todas' }, ...(Object.keys(INCIDENT_STATUS_LABEL) as IncidentStatus[]).map((id) => ({ id, label: INCIDENT_STATUS_LABEL[id] }))]} />
+          items={[{ id: FILTER_ALL, label: 'Todas' }, ...(Object.keys(INCIDENT_STATUS_LABEL) as IncidentStatus[]).map((id) => ({ id, label: INCIDENT_STATUS_LABEL[id] }))]} />
       </search>
 
       <Card>

@@ -21,6 +21,7 @@ import { useCitationDrawer } from '@/hooks/useCitationDrawer'
 import { formatDateTime } from '@/lib/format'
 import { cardClassName } from '@/styles/tokens.layout'
 import type { RiskDecisionAction, RiskLinkedIncident } from '@/types/domain.types'
+import { RISK_VALIDATION_STATUS, RISK_VERSION_ORIGIN } from '@/constants/domain.constants'
 
 interface RiskWorkspacePageProps {
   versionId: number | null
@@ -80,7 +81,7 @@ export default function RiskWorkspacePage({ versionId, onBack, onOpenVersion, on
                 sub={
                   <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="font-mono text-primary-pressed">{version.riskCode}</span>· v{version.number} · {cluster.included.length} incidencias ·{' '}
-                    {version.citations.length} fuentes · {version.origin === 'IA' ? 'Propuesta de IA' : `Versión de ${version.createdBy.name}`} · {formatDateTime(version.createdAt)}
+                    {version.citations.length} fuentes · {version.origin === RISK_VERSION_ORIGIN.IA ? 'Propuesta de IA' : `Versión de ${version.createdBy.name}`} · {formatDateTime(version.createdAt)}
                   </span>
                 }
                 actions={<><ValidationBadge status={version.status} /><Button size="sm" variant="ghost" onClick={() => onOpenRisk(version.riskId)}>Ver detalle del riesgo</Button></>}
@@ -92,7 +93,7 @@ export default function RiskWorkspacePage({ versionId, onBack, onOpenVersion, on
                   Modo lectura · Segregación de funciones (ISO/IEC 27001): el Administrador no revisa, evalúa ni valida riesgos.
                 </p>
               )}
-              {!cluster.isReadOnlyRole && version.status !== 'PENDIENTE' && (
+              {!cluster.isReadOnlyRole && version.status !== RISK_VALIDATION_STATUS.PENDIENTE && (
                 <p role="note" className="mb-4 flex items-start gap-2 rounded-tile bg-canvas p-3 text-sm text-muted">
                   <Lock size={16} className="mt-0.5 shrink-0" aria-hidden />Esta versión ya tiene una decisión registrada y es inmutable.
                 </p>

@@ -17,6 +17,7 @@ import type {
   IncidentFilters,
   OperationalGuidance,
 } from '@/types/domain.types'
+import { AI_TASK_STATUS, INCIDENT_INBOXES } from '@/constants/domain.constants'
 import { fromApiCitationToDomain, optionalText, toUserRef } from './common.mapper'
 
 export function fromApiIncidentToDomain(dto: IncidentDto): Incident {
@@ -93,7 +94,7 @@ export function fromDomainIncidentFiltersToApi(filters: IncidentFilters = {}): I
     reportante_id: filters.reporterId,
     dias: filters.maxAgeDays,
     q: optionalText(filters.search),
-    bandeja: filters.attentionQueue ? 'atencion' : undefined,
+    bandeja: filters.attentionQueue ? INCIDENT_INBOXES.ATTENTION : undefined,
     ordering: filters.ordering,
   }
 }
@@ -134,7 +135,7 @@ export function fromApiGuidanceToDomain(dto: OperationalGuidanceDto): Operationa
             : null,
         }
       : null,
-    isPending: taskStatus !== 'COMPLETADA' && taskStatus !== 'ERROR',
+    isPending: taskStatus !== AI_TASK_STATUS.COMPLETADA && taskStatus !== AI_TASK_STATUS.ERROR,
   }
 }
 

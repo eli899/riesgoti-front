@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { AuthSession, PermissionCode, RoleCode, SessionUser } from '@/types/domain.types'
+import { PERMISSIONS, ROLES } from '@/constants/rbac.constants'
 
 export const AUTH_STORAGE_KEY = 'riesgoti_auth'
 
@@ -60,7 +61,7 @@ const authSlice = createSlice({
     selectUserPermissions: (state): PermissionCode[] => state.user?.permissions ?? EMPTY_PERMISSIONS,
     /** SoD ISO/IEC 27001: un ADMIN jamás evalúa ni valida riesgos, aunque tenga el permiso asignado. */
     selectCanEvaluateRisks: (state) =>
-      state.user !== null && state.user.roleCode !== 'ADMIN' && state.user.permissions.includes('riesgo.evaluar'),
+      state.user !== null && state.user.roleCode !== ROLES.ADMIN && state.user.permissions.includes(PERMISSIONS.RISK_EVALUATE),
   },
 })
 

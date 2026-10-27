@@ -2,7 +2,8 @@ import { AlertTriangle, CheckCircle2, Circle, Headset, Loader2, ShieldAlert, Spa
 import { AIBadge, Card, CardHeader, SectionTitle } from '@/components/ui'
 import { formatDateTime } from '@/lib/format'
 import { cn } from '@/lib/utils'
-import type { Citation, OperationalGuidance } from '@/types/domain.types'
+import type { Citation, GuidanceResult, OperationalGuidance } from '@/types/domain.types'
+import { AI_TASK_STATUS, GUIDANCE_TYPE } from '@/constants/domain.constants'
 import CitationChip, { TextWithCitations } from './CitationChip'
 import OrientationFeedbackFooter from './OrientationFeedbackFooter'
 
@@ -10,7 +11,7 @@ interface OperationalGuidanceSectionProps {
   guidance: OperationalGuidance | null
   canGiveFeedback: boolean
   isSubmittingFeedback: boolean
-  onFeedback: (result: 'FUNCIONO' | 'NO_FUNCIONO') => void
+  onFeedback: (result: GuidanceResult) => void
   onInspectCitation: (citation: Citation) => void
   /** 'staff': textos para el Analista N2 (qué recibió el reportante antes del escalamiento). */
   audience?: 'reporter' | 'staff'
@@ -19,14 +20,14 @@ interface OperationalGuidanceSectionProps {
 /** Orientación operativa RAG (ORIENTACION_OPERATIVA + PASO_ORIENTACION + CITA_ORIENTACION) en sus cuatro estados. */
 export default function OperationalGuidanceSection({ guidance, canGiveFeedback, isSubmittingFeedback, onFeedback, onInspectCitation, audience = 'reporter' }: OperationalGuidanceSectionProps) {
   const g = guidance?.guidance
-  const failed = guidance?.task?.status === 'ERROR'
+  const failed = guidance?.task?.status === AI_TASK_STATUS.ERROR
   const staff = audience === 'staff'
 
   return (
     <section aria-labelledby="guidance-title" aria-live="polite" aria-busy={guidance?.isPending ?? true}>
       {(!guidance || (guidance.isPending && !g)) && <PendingCard taskStatus={guidance?.task?.status ?? null} />}
 
-      {guidance && !guidance.isPending && (failed || !g || g.type === 'SIN_RESPALDO') && (
+      {guidance && !guidance.isPending && (failed || !g || g.type === GUIDANCE_TYPE.SIN_RESPALDO) && (
         <Card as="article" className="flex gap-3 p-4 md:p-5">
           <Headset size={22} className="shrink-0 text-primary" aria-hidden />
           <span>
@@ -44,7 +45,7 @@ export default function OperationalGuidanceSection({ guidance, canGiveFeedback, 
         </Card>
       )}
 
-      {g && g.type === 'SENSIBLE' && (
+      {g && g.type === GUIDANCE_TYPE.SENSIBLE && (
         <article role="alert" className="rounded-card-mobile border-2 border-deep bg-soft p-5 md:rounded-card">
           <header className="flex items-start gap-3">
             <ShieldAlert className="shrink-0 text-deep" size={22} aria-hidden />
@@ -60,7 +61,7 @@ export default function OperationalGuidanceSection({ guidance, canGiveFeedback, 
         </article>
       )}
 
-      {g && g.type === 'SUGERENCIA' && (
+      {g && g.type === GUIDANCE_TYPE.SUGERENCIA && (
         <Card as="article" aria-labelledby="guidance-title">
           <CardHeader titleId="guidance-title" title={staff ? 'Historial de orientación IA previa' : 'Sugerencia de solución'} icon={<Sparkles size={18} />} action={<AIBadge />}
             sub={staff ? `Lo que recibió el reportante antes del escalamiento · ${formatDateTime(g.createdAt)}` : `Generada automáticamente · ${formatDateTime(g.createdAt)}`} />
@@ -102,7 +103,7 @@ export default function OperationalGuidanceSection({ guidance, canGiveFeedback, 
 const PENDING_STEPS = ['Reporte registrado', 'Consultando manuales operativos autorizados', 'Preparando la orientación']
 
 function PendingCard({ taskStatus }: { taskStatus: string | null }) {
-  const current = taskStatus === 'PROCESANDO' ? 2 : 1
+  const current = taskStatus === AI_TASK_STATUS.PROCESANDO ? 2 : 1
   return (
     <Card as="article" aria-labelledby="guidance-title" className="p-4 md:p-5">
       <SectionTitle id="guidance-title" icon={<Sparkles size={18} className="text-primary" aria-hidden />} className="mb-3">Preparando una orientación para tu caso

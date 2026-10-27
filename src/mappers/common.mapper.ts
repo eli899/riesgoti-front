@@ -1,7 +1,13 @@
 import type { CitationDto } from '@/types/api.types'
 import type { AssetCriticality, Citation, UserRef } from '@/types/domain.types'
+import { RISK_LEVEL } from '@/constants/domain.constants'
 
-const CRITICALITY_BY_VALUE: Record<number, AssetCriticality> = { 1: 'BAJO', 2: 'MEDIO', 3: 'ALTO', 4: 'CRITICO' }
+const CRITICALITY_BY_VALUE: Record<number, AssetCriticality> = {
+  1: RISK_LEVEL.BAJO,
+  2: RISK_LEVEL.MEDIO,
+  3: RISK_LEVEL.ALTO,
+  4: RISK_LEVEL.CRITICO,
+}
 
 /** ACTIVO.criticidad (INT 1..4) -> escala de NIVEL_RIESGO. */
 export function fromApiCriticalityToDomain(value: number | null): AssetCriticality | null {

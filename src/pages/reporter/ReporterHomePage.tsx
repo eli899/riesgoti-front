@@ -6,6 +6,7 @@ import PageMeta from '@/components/seo/PageMeta'
 import { Button, Card, EmptyState } from '@/components/ui'
 import { useAuthSession } from '@/hooks/useAuthSession'
 import type { useReporterIncidents } from '@/hooks/incidents/useReporterIncidents'
+import { DASHBOARD_LIMITS } from '@/constants/ui.constants'
 
 interface ReporterHomePageProps {
   reporter: ReturnType<typeof useReporterIncidents>
@@ -17,7 +18,7 @@ interface ReporterHomePageProps {
 /** Inicio del Reportante: llamado a reportar, indicadores y reportes recientes. */
 export default function ReporterHomePage({ reporter, onReport, onOpenIncident, onSeeAll }: ReporterHomePageProps) {
   const { currentUser } = useAuthSession()
-  const recent = reporter.incidents.slice(0, 4)
+  const recent = reporter.incidents.slice(0, DASHBOARD_LIMITS.RECENT_INCIDENTS)
 
   return (
     <>

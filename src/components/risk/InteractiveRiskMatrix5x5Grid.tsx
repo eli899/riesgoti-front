@@ -1,6 +1,6 @@
 import { useRef, useState, type KeyboardEvent } from 'react'
 import { Check } from 'lucide-react'
-import { RISK_LEVEL_LABEL } from '@/lib/labels'
+import { RISK_LEVEL_LABEL } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import type { MatrixCriterion, RiskLevelCode } from '@/types/domain.types'
 

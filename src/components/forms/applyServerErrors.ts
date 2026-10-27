@@ -1,5 +1,6 @@
 import type { FieldValues, Path, UseFormSetError } from 'react-hook-form'
 import type { ApiFailure } from '@/lib/apiErrors'
+import { FORM_ERROR_KEYS } from '@/constants/ui.constants'
 
 /**
  * Proyecta un ApiFailure (HTTP 400 de DRF) sobre React Hook Form: cada error de campo conocido se asigna a su input
@@ -15,6 +16,6 @@ export function applyServerErrors<T extends FieldValues>(failure: ApiFailure, se
     setError(field as Path<T>, { type: 'server', message }, { shouldFocus: true })
   }
   if (unmatched || Object.keys(failure.fieldErrors).length === 0) {
-    setError('root.server' as Path<T>, { type: 'server', message: failure.message })
+    setError(FORM_ERROR_KEYS.ROOT_SERVER as Path<T>, { type: 'server', message: failure.message })
   }
 }

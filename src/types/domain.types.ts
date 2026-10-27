@@ -3,57 +3,51 @@
  * Alineados con bd.sql y con el catálogo RBAC (ROL / PERMISO / ROL_PERMISO).
  */
 
-export type RoleCode = 'REPORTANTE' | 'ANALISTA' | 'ADMIN'
+import type { PermissionCode, RoleCode } from '@/constants/rbac.constants'
+import type {
+  AITaskBranch,
+  AITaskStatus,
+  AuditTargetKind,
+  DocumentProcessingStatus,
+  DocumentPurpose,
+  EmbeddingProvider,
+  GuidanceResult,
+  GuidanceType,
+  IncidentLinkStatus,
+  IncidentStatus,
+  LlmProvider,
+  RiskDecisionAction,
+  RiskInbox,
+  RiskLevelCode,
+  RiskRegistryCategory,
+  RiskValidationStatus,
+  RiskVersionOrigin,
+} from '@/constants/domain.constants'
 
-export type PermissionCode =
-  | 'incidencia.crear'
-  | 'incidencia.ver_propias'
-  | 'incidencia.ver_todas'
-  | 'incidencia.cerrar_propias_por_feedback'
-  | 'atencion.ver_cola'
-  | 'atencion.atender'
-  | 'riesgo.revisar_agrupacion'
-  | 'riesgo.evaluar'
-  | 'riesgo.validar'
-  | 'riesgo.consultar'
-  | 'activo.administrar'
-  | 'documento.administrar'
-  | 'matriz.administrar'
-  | 'usuario.administrar'
-  | 'rol.administrar'
-
-export type IncidentStatus =
-  | 'REGISTRADA'
-  | 'EN_ANALISIS'
-  | 'PENDIENTE_ATENCION_HUMANA'
-  | 'EN_ATENCION'
-  | 'CERRADA'
-
-export type DocumentProcessingStatus =
-  | 'PROCESANDO'
-  | 'ERROR'
-  | 'PENDIENTE_AUTORIZACION'
-  | 'AUTORIZADO'
-
-export type DocumentPurpose = 'OPERATIVA' | 'ESTRATEGICA' | 'AMBAS'
-
-export type RiskDecisionAction = 'VALIDADA' | 'CORREGIDA' | 'RECHAZADA'
-
-/** Estado derivado de una VERSION_RIESGO: 'PENDIENTE' cuando no existe fila en DECISION_RIESGO. */
-export type RiskValidationStatus = 'PENDIENTE' | RiskDecisionAction
-
-export type RiskLevelCode = 'BAJO' | 'MEDIO' | 'ALTO' | 'CRITICO'
+export type {
+  AITaskBranch,
+  AITaskStatus,
+  AuditTargetKind,
+  DocumentProcessingStatus,
+  DocumentPurpose,
+  EmbeddingProvider,
+  GuidanceResult,
+  GuidanceType,
+  IncidentLinkStatus,
+  IncidentStatus,
+  LlmProvider,
+  PermissionCode,
+  RiskDecisionAction,
+  RiskInbox,
+  RiskLevelCode,
+  RiskRegistryCategory,
+  RiskValidationStatus,
+  RiskVersionOrigin,
+  RoleCode,
+}
 
 /** ACTIVO.criticidad (INT 1..4) expresada en la misma escala que NIVEL_RIESGO. */
 export type AssetCriticality = RiskLevelCode
-
-export type AITaskBranch = 'OPERATIVA' | 'ESTRATEGICA'
-export type AITaskStatus = 'PENDIENTE' | 'PROCESANDO' | 'COMPLETADA' | 'ERROR'
-export type GuidanceType = 'SUGERENCIA' | 'SENSIBLE' | 'SIN_RESPALDO'
-export type GuidanceResult = 'FUNCIONO' | 'NO_FUNCIONO'
-export type IncidentLinkStatus = 'SUGERIDA' | 'CONFIRMADA' | 'RETIRADA'
-export type LlmProvider = 'OPENAI' | 'GEMINI' | 'HUGGINGFACE_LOCAL'
-export type EmbeddingProvider = 'OPENAI' | 'GEMINI' | 'SENTENCE_TRANSFORMERS'
 
 /** Referencia compacta a un usuario (auditoría de quién creó, autorizó o decidió). */
 export interface UserRef {
@@ -434,7 +428,6 @@ export interface RiskVersion {
   decision: RiskDecision | null
 }
 
-export type RiskInbox = 'nuevas' | 'pendientes_revision' | 'rechazadas' | 'decididas'
 
 export interface RiskVersionFilters {
   statuses?: RiskValidationStatus[]
@@ -460,7 +453,6 @@ export interface RiskRegisterEntry {
   pendingProposal: { id: number; number: number } | null
 }
 
-export type RiskRegistryCategory = 'VALIDADO' | 'PENDIENTE' | 'RECHAZADO'
 
 /** Fila del registro de riesgos (una por RIESGO). */
 export interface RiskRegistryRow {
@@ -507,7 +499,6 @@ export interface AuditEvent {
   targets: { kind: AuditTargetKind; id: number }[]
 }
 
-export type AuditTargetKind = 'INCIDENCIA' | 'VERSION_RIESGO' | 'VERSION_DOCUMENTO' | 'MATRIZ' | 'ACTIVO' | 'USUARIO' | 'ROL'
 
 export interface AuditEventPage {
   total: number

@@ -2,18 +2,17 @@ import { useState, type ReactNode } from 'react'
 import { AlertTriangle, CheckCircle2, Clock, Eye, FilePlus2, FileText, Loader2, Power, RefreshCw, RotateCw, Search, ShieldCheck } from 'lucide-react'
 import { Button, Card, EmptyState } from '@/components/ui'
 import { formatDateTime } from '@/lib/format'
-import { DOCUMENT_PURPOSE_LABEL } from '@/lib/labels'
+import { DOCUMENT_PURPOSE_LABEL } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import type { DocumentAction } from '@/hooks/admin/useKnowledgeBaseManager'
 import { inputClassName } from '@/styles/tokens.form'
 import type { DocumentVersion } from '@/types/domain.types'
+import { DOCUMENT_DISPLAY_STATE, DOCUMENT_PROCESSING_STATUS, type DocumentDisplayState } from '@/constants/domain.constants'
 
-type LifecycleState = 'PROCESANDO' | 'ERROR' | 'PENDIENTE_AUTORIZACION' | 'DISPONIBLE' | 'INACTIVO'
+const lifecycleOf = (v: DocumentVersion): DocumentDisplayState =>
+  v.processing === DOCUMENT_PROCESSING_STATUS.AUTORIZADO ? (v.active ? DOCUMENT_DISPLAY_STATE.DISPONIBLE : DOCUMENT_DISPLAY_STATE.INACTIVO) : v.processing
 
-const lifecycleOf = (v: DocumentVersion): LifecycleState =>
-  v.processing === 'AUTORIZADO' ? (v.active ? 'DISPONIBLE' : 'INACTIVO') : v.processing
-
-const LIFECYCLE: Record<LifecycleState, { label: string; icon: ReactNode; className: string }> = {
+const LIFECYCLE: Record<DocumentDisplayState, { label: string; icon: ReactNode; className: string }> = {
   PROCESANDO: { label: 'Procesando PDF a Markdown…', icon: <Loader2 size={14} className="animate-spin" aria-hidden />, className: 'bg-soft text-primary border border-line' },
   ERROR: { label: 'Error de procesamiento', icon: <AlertTriangle size={14} aria-hidden />, className: 'border-2 border-deep bg-soft text-deep' },
   PENDIENTE_AUTORIZACION: { label: 'Pendiente de autorización', icon: <Clock size={14} aria-hidden />, className: 'border border-dashed border-control bg-disabled text-muted' },
@@ -76,8 +75,8 @@ export default function DocumentVersionsTable({ versions, pendingAction, onPrevi
                     {v.authorizedBy && <><dt className="text-muted">Autorizado por</dt><dd className="font-medium">{v.authorizedBy.name}</dd></>}
                   </dl>
 
-                  {state === 'ERROR' && v.processingError && <p role="alert" className="mt-3 rounded-control bg-soft p-2 text-xs text-deep">{v.processingError}</p>}
-                  {state === 'INACTIVO' && <p className="mt-3 text-xs text-muted">Las citas históricas en incidencias y riesgos se conservan.</p>}
+                  {state === DOCUMENT_DISPLAY_STATE.ERROR && v.processingError && <p role="alert" className="mt-3 rounded-control bg-soft p-2 text-xs text-deep">{v.processingError}</p>}
+                  {state === DOCUMENT_DISPLAY_STATE.INACTIVO && <p className="mt-3 text-xs text-muted">Las citas históricas en incidencias y riesgos se conservan.</p>}
                   {v.requiresReindex && (
                     <p className="mt-3 flex items-start gap-1.5 text-xs font-medium text-deep">
                       <AlertTriangle size={14} className="mt-0.5 shrink-0" aria-hidden />Indexado con otro modelo de embedding ({v.embeddingModel ?? 'desconocido'}).
@@ -85,22 +84,22 @@ export default function DocumentVersionsTable({ versions, pendingAction, onPrevi
                   )}
 
                   <footer className="mt-auto flex flex-wrap gap-2 pt-4">
-                    {state === 'ERROR' && (
+                    {state === DOCUMENT_DISPLAY_STATE.ERROR && (
                       <Button size="sm" variant="danger" icon={<RotateCw size={15} aria-hidden />} disabled={busy(v.id, 'retry')} onClick={() => onAction(v.id, 'retry')}>Reintentar</Button>
                     )}
-                    {state === 'PENDIENTE_AUTORIZACION' && (
+                    {state === DOCUMENT_DISPLAY_STATE.PENDIENTE_AUTORIZACION && (
                       <Button size="sm" icon={<ShieldCheck size={15} aria-hidden />} onClick={() => onPreview(v)}>Previsualizar y autorizar</Button>
                     )}
-                    {state === 'DISPONIBLE' && (
+                    {state === DOCUMENT_DISPLAY_STATE.DISPONIBLE && (
                       <Button size="sm" variant="secondary" icon={<Power size={15} aria-hidden />} disabled={busy(v.id, 'deactivate')} onClick={() => onAction(v.id, 'deactivate')}>Desactivar</Button>
                     )}
-                    {state === 'INACTIVO' && (
+                    {state === DOCUMENT_DISPLAY_STATE.INACTIVO && (
                       <Button size="sm" icon={<Power size={15} aria-hidden />} disabled={busy(v.id, 'activate')} onClick={() => onAction(v.id, 'activate')}>Activar</Button>
                     )}
                     {v.requiresReindex && (
                       <Button size="sm" variant="secondary" icon={<RefreshCw size={15} aria-hidden />} disabled={busy(v.id, 'reindex')} onClick={() => onAction(v.id, 'reindex')}>Reindexar</Button>
                     )}
-                    {(state === 'DISPONIBLE' || state === 'INACTIVO') && (
+                    {(state === DOCUMENT_DISPLAY_STATE.DISPONIBLE || state === DOCUMENT_DISPLAY_STATE.INACTIVO) && (
                       <>
                         <Button size="sm" variant="ghost" icon={<Eye size={15} aria-hidden />} onClick={() => onPreview(v)}>Ver fragmentos</Button>
                         <Button size="sm" variant="ghost" icon={<FilePlus2 size={15} aria-hidden />} onClick={() => onNewVersion(v)}>Nueva versión</Button>

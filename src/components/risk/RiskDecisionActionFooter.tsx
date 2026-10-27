@@ -1,6 +1,7 @@
 import { CheckCircle2, Pencil, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui'
 import type { RiskDecisionAction } from '@/types/domain.types'
+import { RISK_DECISION_ACTION } from '@/constants/domain.constants'
 
 interface RiskDecisionActionFooterProps {
   reviewed: boolean
@@ -21,10 +22,10 @@ export default function RiskDecisionActionFooter({ reviewed, onReviewedChange, v
           Revisé el contenido, las incidencias y las fuentes.
         </label>
         <span className="grid gap-2 sm:grid-cols-3">
-          <Button variant="danger" icon={<XCircle size={18} aria-hidden />} onClick={() => onAction('RECHAZADA')}>Rechazar</Button>
-          <Button variant="secondary" icon={<Pencil size={18} aria-hidden />} onClick={() => onAction('CORREGIDA')}>Corregir</Button>
+          <Button variant="danger" icon={<XCircle size={18} aria-hidden />} onClick={() => onAction(RISK_DECISION_ACTION.RECHAZADA)}>Rechazar</Button>
+          <Button variant="secondary" icon={<Pencil size={18} aria-hidden />} onClick={() => onAction(RISK_DECISION_ACTION.CORREGIDA)}>Corregir</Button>
           <Button icon={<CheckCircle2 size={18} aria-hidden />} disabled={pending.length > 0} aria-describedby={pending.length ? 'validate-blockers' : undefined}
-            onClick={() => onAction('VALIDADA')}>
+            onClick={() => onAction(RISK_DECISION_ACTION.VALIDADA)}>
             Validar
           </Button>
         </span>

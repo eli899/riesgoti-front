@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { ShieldAlert } from 'lucide-react'
 import { useAuthSession } from '@/hooks/useAuthSession'
 import type { PermissionCode } from '@/types/domain.types'
+import { ROLES } from '@/constants/rbac.constants'
 
 interface RequirePermissionProps {
   /** Permiso RBAC exigido (ROL_PERMISO). Si se omite, basta con tener sesión. */
@@ -30,7 +31,7 @@ export default function RequirePermission({ requiredPermission, forbidAdminSoD =
   const { isAuthenticated, roleCode, hasPermission } = useAuthSession()
 
   if (!isAuthenticated) return <>{fallback}</>
-  if (forbidAdminSoD && roleCode === 'ADMIN') return <SoDNotice />
+  if (forbidAdminSoD && roleCode === ROLES.ADMIN) return <SoDNotice />
   if (requiredPermission && !hasPermission(requiredPermission)) return <>{fallback}</>
   return <>{children}</>
 }

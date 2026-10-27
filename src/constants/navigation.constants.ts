@@ -1,3 +1,5 @@
+import type { RoleCode } from '@/constants/rbac.constants'
+
 /** Textos de la navegación lateral de los portales y de los enlaces de regreso de las vistas de detalle. */
 export const NAV_LABELS = {
   HOME: 'Inicio',
@@ -33,4 +35,4 @@ export const PORTAL_NAV_ARIA_LABELS = {
   ADMIN: 'Navegación principal por rol: Administrador',
   ANALISTA: 'Navegación principal por rol: Analista',
   REPORTANTE: 'Navegación principal por rol: Reportante',
-} as const
+} as const satisfies Record<RoleCode, string>

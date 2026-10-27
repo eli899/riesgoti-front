@@ -8,12 +8,15 @@ import { fromApiAssetToDomain } from '@/mappers/admin.mapper'
 import { fromApiIncidentToDomain, fromDomainIncidentFiltersToApi, fromDomainIncidentToApi } from '@/mappers/incidents.mapper'
 import type { IncidentFormValues } from '@/schemas/incident.schema'
 import type { Incident } from '@/types/domain.types'
+import { AI_TASK_STATUS, INCIDENT_AUTOMATED_STATUSES, INCIDENT_HUMAN_QUEUE_STATUSES, INCIDENT_STATUS } from '@/constants/domain.constants'
+import { PERMISSIONS } from '@/constants/rbac.constants'
+import { POLLING_INTERVALS_MS } from '@/constants/timing.constants'
 
 /** Mientras alguna incidencia propia espera su orientación, la bandeja se refresca sola. */
-export const REPORTER_LIST_POLLING_MS = 5000
 
 const isAwaitingGuidance = (i: Incident) =>
-  i.status === 'REGISTRADA' || (i.status === 'EN_ANALISIS' && i.operationalTaskStatus !== 'COMPLETADA' && i.operationalTaskStatus !== 'ERROR')
+  i.status === INCIDENT_STATUS.REGISTRADA ||
+  (i.status === INCIDENT_STATUS.EN_ANALISIS && i.operationalTaskStatus !== AI_TASK_STATUS.COMPLETADA && i.operationalTaskStatus !== AI_TASK_STATUS.ERROR)
 
 /** Caso de uso del Reportante: sus incidencias, indicadores y registro de nuevas incidencias con evidencias. */
 export function useReporterIncidents() {
@@ -27,14 +30,14 @@ export function useReporterIncidents() {
   const assets = useMemo(() => (assetsQuery.data ?? []).map(fromApiAssetToDomain).filter((a) => a.active), [assetsQuery.data])
   const hasPending = incidents.some(isAwaitingGuidance)
 
-  useGetIncidentsQuery(params, { skip: !currentUser || !hasPending, pollingInterval: hasPending ? REPORTER_LIST_POLLING_MS : 0 })
+  useGetIncidentsQuery(params, { skip: !currentUser || !hasPending, pollingInterval: hasPending ? POLLING_INTERVALS_MS.REPORTER_LIST : 0 })
 
   const stats = useMemo(
     () => ({
       total: incidents.length,
-      inAnalysis: incidents.filter((i) => i.status === 'REGISTRADA' || i.status === 'EN_ANALISIS').length,
-      awaitingHuman: incidents.filter((i) => i.status === 'PENDIENTE_ATENCION_HUMANA' || i.status === 'EN_ATENCION').length,
-      closed: incidents.filter((i) => i.status === 'CERRADA').length,
+      inAnalysis: incidents.filter((i) => INCIDENT_AUTOMATED_STATUSES.includes(i.status)).length,
+      awaitingHuman: incidents.filter((i) => INCIDENT_HUMAN_QUEUE_STATUSES.includes(i.status)).length,
+      closed: incidents.filter((i) => i.status === INCIDENT_STATUS.CERRADA).length,
     }),
     [incidents],
   )
@@ -54,7 +57,7 @@ export function useReporterIncidents() {
     incidents,
     assets,
     stats,
-    canReport: hasPermission('incidencia.crear'),
+    canReport: hasPermission(PERMISSIONS.INCIDENT_CREATE),
     isLoading: listQuery.isLoading,
     loadError: listQuery.error ? toApiFailure(listQuery.error).message : null,
     retryLoad: listQuery.refetch,

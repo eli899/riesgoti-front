@@ -15,16 +15,17 @@ import RiskProposalsQueuePage from '@/pages/risk/RiskProposalsQueuePage'
 import RiskRegistryPage from '@/pages/risk/RiskRegistryPage'
 import RiskWorkspacePage from '@/pages/risk/RiskWorkspacePage'
 import type { PermissionCode } from '@/types/domain.types'
+import { PERMISSIONS } from '@/constants/rbac.constants'
 import AnalystSummaryPage from './AnalystSummaryPage'
 import SupportDetailPage from './SupportDetailPage'
 import SupportListPage from './SupportListPage'
 
 const NAV: (ShellNavItem & { permission?: PermissionCode })[] = [
-  { to: ROUTE_PATHS.DASHBOARD, label: NAV_LABELS.DASHBOARD, icon: <LayoutDashboard size={20} />, group: NAV_GROUPS.GENERAL, permission: 'riesgo.consultar' },
-  { to: ROUTE_PATHS.INCIDENTS, label: NAV_LABELS.INCIDENTS, icon: <ClipboardList size={20} />, group: NAV_GROUPS.OPERATION, permission: 'incidencia.ver_todas' },
-  { to: ROUTE_PATHS.SUPPORT, label: NAV_LABELS.SUPPORT, icon: <Headset size={20} />, group: NAV_GROUPS.OPERATION, permission: 'atencion.ver_cola' },
-  { to: ROUTE_PATHS.PROPOSALS, label: NAV_LABELS.PROPOSALS, icon: <GitMerge size={20} />, group: NAV_GROUPS.RISK_GOVERNANCE, permission: 'riesgo.revisar_agrupacion' },
-  { to: ROUTE_PATHS.RISKS, label: NAV_LABELS.RISKS, icon: <BookMarked size={20} />, group: NAV_GROUPS.RISK_GOVERNANCE, permission: 'riesgo.consultar' },
+  { to: ROUTE_PATHS.DASHBOARD, label: NAV_LABELS.DASHBOARD, icon: <LayoutDashboard size={20} />, group: NAV_GROUPS.GENERAL, permission: PERMISSIONS.RISK_QUERY },
+  { to: ROUTE_PATHS.INCIDENTS, label: NAV_LABELS.INCIDENTS, icon: <ClipboardList size={20} />, group: NAV_GROUPS.OPERATION, permission: PERMISSIONS.INCIDENT_VIEW_ALL },
+  { to: ROUTE_PATHS.SUPPORT, label: NAV_LABELS.SUPPORT, icon: <Headset size={20} />, group: NAV_GROUPS.OPERATION, permission: PERMISSIONS.ATTENTION_VIEW_QUEUE },
+  { to: ROUTE_PATHS.PROPOSALS, label: NAV_LABELS.PROPOSALS, icon: <GitMerge size={20} />, group: NAV_GROUPS.RISK_GOVERNANCE, permission: PERMISSIONS.RISK_REVIEW_GROUPING },
+  { to: ROUTE_PATHS.RISKS, label: NAV_LABELS.RISKS, icon: <BookMarked size={20} />, group: NAV_GROUPS.RISK_GOVERNANCE, permission: PERMISSIONS.RISK_QUERY },
   { to: ROUTE_PATHS.ASSETS, label: NAV_LABELS.ASSETS, icon: <Server size={20} />, group: NAV_GROUPS.QUERY },
   { to: ROUTE_PATHS.MATRIX, label: NAV_LABELS.MATRIX, icon: <Grid3X3 size={20} />, group: NAV_GROUPS.QUERY },
   { to: ROUTE_PATHS.ACCOUNT, label: NAV_LABELS.ACCOUNT, icon: <UserRound size={20} />, group: NAV_GROUPS.ACCOUNT },
@@ -51,7 +52,7 @@ export default function AnalystPortal() {
       <RouteViewport>
         <Routes>
           <Route index element={<Navigate replace to={home} />} />
-          <Route element={<PermissionRoute permission="riesgo.consultar" redirectTo={home} />}>
+          <Route element={<PermissionRoute permission={PERMISSIONS.RISK_QUERY} redirectTo={home} />}>
             <Route path={ROUTE_PATHS.DASHBOARD} element={<AnalystSummaryPage onOpenProposal={openWorkspace} />} />
             <Route path={ROUTE_PATHS.RISKS} element={<RiskRegistryPage onOpen={openRisk} />} />
             <Route path={ROUTE_PATHS.RISK_DETAIL} element={
@@ -60,7 +61,7 @@ export default function AnalystPortal() {
               </RouteIdParam>
             } />
           </Route>
-          <Route element={<PermissionRoute permission="incidencia.ver_todas" redirectTo={home} />}>
+          <Route element={<PermissionRoute permission={PERMISSIONS.INCIDENT_VIEW_ALL} redirectTo={home} />}>
             <Route path={ROUTE_PATHS.INCIDENTS} element={<SupportListPage mode="all" onOpen={(incidentId) => navigate(ROUTES.INCIDENT_DETAIL(incidentId))} />} />
             <Route path={ROUTE_PATHS.INCIDENT_DETAIL} element={
               <RouteIdParam param={ROUTE_PARAMS.INCIDENT_ID}>
@@ -68,7 +69,7 @@ export default function AnalystPortal() {
               </RouteIdParam>
             } />
           </Route>
-          <Route element={<PermissionRoute permission="atencion.ver_cola" redirectTo={home} />}>
+          <Route element={<PermissionRoute permission={PERMISSIONS.ATTENTION_VIEW_QUEUE} redirectTo={home} />}>
             <Route path={ROUTE_PATHS.SUPPORT} element={<SupportListPage mode="queue" onOpen={(incidentId) => navigate(ROUTES.SUPPORT_CASE(incidentId))} />} />
             <Route path={ROUTE_PATHS.SUPPORT_CASE} element={
               <RouteIdParam param={ROUTE_PARAMS.INCIDENT_ID}>
@@ -76,7 +77,7 @@ export default function AnalystPortal() {
               </RouteIdParam>
             } />
           </Route>
-          <Route element={<PermissionRoute permission="riesgo.revisar_agrupacion" redirectTo={home} />}>
+          <Route element={<PermissionRoute permission={PERMISSIONS.RISK_REVIEW_GROUPING} redirectTo={home} />}>
             <Route path={ROUTE_PATHS.PROPOSALS} element={<RiskProposalsQueuePage onOpen={openWorkspace} />} />
             <Route path={ROUTE_PATHS.PROPOSAL_WORKSPACE} element={
               <RouteIdParam param={ROUTE_PARAMS.VERSION_ID}>

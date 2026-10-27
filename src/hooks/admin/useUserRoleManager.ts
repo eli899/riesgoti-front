@@ -21,6 +21,7 @@ import {
 import type { RoleFormValues } from '@/schemas/role.schema'
 import type { UserFormValues } from '@/schemas/user.schema'
 import type { AdminUser } from '@/types/domain.types'
+import { ROLES } from '@/constants/rbac.constants'
 
 /** Caso de uso: usuarios y roles con las reglas de continuidad administrativa y SoD (ISO/IEC 27001 A.5.3). */
 export function useUserRoleManager() {
@@ -37,13 +38,13 @@ export function useUserRoleManager() {
   const users = useMemo(() => (usersQuery.data ?? []).map(fromApiUserToDomain), [usersQuery.data])
   const roles = useMemo(() => (rolesQuery.data ?? []).map(fromApiRoleToDomain), [rolesQuery.data])
   const permissions = useMemo(() => (permissionsQuery.data ?? []).map(fromApiPermissionToDomain), [permissionsQuery.data])
-  const activeAdminCount = users.filter((u) => u.roleCode === 'ADMIN' && u.active).length
+  const activeAdminCount = users.filter((u) => u.roleCode === ROLES.ADMIN && u.active).length
 
   /** Motivo por el que un usuario no puede perder el acceso administrativo (mismo criterio que UserService). */
   const adminContinuityBlock = useCallback(
     (user: AdminUser, next: { active: boolean; roleId: number }): string | null => {
       const nextRole = roles.find((r) => r.id === next.roleId)
-      const leavingAdmin = user.roleCode === 'ADMIN' && user.active && (!next.active || nextRole?.code !== 'ADMIN')
+      const leavingAdmin = user.roleCode === ROLES.ADMIN && user.active && (!next.active || nextRole?.code !== ROLES.ADMIN)
       if (!leavingAdmin) return null
       if (user.id === currentUser?.id) return 'No puedes retirarte a ti mismo el acceso administrativo.'
       if (activeAdminCount <= 1) return 'Debe quedar al menos un administrador activo.'

@@ -2,6 +2,7 @@ import { CheckCircle2, Headset } from 'lucide-react'
 import { Button } from '@/components/ui'
 import { formatDateTime } from '@/lib/format'
 import type { GuidanceResult } from '@/types/domain.types'
+import { GUIDANCE_RESULT } from '@/constants/domain.constants'
 
 interface OrientationFeedbackFooterProps {
   response: { result: GuidanceResult; respondedAt: string } | null
@@ -19,7 +20,7 @@ const RESPONSE_COPY = {
 /** Confirmación del reportante (RESPUESTA_ORIENTACION): inmutable una vez registrada. */
 export default function OrientationFeedbackFooter({ response, canGiveFeedback, isSubmitting, onFeedback, audience = 'reporter' }: OrientationFeedbackFooterProps) {
   if (response) {
-    const worked = response.result === 'FUNCIONO'
+    const worked = response.result === GUIDANCE_RESULT.FUNCIONO
     return (
       <footer className="flex items-start gap-2 border-t border-line bg-canvas px-4 py-3 text-sm md:px-5">
         {worked ? <CheckCircle2 size={18} className="shrink-0 text-primary" aria-hidden /> : <Headset size={18} className="shrink-0 text-primary" aria-hidden />}
@@ -36,8 +37,8 @@ export default function OrientationFeedbackFooter({ response, canGiveFeedback, i
       <fieldset>
         <legend className="mb-3 text-base font-semibold">¿Esta sugerencia solucionó tu problema?</legend>
         <span className="flex flex-col gap-2 sm:flex-row">
-          <Button icon={<CheckCircle2 size={18} aria-hidden />} disabled={isSubmitting} onClick={() => onFeedback('FUNCIONO')}>Sí, funcionó (cerrar incidencia)</Button>
-          <Button variant="secondary" icon={<Headset size={18} aria-hidden />} disabled={isSubmitting} onClick={() => onFeedback('NO_FUNCIONO')}>No funcionó, escalar a un analista</Button>
+          <Button icon={<CheckCircle2 size={18} aria-hidden />} disabled={isSubmitting} onClick={() => onFeedback(GUIDANCE_RESULT.FUNCIONO)}>Sí, funcionó (cerrar incidencia)</Button>
+          <Button variant="secondary" icon={<Headset size={18} aria-hidden />} disabled={isSubmitting} onClick={() => onFeedback(GUIDANCE_RESULT.NO_FUNCIONO)}>No funcionó, escalar a un analista</Button>
         </span>
       </fieldset>
     </footer>

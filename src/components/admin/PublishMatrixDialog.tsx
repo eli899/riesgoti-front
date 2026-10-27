@@ -4,6 +4,7 @@ import FormAlert from '@/components/forms/FormAlert'
 import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
 import { fieldClassName, inputClassName } from '@/styles/tokens.form'
+import { FIELD_LIMITS, VALIDATION_MESSAGES } from '@/constants/validation.constants'
 
 interface PublishMatrixDialogProps {
   open: boolean
@@ -29,7 +30,7 @@ function PublishForm({ currentName, changedCells, isPublishing, onClose, onPubli
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
-    if (name.trim().length < 3) return setError('Ingresa un nombre de al menos 3 caracteres.')
+    if (name.trim().length < FIELD_LIMITS.MATRIX_NAME_MIN) return setError(VALIDATION_MESSAGES.MATRIX.NAME_MIN)
     const failure = await onPublish(name.trim())
     if (failure) setError(failure.fieldErrors.nombre ?? failure.fieldErrors.celdas ?? failure.message)
     else onClose()
@@ -38,11 +39,10 @@ function PublishForm({ currentName, changedCells, isPublishing, onClose, onPubli
   return (
     <form onSubmit={submit} noValidate aria-label="Publicación de matriz" className="space-y-4">
       <p className="text-base">
-        Se publicará una nueva configuración con <strong>{changedCells} {changedCells === 1 ? 'celda modificada' : 'celdas modificadas'}</strong>.
-        Las evaluaciones registradas en EVALUACION_RIESGO conservan la celda y la matriz con las que se hicieron.
+        Se publicará una nueva configuración con <strong>{changedCells} {changedCells === 1 ? 'celda modificada' : 'celdas modificadas'}</strong>. Las evaluaciones registradas en EVALUACION_RIESGO conservan la celda y la matriz con las que se hicieron.
       </p>
       <Field id="matrix-name" label="Nombre de la configuración">
-        <input id="matrix-name" value={name} maxLength={100} onChange={(e) => { setName(e.target.value); setError(undefined) }} className={cn(inputClassName(!!error), 'h-11 md:h-10')} />
+        <input id="matrix-name" value={name} maxLength={FIELD_LIMITS.MATRIX_NAME_MAX} onChange={(e) => { setName(e.target.value); setError(undefined) }} className={cn(inputClassName(!!error), 'h-11 md:h-10')} />
       </Field>
       <FormAlert message={error} />
       <footer className={fieldClassName.footer}>

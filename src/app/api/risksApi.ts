@@ -1,3 +1,4 @@
+import { API_ENDPOINTS, API_TAGS, HTTP_METHODS } from '@/constants/api.constants'
 import { baseApi } from './baseApi'
 import type {
   ConfirmGroupingRequestDto,
@@ -13,41 +14,41 @@ import type {
 export const risksApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getRiskVersions: build.query<RiskVersionDto[], RiskVersionListParamsDto | void>({
-      query: (params) => ({ url: 'risk-versions/', params: params ?? undefined }),
-      providesTags: ['RiskVersion'],
+      query: (params) => ({ url: API_ENDPOINTS.RISK_VERSIONS, params: params ?? undefined }),
+      providesTags: [API_TAGS.RISK_VERSION],
     }),
     getRiskVersion: build.query<RiskVersionDto, number>({
-      query: (id) => `risk-versions/${id}/`,
-      providesTags: (_result, _error, id) => ['RiskVersion', { type: 'RiskVersion', id }],
+      query: (id) => API_ENDPOINTS.RISK_VERSION(id),
+      providesTags: (_result, _error, id) => [API_TAGS.RISK_VERSION, { type: API_TAGS.RISK_VERSION, id }],
     }),
     removeIncidentFromRiskGroup: build.mutation<RiskVersionDto, { id: number; analisisId: number; body: RemoveIncidentRequestDto }>({
-      query: ({ id, analisisId, body }) => ({ url: `risk-versions/${id}/incidents/${analisisId}/remove/`, method: 'PATCH', body }),
-      invalidatesTags: ['RiskVersion'],
+      query: ({ id, analisisId, body }) => ({ url: API_ENDPOINTS.RISK_VERSION_REMOVE_INCIDENT(id, analisisId), method: HTTP_METHODS.PATCH, body }),
+      invalidatesTags: [API_TAGS.RISK_VERSION],
     }),
     restoreIncidentToRiskGroup: build.mutation<RiskVersionDto, { id: number; analisisId: number; observacion?: string }>({
       query: ({ id, analisisId, observacion }) => ({
-        url: `risk-versions/${id}/incidents/${analisisId}/restore/`,
-        method: 'PATCH',
+        url: API_ENDPOINTS.RISK_VERSION_RESTORE_INCIDENT(id, analisisId),
+        method: HTTP_METHODS.PATCH,
         body: { observacion },
       }),
-      invalidatesTags: ['RiskVersion'],
+      invalidatesTags: [API_TAGS.RISK_VERSION],
     }),
     confirmRiskGrouping: build.mutation<RiskVersionDto, { id: number; body: ConfirmGroupingRequestDto }>({
-      query: ({ id, body }) => ({ url: `risk-versions/${id}/confirm-grouping/`, method: 'POST', body }),
-      invalidatesTags: ['RiskVersion'],
+      query: ({ id, body }) => ({ url: API_ENDPOINTS.RISK_VERSION_CONFIRM_GROUPING(id), method: HTTP_METHODS.POST, body }),
+      invalidatesTags: [API_TAGS.RISK_VERSION],
     }),
     evaluateRiskVersion: build.mutation<RiskEvaluationDto, { id: number; body: RiskEvaluateRequestDto }>({
-      query: ({ id, body }) => ({ url: `risk-versions/${id}/evaluate/`, method: 'POST', body }),
-      invalidatesTags: ['RiskVersion'],
+      query: ({ id, body }) => ({ url: API_ENDPOINTS.RISK_VERSION_EVALUATE(id), method: HTTP_METHODS.POST, body }),
+      invalidatesTags: [API_TAGS.RISK_VERSION],
     }),
     /** CORREGIDA responde 201 con la nueva versión n+1 del analista. */
     submitRiskDecision: build.mutation<RiskVersionDto, { id: number; body: RiskDecisionRequestDto }>({
-      query: ({ id, body }) => ({ url: `risk-versions/${id}/decision/`, method: 'POST', body }),
-      invalidatesTags: ['RiskVersion', 'RiskDashboard'],
+      query: ({ id, body }) => ({ url: API_ENDPOINTS.RISK_VERSION_DECISION(id), method: HTTP_METHODS.POST, body }),
+      invalidatesTags: [API_TAGS.RISK_VERSION, API_TAGS.RISK_DASHBOARD],
     }),
     getRiskDashboard: build.query<RiskDashboardDto, void>({
-      query: () => 'risks/dashboard/',
-      providesTags: ['RiskDashboard'],
+      query: () => API_ENDPOINTS.RISK_DASHBOARD,
+      providesTags: [API_TAGS.RISK_DASHBOARD],
     }),
   }),
 })

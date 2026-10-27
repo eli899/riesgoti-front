@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
 import { loginFormSchema, type LoginFormValues } from '@/schemas/auth.schema'
 import { inputClassName } from '@/styles/tokens.form'
+import { FORM_ERROR_KEYS } from '@/constants/ui.constants'
 
 interface LoginFormProps {
   isSubmitting: boolean
@@ -35,7 +36,7 @@ export default function LoginForm({ isSubmitting, onSubmit, demoAccounts = [], o
     setValue('correo', email, { shouldValidate: true })
     if (!onDemoLogin) return setFocus('password')
     const failure = await onDemoLogin(email)
-    if (failure) setError('root.server', { type: 'server', message: failure.message })
+    if (failure) setError(FORM_ERROR_KEYS.ROOT_SERVER, { type: 'server', message: failure.message })
   }
   const input = (hasError: boolean) => cn(inputClassName(hasError), 'h-12 md:h-11')
 

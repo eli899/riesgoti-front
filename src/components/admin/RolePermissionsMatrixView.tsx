@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { ChevronDown, ChevronRight, KeyRound, Lock } from 'lucide-react'
 import { Button, Card, CardHeader, Dialog, Switch } from '@/components/ui'
 import FormAlert from '@/components/forms/FormAlert'
-import { PERMISSION_GROUPS } from '@/lib/labels'
+import { PERMISSION_GROUPS } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
-import { ADMIN_REQUIRED_PERMISSIONS, ADMINISTRATIVE_PERMISSIONS, roleFormSchema, SOD_RISK_PERMISSIONS, type RoleFormValues } from '@/schemas/role.schema'
+import { roleFormSchema, type RoleFormValues } from '@/schemas/role.schema'
 import type { Permission, Role } from '@/types/domain.types'
+import { ADMIN_REQUIRED_PERMISSIONS, ADMINISTRATIVE_PERMISSIONS, includesPermission, ROLES, SOD_RISK_PERMISSIONS } from '@/constants/rbac.constants'
 
 interface RolePermissionsMatrixViewProps {
   roles: Role[]
@@ -18,14 +19,14 @@ interface RolePermissionsMatrixViewProps {
 }
 
 const SOD_LOCK = 'Bloqueado por Segregación de Funciones (ISO 27001)'
-const isSod = (code: string) => (SOD_RISK_PERMISSIONS as readonly string[]).includes(code)
-const isAdministrative = (code: string) => (ADMINISTRATIVE_PERMISSIONS as readonly string[]).includes(code)
+const isSod = (code: string) => includesPermission(SOD_RISK_PERMISSIONS, code)
+const isAdministrative = (code: string) => includesPermission(ADMINISTRATIVE_PERMISSIONS, code)
 
 /** Motivo por el que un permiso no puede activarse/desactivarse en el borrador (mismas reglas que RoleService). */
 function lockReason(role: Role, draft: string[], code: string): string | null {
   const on = draft.includes(code)
-  if (role.code === 'ADMIN' && isSod(code)) return SOD_LOCK
-  if (role.code === 'ADMIN' && on && (ADMIN_REQUIRED_PERMISSIONS as readonly string[]).includes(code)) return 'Protegido: el rol ADMIN debe conservarlo'
+  if (role.code === ROLES.ADMIN && isSod(code)) return SOD_LOCK
+  if (role.code === ROLES.ADMIN && on && includesPermission(ADMIN_REQUIRED_PERMISSIONS, code)) return 'Protegido: el rol ADMIN debe conservarlo'
   if (!on && isSod(code) && draft.some(isAdministrative)) return `${SOD_LOCK}: el rol tiene permisos de administración`
   if (!on && isAdministrative(code) && draft.some(isSod)) return `${SOD_LOCK}: el rol tiene permisos de evaluación de riesgos`
   return null
@@ -110,7 +111,7 @@ function RoleEditor({ role, permissions, isSaving, onSave }: { role: Role; permi
         ))}
       </dl>
       <section className="space-y-2 p-4 md:p-5" aria-label={`Permisos de ${role.name}`}>
-        {role.code === 'ADMIN' && (
+        {role.code === ROLES.ADMIN && (
           <p className="flex items-start gap-2 rounded-control border border-dashed border-primary bg-soft p-3 text-xs text-muted">
             <Lock size={14} className="mt-0.5 shrink-0 text-primary" aria-hidden />
             El rol Administrador no puede revisar agrupaciones, evaluar ni validar riesgos (Segregación de Funciones, ISO/IEC 27001 A.5.3).

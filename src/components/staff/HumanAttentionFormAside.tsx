@@ -10,6 +10,7 @@ import type { SubmitResult } from '@/lib/apiErrors'
 import { humanAttentionSchema, type HumanAttentionFormValues } from '@/schemas/incident.schema'
 import { inputClassName } from '@/styles/tokens.form'
 import type { IncidentDetail } from '@/types/domain.types'
+import { GUIDANCE_RESULT, INCIDENT_STATUS } from '@/constants/domain.constants'
 
 interface HumanAttentionFormAsideProps {
   incident: IncidentDetail
@@ -32,9 +33,9 @@ export default function HumanAttentionFormAside({ incident, canAttend, assignedT
 
       {!canAttend ? (
         <p className="text-sm text-muted">Tu rol no tiene permiso para atender casos.</p>
-      ) : incident.status === 'CERRADA' ? (
+      ) : incident.status === INCIDENT_STATUS.CERRADA ? (
         <dl>
-          <KV k="Resultado" v={attention?.closedAt ? 'Cerrada por atención humana' : incident.guidanceResult === 'FUNCIONO' ? 'Resuelta mediante orientación automática' : 'Cerrada'} />
+          <KV k="Resultado" v={attention?.closedAt ? 'Cerrada por atención humana' : incident.guidanceResult === GUIDANCE_RESULT.FUNCIONO ? 'Resuelta mediante orientación automática' : 'Cerrada'} />
           {attention && (
             <>
               <KV k="Acciones realizadas" v={<span className="whitespace-pre-line">{attention.actions || '—'}</span>} />
@@ -43,18 +44,17 @@ export default function HumanAttentionFormAside({ incident, canAttend, assignedT
             </>
           )}
         </dl>
-      ) : incident.status === 'PENDIENTE_ATENCION_HUMANA' ? (
+      ) : incident.status === INCIDENT_STATUS.PENDIENTE_ATENCION_HUMANA ? (
         <>
           <p className="mb-3 text-sm text-muted">Inicia la atención para asignarte el caso, registrar acciones y cerrarlo.</p>
           <Button full icon={<Headset size={18} aria-hidden />} disabled={isStarting} onClick={onStart}>{isStarting ? 'Iniciando…' : 'Iniciar atención'}</Button>
         </>
-      ) : incident.status === 'EN_ATENCION' && attention ? (
+      ) : incident.status === INCIDENT_STATUS.EN_ATENCION && attention ? (
         assignedToMe ? (
           <AttentionForm key={attention.startedAt} incident={incident} isSaving={isSaving} onSave={onSave} />
         ) : (
           <p className="text-sm text-muted">
-            Este caso está siendo atendido por <strong className="text-ink">{attention.analyst.name}</strong> desde el {formatDateTime(attention.startedAt)}:
-            Solo el analista asignado puede registrar la atención.
+            Este caso está siendo atendido por <strong className="text-ink">{attention.analyst.name}</strong> desde el {formatDateTime(attention.startedAt)}: Solo el analista asignado puede registrar la atención.
           </p>
         )
       ) : (

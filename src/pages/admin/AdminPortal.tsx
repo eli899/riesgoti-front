@@ -15,6 +15,7 @@ import RiskWorkspacePage from '@/pages/risk/RiskWorkspacePage'
 import SupportDetailPage from '@/pages/staff/SupportDetailPage'
 import SupportListPage from '@/pages/staff/SupportListPage'
 import type { PermissionCode } from '@/types/domain.types'
+import { PERMISSIONS } from '@/constants/rbac.constants'
 import AdminDashboardPage from './AdminDashboardPage'
 import AIConfigPage from './AIConfigPage'
 import AssetsPage from './AssetsPage'
@@ -25,17 +26,17 @@ import RolesPage from './RolesPage'
 import UsersPage from './UsersPage'
 
 const NAV: (ShellNavItem & { permission?: PermissionCode })[] = [
-  { to: ROUTE_PATHS.DASHBOARD, label: NAV_LABELS.DASHBOARD, icon: <LayoutDashboard size={20} />, group: NAV_GROUPS.GENERAL, permission: 'riesgo.consultar' },
-  { to: ROUTE_PATHS.INCIDENTS, label: NAV_LABELS.INCIDENTS, icon: <ClipboardList size={20} />, group: NAV_GROUPS.QUERY, permission: 'incidencia.ver_todas' },
-  { to: ROUTE_PATHS.RISKS, label: NAV_LABELS.RISKS, icon: <BookMarked size={20} />, group: NAV_GROUPS.QUERY, permission: 'riesgo.consultar' },
-  { to: ROUTE_PATHS.PROPOSALS, label: NAV_LABELS.PROPOSALS, icon: <GitMerge size={20} />, group: NAV_GROUPS.QUERY, permission: 'riesgo.consultar' },
-  { to: ROUTE_PATHS.ASSETS, label: NAV_LABELS.ASSETS, icon: <Server size={20} />, group: NAV_GROUPS.RISK_GOVERNANCE, permission: 'activo.administrar' },
-  { to: ROUTE_PATHS.MATRIX, label: NAV_LABELS.MATRIX, icon: <Grid3X3 size={20} />, group: NAV_GROUPS.RISK_GOVERNANCE, permission: 'matriz.administrar' },
-  { to: ROUTE_PATHS.DOCUMENTS, label: NAV_LABELS.DOCUMENTS, icon: <FileText size={20} />, group: NAV_GROUPS.ARTIFICIAL_INTELLIGENCE, permission: 'documento.administrar' },
-  { to: ROUTE_PATHS.AI_CONFIG, label: NAV_LABELS.AI_CONFIG, icon: <Bot size={20} />, group: NAV_GROUPS.ARTIFICIAL_INTELLIGENCE, permission: 'documento.administrar' },
-  { to: ROUTE_PATHS.USERS, label: NAV_LABELS.USERS, icon: <Users size={20} />, group: NAV_GROUPS.ACCESS, permission: 'usuario.administrar' },
-  { to: ROUTE_PATHS.ROLES, label: NAV_LABELS.ROLES, icon: <KeyRound size={20} />, group: NAV_GROUPS.ACCESS, permission: 'rol.administrar' },
-  { to: ROUTE_PATHS.AUDIT, label: NAV_LABELS.AUDIT, icon: <ScrollText size={20} />, group: NAV_GROUPS.ACCESS, permission: 'usuario.administrar' },
+  { to: ROUTE_PATHS.DASHBOARD, label: NAV_LABELS.DASHBOARD, icon: <LayoutDashboard size={20} />, group: NAV_GROUPS.GENERAL, permission: PERMISSIONS.RISK_QUERY },
+  { to: ROUTE_PATHS.INCIDENTS, label: NAV_LABELS.INCIDENTS, icon: <ClipboardList size={20} />, group: NAV_GROUPS.QUERY, permission: PERMISSIONS.INCIDENT_VIEW_ALL },
+  { to: ROUTE_PATHS.RISKS, label: NAV_LABELS.RISKS, icon: <BookMarked size={20} />, group: NAV_GROUPS.QUERY, permission: PERMISSIONS.RISK_QUERY },
+  { to: ROUTE_PATHS.PROPOSALS, label: NAV_LABELS.PROPOSALS, icon: <GitMerge size={20} />, group: NAV_GROUPS.QUERY, permission: PERMISSIONS.RISK_QUERY },
+  { to: ROUTE_PATHS.ASSETS, label: NAV_LABELS.ASSETS, icon: <Server size={20} />, group: NAV_GROUPS.RISK_GOVERNANCE, permission: PERMISSIONS.ASSET_ADMIN },
+  { to: ROUTE_PATHS.MATRIX, label: NAV_LABELS.MATRIX, icon: <Grid3X3 size={20} />, group: NAV_GROUPS.RISK_GOVERNANCE, permission: PERMISSIONS.MATRIX_ADMIN },
+  { to: ROUTE_PATHS.DOCUMENTS, label: NAV_LABELS.DOCUMENTS, icon: <FileText size={20} />, group: NAV_GROUPS.ARTIFICIAL_INTELLIGENCE, permission: PERMISSIONS.DOCUMENT_ADMIN },
+  { to: ROUTE_PATHS.AI_CONFIG, label: NAV_LABELS.AI_CONFIG, icon: <Bot size={20} />, group: NAV_GROUPS.ARTIFICIAL_INTELLIGENCE, permission: PERMISSIONS.DOCUMENT_ADMIN },
+  { to: ROUTE_PATHS.USERS, label: NAV_LABELS.USERS, icon: <Users size={20} />, group: NAV_GROUPS.ACCESS, permission: PERMISSIONS.USER_ADMIN },
+  { to: ROUTE_PATHS.ROLES, label: NAV_LABELS.ROLES, icon: <KeyRound size={20} />, group: NAV_GROUPS.ACCESS, permission: PERMISSIONS.ROLE_ADMIN },
+  { to: ROUTE_PATHS.AUDIT, label: NAV_LABELS.AUDIT, icon: <ScrollText size={20} />, group: NAV_GROUPS.ACCESS, permission: PERMISSIONS.USER_ADMIN },
   { to: ROUTE_PATHS.ACCOUNT, label: NAV_LABELS.ACCOUNT, icon: <UserRound size={20} />, group: NAV_GROUPS.ACCOUNT },
 ]
 
@@ -60,7 +61,7 @@ export default function AdminPortal() {
       <RouteViewport>
         <Routes>
           <Route index element={<Navigate replace to={home} />} />
-          <Route element={<PermissionRoute permission="riesgo.consultar" redirectTo={home} />}>
+          <Route element={<PermissionRoute permission={PERMISSIONS.RISK_QUERY} redirectTo={home} />}>
             <Route path={ROUTE_PATHS.DASHBOARD} element={<AdminDashboardPage onOpenDocuments={() => navigate(ROUTES.DOCUMENTS)} />} />
             <Route path={ROUTE_PATHS.RISKS} element={<RiskRegistryPage onOpen={openRisk} />} />
             <Route path={ROUTE_PATHS.RISK_DETAIL} element={
@@ -75,7 +76,7 @@ export default function AdminPortal() {
               </RouteIdParam>
             } />
           </Route>
-          <Route element={<PermissionRoute permission="incidencia.ver_todas" redirectTo={home} />}>
+          <Route element={<PermissionRoute permission={PERMISSIONS.INCIDENT_VIEW_ALL} redirectTo={home} />}>
             <Route path={ROUTE_PATHS.INCIDENTS} element={<SupportListPage mode="all" onOpen={(incidentId) => navigate(ROUTES.INCIDENT_DETAIL(incidentId))} />} />
             <Route path={ROUTE_PATHS.INCIDENT_DETAIL} element={
               <RouteIdParam param={ROUTE_PARAMS.INCIDENT_ID}>
@@ -83,21 +84,21 @@ export default function AdminPortal() {
               </RouteIdParam>
             } />
           </Route>
-          <Route element={<PermissionRoute permission="activo.administrar" redirectTo={home} />}>
+          <Route element={<PermissionRoute permission={PERMISSIONS.ASSET_ADMIN} redirectTo={home} />}>
             <Route path={ROUTE_PATHS.ASSETS} element={<AssetsPage />} />
           </Route>
-          <Route element={<PermissionRoute permission="matriz.administrar" redirectTo={home} />}>
+          <Route element={<PermissionRoute permission={PERMISSIONS.MATRIX_ADMIN} redirectTo={home} />}>
             <Route path={ROUTE_PATHS.MATRIX} element={<MatrixPage />} />
           </Route>
-          <Route element={<PermissionRoute permission="documento.administrar" redirectTo={home} />}>
+          <Route element={<PermissionRoute permission={PERMISSIONS.DOCUMENT_ADMIN} redirectTo={home} />}>
             <Route path={ROUTE_PATHS.DOCUMENTS} element={<DocsPage />} />
             <Route path={ROUTE_PATHS.AI_CONFIG} element={<AIConfigPage />} />
           </Route>
-          <Route element={<PermissionRoute permission="usuario.administrar" redirectTo={home} />}>
+          <Route element={<PermissionRoute permission={PERMISSIONS.USER_ADMIN} redirectTo={home} />}>
             <Route path={ROUTE_PATHS.USERS} element={<UsersPage />} />
             <Route path={ROUTE_PATHS.AUDIT} element={<AuditPage />} />
           </Route>
-          <Route element={<PermissionRoute permission="rol.administrar" redirectTo={home} />}>
+          <Route element={<PermissionRoute permission={PERMISSIONS.ROLE_ADMIN} redirectTo={home} />}>
             <Route path={ROUTE_PATHS.ROLES} element={<RolesPage />} />
           </Route>
           <Route path={ROUTE_PATHS.ACCOUNT} element={<AccountPage />} />

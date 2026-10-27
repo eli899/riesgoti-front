@@ -4,6 +4,7 @@ import { useGetRiskDashboardQuery } from '@/app/api/risksApi'
 import { toApiFailure } from '@/lib/apiErrors'
 import { fromApiAIConfigToDomain, fromApiDocumentVersionToDomain } from '@/mappers/admin.mapper'
 import { fromApiRiskDashboardToDomain } from '@/mappers/risks.mapper'
+import { DOCUMENT_PROCESSING_STATUS } from '@/constants/domain.constants'
 
 /** Caso de uso: panorama del administrador (indicadores agregados + estado de la base de conocimiento e IA). */
 export function useAdminOverview() {
@@ -18,10 +19,10 @@ export function useAdminOverview() {
     const versions = (docsQuery.data ?? []).map(fromApiDocumentVersionToDomain)
     return {
       total: versions.length,
-      available: versions.filter((v) => v.processing === 'AUTORIZADO' && v.active).length,
-      pendingAuthorization: versions.filter((v) => v.processing === 'PENDIENTE_AUTORIZACION').length,
-      processing: versions.filter((v) => v.processing === 'PROCESANDO').length,
-      failed: versions.filter((v) => v.processing === 'ERROR').length,
+      available: versions.filter((v) => v.processing === DOCUMENT_PROCESSING_STATUS.AUTORIZADO && v.active).length,
+      pendingAuthorization: versions.filter((v) => v.processing === DOCUMENT_PROCESSING_STATUS.PENDIENTE_AUTORIZACION).length,
+      processing: versions.filter((v) => v.processing === DOCUMENT_PROCESSING_STATUS.PROCESANDO).length,
+      failed: versions.filter((v) => v.processing === DOCUMENT_PROCESSING_STATUS.ERROR).length,
       requiresReindex: versions.filter((v) => v.requiresReindex).length,
     }
   }, [docsQuery.data])

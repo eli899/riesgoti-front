@@ -3,6 +3,7 @@ import { AIBadge, Card, KV, MarkdownViewer, SectionTitle } from '@/components/ui
 import { NOT_DETERMINED } from '@/lib/format'
 import { cardClassName } from '@/styles/tokens.layout'
 import type { RiskVersion } from '@/types/domain.types'
+import { RISK_VERSION_ORIGIN } from '@/constants/domain.constants'
 
 /** Contenido de la propuesta (VERSION_RIESGO): descripción, vectores de riesgo y recomendación en Markdown seguro. */
 export default function RiskProposalSummarySection({ version }: { version: RiskVersion }) {
@@ -15,7 +16,7 @@ export default function RiskProposalSummarySection({ version }: { version: RiskV
     <Card aria-labelledby="proposal-heading" className={cardClassName.padded}>
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <SectionTitle id="proposal-heading" icon={<ShieldAlert size={18} className="text-primary" aria-hidden />}>Propuesta de riesgo</SectionTitle>
-        {version.origin === 'IA' && <AIBadge />}
+        {version.origin === RISK_VERSION_ORIGIN.IA && <AIBadge />}
       </header>
       {version.description && <p className="mb-4 text-base">{version.description}</p>}
       <dl className="grid gap-x-4 md:grid-cols-3">

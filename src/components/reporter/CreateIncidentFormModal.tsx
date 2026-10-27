@@ -9,9 +9,10 @@ import { applyServerErrors } from '@/components/forms/applyServerErrors'
 import { formatSize } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { ApiFailure } from '@/lib/apiErrors'
-import { EVIDENCE_EXTENSIONS, incidentFormSchema, MAX_EVIDENCES_PER_INCIDENT, MAX_EVIDENCE_SIZE_BYTES, type IncidentFormValues } from '@/schemas/incident.schema'
+import { incidentFormSchema, type IncidentFormValues } from '@/schemas/incident.schema'
 import { fieldClassName, inputClassName } from '@/styles/tokens.form'
 import type { Asset } from '@/types/domain.types'
+import { BYTES_PER_MB, FIELD_LIMITS, FILE_LIMITS } from '@/constants/validation.constants'
 
 const FIELDS = ['titulo', 'descripcion', 'activo_reportado_id', 'activo_texto', 'evidencias'] as const
 
@@ -54,7 +55,7 @@ function IncidentForm({ assets, isSubmitting, onCancel, onSubmit }: Omit<CreateI
       <fieldset className="space-y-4">
         <legend className="sr-only">Qué ocurrió</legend>
         <Field id="inc-titulo" label="Título breve" error={errors.titulo?.message} help="Ejemplo: El ERP está lento al guardar facturas">
-          <input id="inc-titulo" maxLength={255} {...register('titulo')} aria-invalid={!!errors.titulo} aria-describedby={describedBy('inc-titulo', !!errors.titulo)} className={input(!!errors.titulo)} />
+          <input id="inc-titulo" maxLength={FIELD_LIMITS.INCIDENT_TITLE_MAX} {...register('titulo')} aria-invalid={!!errors.titulo} aria-describedby={describedBy('inc-titulo', !!errors.titulo)} className={input(!!errors.titulo)} />
         </Field>
         <Field id="inc-activo" label="Activo afectado" error={errors.activo_reportado_id?.message} help="Si no aparece en la lista, elige «Otro / No estoy seguro».">
           <Controller control={control} name="activo_reportado_id" render={({ field }) => (
@@ -75,7 +76,7 @@ function IncidentForm({ assets, isSubmitting, onCancel, onSubmit }: Omit<CreateI
         </Field>
         {otherSelected && (
           <Field id="inc-activo-texto" label="¿Qué recurso se vio afectado?" error={errors.activo_texto?.message} help="Describe el equipo, aplicación o servicio con tus palabras.">
-            <input id="inc-activo-texto" maxLength={255} {...register('activo_texto')} aria-invalid={!!errors.activo_texto} className={input(!!errors.activo_texto)} />
+            <input id="inc-activo-texto" maxLength={FIELD_LIMITS.INCIDENT_ASSET_TEXT_MAX} {...register('activo_texto')} aria-invalid={!!errors.activo_texto} className={input(!!errors.activo_texto)} />
           </Field>
         )}
         <Field id="inc-descripcion" label="Descripción detallada" error={errors.descripcion?.message} help="Qué ocurrió, desde cuándo y qué estabas haciendo. No incluyas contraseñas ni secretos.">
@@ -109,7 +110,7 @@ function EvidenceDropzone({ files, error, onChange }: { files: File[]; error?: s
         <Paperclip size={20} className="text-primary-pressed" aria-hidden />
         <span className="font-semibold text-primary-pressed">{isDragActive ? 'Suelta los archivos aquí' : 'Adjuntar capturas, logs o documentos'}</span>
         <span className="text-xs text-muted">
-          {EVIDENCE_EXTENSIONS.map((e) => e.slice(1).toUpperCase()).join(', ')} · máximo {MAX_EVIDENCE_SIZE_BYTES / (1024 * 1024)} MB por archivo y {MAX_EVIDENCES_PER_INCIDENT} archivos. Los archivos nunca se ejecutan.
+          {FILE_LIMITS.EVIDENCE_EXTENSIONS.map((e) => e.slice(1).toUpperCase()).join(', ')} · máximo {FILE_LIMITS.EVIDENCE_MAX_BYTES / BYTES_PER_MB} MB por archivo y {FILE_LIMITS.EVIDENCES_PER_INCIDENT_MAX}  archivos. Los archivos nunca se ejecutan.
         </span>
       </section>
       {error && <p id="inc-evidencias-err" role="alert" className="mt-1 text-xs font-medium text-deep">{error}</p>}

@@ -8,15 +8,15 @@ import { Button, Card, PageHeader, SectionTitle, Tabs } from '@/components/ui'
 import { useAuthSession } from '@/hooks/useAuthSession'
 import { useMatrixConfigManager } from '@/hooks/admin/useMatrixConfigManager'
 import { formatDateTime } from '@/lib/format'
-
-type MatrixTab = 'matrix' | 'probability' | 'impact'
+import { PERMISSIONS } from '@/constants/rbac.constants'
+import { MATRIX_TABS, type MatrixTab } from '@/constants/ui.constants'
 
 /** Sub-vista: matriz de evaluación 5x5 (CONFIGURACION_MATRIZ, CRITERIO_*, CELDA_MATRIZ). */
 export default function MatrixPage() {
   const m = useMatrixConfigManager()
   const { hasPermission } = useAuthSession()
-  const canEdit = hasPermission('matriz.administrar')
-  const [tab, setTab] = useState<MatrixTab>('matrix')
+  const canEdit = hasPermission(PERMISSIONS.MATRIX_ADMIN)
+  const [tab, setTab] = useState<MatrixTab>(MATRIX_TABS.MATRIX)
   const [confirming, setConfirming] = useState(false)
 
   return (
@@ -31,10 +31,10 @@ export default function MatrixPage() {
           {m.matrix && (
             <>
               <Tabs label="Componentes de la matriz" value={tab} onChange={setTab}
-                tabs={[{ id: 'matrix', label: 'Matriz 5×5' }, { id: 'probability', label: 'Probabilidad' }, { id: 'impact', label: 'Impacto' }]} />
-              {tab === 'probability' && <MatrixCriteriaList title="Criterios de probabilidad" criteria={m.matrix.probabilityCriteria} />}
-              {tab === 'impact' && <MatrixCriteriaList title="Criterios de impacto" criteria={m.matrix.impactCriteria} />}
-              {tab === 'matrix' && (
+                tabs={[{ id: MATRIX_TABS.MATRIX, label: 'Matriz 5×5' }, { id: MATRIX_TABS.PROBABILITY, label: 'Probabilidad' }, { id: MATRIX_TABS.IMPACT, label: 'Impacto' }]} />
+              {tab === MATRIX_TABS.PROBABILITY && <MatrixCriteriaList title="Criterios de probabilidad" criteria={m.matrix.probabilityCriteria} />}
+              {tab === MATRIX_TABS.IMPACT && <MatrixCriteriaList title="Criterios de impacto" criteria={m.matrix.impactCriteria} />}
+              {tab === MATRIX_TABS.MATRIX && (
                 <Card aria-labelledby="matrix-grid-title" className="p-4 md:p-5">
                   <SectionTitle id="matrix-grid-title">Niveles por celda</SectionTitle>
                   <p className="mb-3 mt-1 text-sm text-muted">

@@ -1,22 +1,26 @@
 import { z } from 'zod'
+import { EMBEDDING_PROVIDER, LLM_PROVIDER } from '@/constants/domain.constants'
+import { FIELD_LIMITS as L, VALIDATION_MESSAGES } from '@/constants/validation.constants'
+
+const M = VALIDATION_MESSAGES.AI_CONFIG
 
 /** Contrato de CONFIGURACION_IA_RAG (espejo de AIConfigInputSerializer). */
 export const aiConfigFormSchema = z
   .object({
-    proveedor_llm: z.enum(['OPENAI', 'GEMINI', 'HUGGINGFACE_LOCAL']),
-    modelo_llm: z.string().min(2, 'Seleccione o ingrese un modelo LLM válido'),
-    endpoint_base_llm: z.string().url('URL inválida').optional().or(z.literal('')),
+    proveedor_llm: z.nativeEnum(LLM_PROVIDER),
+    modelo_llm: z.string().min(L.AI_MODEL_MIN, M.LLM_MODEL_REQUIRED),
+    endpoint_base_llm: z.string().url(M.URL_INVALID).optional().or(z.literal('')),
     api_key_llm: z.string().optional(),
-    proveedor_embedding: z.enum(['OPENAI', 'GEMINI', 'SENTENCE_TRANSFORMERS']),
-    modelo_embedding: z.string().min(2, 'El modelo de embedding es obligatorio'),
+    proveedor_embedding: z.nativeEnum(EMBEDDING_PROVIDER),
+    modelo_embedding: z.string().min(L.AI_MODEL_MIN, M.EMBEDDING_MODEL_REQUIRED),
     api_key_embedding: z.string().optional(),
-    chunk_size: z.number({ invalid_type_error: 'Ingrese el tamaño del fragmento' }).int().min(256, 'Mínimo 256 tokens').max(2048, 'Máximo 2048 tokens'),
-    chunk_overlap: z.number({ invalid_type_error: 'Ingrese el solapamiento' }).int().min(0, 'Mínimo 0 tokens').max(512, 'Máximo 512 tokens'),
-    top_k: z.number({ invalid_type_error: 'Ingrese la cantidad de fragmentos' }).int().min(1, 'Mínimo 1 fragmento').max(15, 'Máximo 15 fragmentos'),
-    umbral_similitud: z.number({ invalid_type_error: 'Ingrese el umbral de similitud' }).min(0, 'Mínimo 0.00').max(1, 'Máximo 1.00'),
+    chunk_size: z.number({ invalid_type_error: M.CHUNK_SIZE_REQUIRED }).int().min(L.AI_CHUNK_SIZE_MIN, M.CHUNK_SIZE_MIN).max(L.AI_CHUNK_SIZE_MAX, M.CHUNK_SIZE_MAX),
+    chunk_overlap: z.number({ invalid_type_error: M.CHUNK_OVERLAP_REQUIRED }).int().min(L.AI_CHUNK_OVERLAP_MIN, M.CHUNK_OVERLAP_MIN).max(L.AI_CHUNK_OVERLAP_MAX, M.CHUNK_OVERLAP_MAX),
+    top_k: z.number({ invalid_type_error: M.TOP_K_REQUIRED }).int().min(L.AI_TOP_K_MIN, M.TOP_K_MIN).max(L.AI_TOP_K_MAX, M.TOP_K_MAX),
+    umbral_similitud: z.number({ invalid_type_error: M.SIMILARITY_REQUIRED }).min(L.AI_SIMILARITY_MIN, M.SIMILARITY_MIN).max(L.AI_SIMILARITY_MAX, M.SIMILARITY_MAX),
   })
   .refine((data) => data.chunk_overlap < data.chunk_size / 2, {
-    message: 'El solapamiento (chunk_overlap) debe ser estrictamente menor a la mitad del chunk_size',
+    message: M.CHUNK_OVERLAP_RATIO,
     path: ['chunk_overlap'],
   })
 

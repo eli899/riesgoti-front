@@ -41,8 +41,7 @@ function RemoveForm({ incident, isSubmitting, onClose, onSubmit }: RemoveFalsePo
   return (
     <form noValidate aria-label="Motivo del retiro del falso positivo" onSubmit={submit} className="space-y-4">
       <p className="text-sm text-muted">
-        La incidencia no se elimina: queda en «Excluidas de la agrupación» con tu motivo como evidencia de la revisión.
-        Si la agrupación ya estaba confirmada, deberás confirmarla de nuevo.
+        La incidencia no se elimina: queda en «Excluidas de la agrupación» con tu motivo como evidencia de la revisión. Si la agrupación ya estaba confirmada, deberás confirmarla de nuevo.
       </p>
       <FormAlert message={errors.root?.server?.message} />
       <fieldset>

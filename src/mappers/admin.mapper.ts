@@ -46,6 +46,8 @@ import type {
   Permission,
   Role,
 } from '@/types/domain.types'
+import { AUDIT_TARGET_KIND } from '@/constants/domain.constants'
+import { SYSTEM_ROLE_CODES } from '@/constants/rbac.constants'
 import { fromApiCriticalityToDomain, optionalText, toUserRef } from './common.mapper'
 
 // ---------------------------------------------------------------------------
@@ -278,8 +280,6 @@ export function fromDomainAssetToApi(values: AssetFormValues): AssetRequestDto {
 // ---------------------------------------------------------------------------
 // Usuarios, roles y permisos
 // ---------------------------------------------------------------------------
-const SYSTEM_ROLE_CODES = new Set(['REPORTANTE', 'ANALISTA', 'ADMIN'])
-
 export function fromApiUserToDomain(dto: UserDto): AdminUser {
   return {
     id: dto.id,
@@ -324,7 +324,7 @@ export function fromApiRoleToDomain(dto: RoleDto): Role {
     code: dto.codigo,
     name: dto.nombre,
     active: dto.activo,
-    system: SYSTEM_ROLE_CODES.has(dto.codigo),
+    system: SYSTEM_ROLE_CODES.includes(dto.codigo),
     permissions: dto.permisos,
     userCount: dto.total_usuarios,
   }
@@ -363,8 +363,13 @@ export function fromDomainAIConfigToConnectionTestApi(values: AIConfigFormValues
 const AUDIT_PAGE_SIZE = 50
 
 const AUDIT_TARGETS: [keyof AuditEventDto, AuditTargetKind][] = [
-  ['incidencia_id', 'INCIDENCIA'], ['version_riesgo_id', 'VERSION_RIESGO'], ['version_documento_id', 'VERSION_DOCUMENTO'],
-  ['matriz_id', 'MATRIZ'], ['activo_id', 'ACTIVO'], ['usuario_objeto_id', 'USUARIO'], ['rol_id', 'ROL'],
+  ['incidencia_id', AUDIT_TARGET_KIND.INCIDENCIA],
+  ['version_riesgo_id', AUDIT_TARGET_KIND.VERSION_RIESGO],
+  ['version_documento_id', AUDIT_TARGET_KIND.VERSION_DOCUMENTO],
+  ['matriz_id', AUDIT_TARGET_KIND.MATRIZ],
+  ['activo_id', AUDIT_TARGET_KIND.ACTIVO],
+  ['usuario_objeto_id', AUDIT_TARGET_KIND.USUARIO],
+  ['rol_id', AUDIT_TARGET_KIND.ROL],
 ]
 
 export function fromApiAuditEventToDomain(dto: AuditEventDto): AuditEvent {

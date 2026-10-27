@@ -1,23 +1,25 @@
 import { z } from 'zod'
+import { DOCUMENT_PURPOSE } from '@/constants/domain.constants'
+import { FIELD_LIMITS as L, FILE_LIMITS, VALIDATION_MESSAGES } from '@/constants/validation.constants'
 
-export const MAX_PDF_SIZE_BYTES = 25 * 1024 * 1024 // 25 MB
+const M = VALIDATION_MESSAGES.DOCUMENT
 
 /** Contrato de carga de VERSION_DOCUMENTO (espejo de DocumentUploadInputSerializer). */
 export const documentUploadSchema = z.object({
   codigo: z
     .string()
     .trim()
-    .min(2, 'El código del documento es obligatorio (ej. POL-SGSI-01)')
-    .max(50, 'Máximo 50 caracteres')
-    .regex(/^[A-Za-z0-9][A-Za-z0-9._-]*$/, 'Use letras, dígitos, punto, guion o guion bajo (ej. POL-SGSI-01)'),
-  titulo: z.string().trim().min(5, 'El título debe tener al menos 5 caracteres').max(255),
+    .min(L.DOCUMENT_CODE_MIN, M.CODE_REQUIRED)
+    .max(L.DOCUMENT_CODE_MAX, M.CODE_MAX)
+    .regex(/^[A-Za-z0-9][A-Za-z0-9._-]*$/, M.CODE_FORMAT),
+  titulo: z.string().trim().min(L.DOCUMENT_TITLE_MIN, M.TITLE_MIN).max(L.DOCUMENT_TITLE_MAX),
   descripcion: z.string().optional(),
-  version: z.string().trim().min(1, 'La versión es obligatoria (ej. v1.0)').max(50),
-  finalidad: z.enum(['OPERATIVA', 'ESTRATEGICA', 'AMBAS']),
+  version: z.string().trim().min(L.DOCUMENT_VERSION_MIN, M.VERSION_REQUIRED).max(L.DOCUMENT_VERSION_MAX),
+  finalidad: z.nativeEnum(DOCUMENT_PURPOSE),
   archivo: z
-    .custom<File>((file) => file instanceof File, 'Debe seleccionar un archivo PDF')
-    .refine((file) => file?.type === 'application/pdf' || file?.name.toLowerCase().endsWith('.pdf'), 'Solo se permiten archivos .pdf')
-    .refine((file) => file?.size <= MAX_PDF_SIZE_BYTES, 'El archivo PDF no debe superar 25 MB'),
+    .custom<File>((file) => file instanceof File, M.FILE_REQUIRED)
+    .refine((file) => file?.type === FILE_LIMITS.PDF_MIME_TYPE || file?.name.toLowerCase().endsWith(FILE_LIMITS.PDF_EXTENSION), M.FILE_TYPE)
+    .refine((file) => file?.size <= FILE_LIMITS.PDF_MAX_BYTES, M.FILE_SIZE),
 })
 
 export type DocumentUploadFormValues = z.infer<typeof documentUploadSchema>

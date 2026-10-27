@@ -8,17 +8,12 @@ import { cn } from '@/lib/utils'
 import type { SubmitResult } from '@/lib/apiErrors'
 import { aiConfigFormSchema, type AIConfigFormValues } from '@/schemas/aiConfig.schema'
 import { inputClassName } from '@/styles/tokens.form'
+import { EMBEDDING_PROVIDER, LLM_PROVIDER } from '@/constants/domain.constants'
+import { EMBEDDING_PROVIDER_LABEL, LLM_PROVIDER_LABEL } from '@/constants/labels.constants'
 
-const LLM_PROVIDERS = [
-  { id: 'GEMINI', label: 'Google Gemini' },
-  { id: 'OPENAI', label: 'OpenAI' },
-  { id: 'HUGGINGFACE_LOCAL', label: 'Hugging Face (local)' },
-] as const
-const EMBEDDING_PROVIDERS = [
-  { id: 'SENTENCE_TRANSFORMERS', label: 'Sentence Transformers (local)' },
-  { id: 'GEMINI', label: 'Google Gemini' },
-  { id: 'OPENAI', label: 'OpenAI' },
-] as const
+// Orden de presentación de los proveedores en los selectores.
+const LLM_PROVIDERS = [LLM_PROVIDER.GEMINI, LLM_PROVIDER.OPENAI, LLM_PROVIDER.HUGGINGFACE_LOCAL].map((id) => ({ id, label: LLM_PROVIDER_LABEL[id] }))
+const EMBEDDING_PROVIDERS = [EMBEDDING_PROVIDER.SENTENCE_TRANSFORMERS, EMBEDDING_PROVIDER.GEMINI, EMBEDDING_PROVIDER.OPENAI].map((id) => ({ id, label: EMBEDDING_PROVIDER_LABEL[id] }))
 
 interface AIConfigFormViewProps {
   defaultValues: AIConfigFormValues
@@ -41,7 +36,7 @@ export default function AIConfigFormView({ defaultValues, llmKeyMask, embeddingK
     else reset({ ...values, api_key_llm: '', api_key_embedding: '' })
   })
 
-  const input = (hasError: boolean, extra = 'h-11 md:h-10') => cn(inputClassName(hasError), extra)
+  const input = (hasError: boolean, extra: string = 'h-11 md:h-10') => cn(inputClassName(hasError), extra)
   const describedBy = (id: string, hasError: boolean) => (hasError ? `${id}-err` : `${id}-help`)
 
   return (

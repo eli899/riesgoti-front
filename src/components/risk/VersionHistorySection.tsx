@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { ChevronDown, FileText, GitCompare } from 'lucide-react'
 import { Button, Card, KV, RiskLevelBadge, SectionTitle, ValidationBadge } from '@/components/ui'
 import { formatDateTime, NOT_DETERMINED } from '@/lib/format'
-import { RISK_VERSION_FIELDS } from '@/lib/labels'
+import { RISK_VERSION_FIELDS } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import type { RiskVersion } from '@/types/domain.types'
+import { RISK_VALIDATION_STATUS, RISK_VERSION_ORIGIN } from '@/constants/domain.constants'
 import VersionCompareTable from './VersionCompareTable'
 
 interface VersionHistorySectionProps {
@@ -31,7 +32,7 @@ export default function VersionHistorySection({ versions, highlightVersionId, on
         {versions.map((v) => {
           const open = expanded === v.id
           const base = baseOf(v)
-          const canCompare = Boolean(base) && (v.origin === 'ANALISTA' || v.number > 1)
+          const canCompare = Boolean(base) && (v.origin === RISK_VERSION_ORIGIN.ANALISTA || v.number > 1)
           return (
             <li key={v.id} className={cn(highlightVersionId === v.id && 'bg-soft/50')}>
               <button type="button" onClick={() => { setExpanded(open ? null : v.id); setComparing(null) }} aria-expanded={open} aria-controls={`version-${v.id}`}
@@ -39,7 +40,7 @@ export default function VersionHistorySection({ versions, highlightVersionId, on
                 <span className="font-semibold">Versión {v.number}</span>
                 <ValidationBadge status={v.status} />
                 <span className="text-xs text-muted">
-                  {v.origin === 'IA' ? 'Origen IA' : `Origen analista · ${v.createdBy.name}`} · {formatDateTime(v.createdAt)}
+                  {v.origin === RISK_VERSION_ORIGIN.IA ? 'Origen IA' : `Origen analista · ${v.createdBy.name}`} · {formatDateTime(v.createdAt)}
                   {v.decision && ` · Decidida por ${v.decision.analyst.name}`}
                 </span>
                 <ChevronDown size={18} className={cn('hidden text-muted transition-transform sm:block', open && 'rotate-180')} aria-hidden />
@@ -65,7 +66,7 @@ export default function VersionHistorySection({ versions, highlightVersionId, on
                         {comparing === v.id ? 'Ocultar comparación' : 'Comparar con versión anterior'}
                       </Button>
                     )}
-                    {onOpenWorkspace && v.status === 'PENDIENTE' && <Button size="sm" onClick={() => onOpenWorkspace(v.id)}>Revisar propuesta v{v.number}</Button>}
+                    {onOpenWorkspace && v.status === RISK_VALIDATION_STATUS.PENDIENTE && <Button size="sm" onClick={() => onOpenWorkspace(v.id)}>Revisar propuesta v{v.number}</Button>}
                   </footer>
                   {comparing === v.id && base && (
                     <section aria-label={`Comparación v${base.number} y v${v.number}`} className="mt-3 rounded-tile border border-line bg-white p-3">

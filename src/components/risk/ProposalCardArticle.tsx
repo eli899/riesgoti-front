@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { focusRingClassName } from '@/styles/tokens.focus'
 import { monoClassName } from '@/styles/tokens.layout'
 import type { RiskVersion } from '@/types/domain.types'
+import { RISK_VERSION_ORIGIN } from '@/constants/domain.constants'
 
 /** Tarjeta de una propuesta de riesgo (VERSION_RIESGO) en la bandeja; toda la tarjeta abre el espacio de trabajo. */
 export default function ProposalCardArticle({ version, onOpen }: { version: RiskVersion; onOpen: (versionId: number) => void }) {
@@ -15,7 +16,7 @@ export default function ProposalCardArticle({ version, onOpen }: { version: Risk
         <p className="mb-1 flex flex-wrap items-center gap-2 text-xs text-muted">
           <span className={monoClassName}>{version.riskCode}</span>
           <span>v{version.number}</span>
-          {version.origin === 'IA' ? <AIBadge /> : <span>Versión del analista</span>}
+          {version.origin === RISK_VERSION_ORIGIN.IA ? <AIBadge /> : <span>Versión del analista</span>}
           {version.possibleRecurrence && (
             <span className="inline-flex items-center gap-1 rounded-full bg-mid px-2 py-0.5 text-2xs font-semibold text-deep"><Repeat size={12} aria-hidden />Posible recurrencia</span>
           )}

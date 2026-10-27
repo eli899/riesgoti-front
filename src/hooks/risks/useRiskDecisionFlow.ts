@@ -10,6 +10,8 @@ import {
   fromDomainRiskVersionToDecisionDefaults,
 } from '@/mappers/risks.mapper'
 import type { RiskDecisionFormValues } from '@/schemas/riskEvaluation.schema'
+import { RISK_DECISION_ACTION, RISK_VALIDATION_STATUS } from '@/constants/domain.constants'
+import { PERMISSIONS, ROLES } from '@/constants/rbac.constants'
 
 const SUCCESS: Record<RiskDecisionFormValues['accion'], [string, string]> = {
   VALIDADA: ['Riesgo validado', 'La versión pasa a ser la vigente del riesgo. Validar no ejecuta controles ni cierra incidencias.'],
@@ -28,7 +30,7 @@ export function useRiskDecisionFlow(versionId: number | null, onCorrected?: (new
   const version = useMemo(() => (versionQuery.data ? fromApiRiskVersionToDomain(versionQuery.data) : null), [versionQuery.data])
   const [submitDecision, { isLoading: isSubmitting }] = useSubmitRiskDecisionMutation()
 
-  const canDecide = roleCode !== 'ADMIN' && hasPermission('riesgo.validar') && version?.status === 'PENDIENTE'
+  const canDecide = roleCode !== ROLES.ADMIN && hasPermission(PERMISSIONS.RISK_VALIDATE) && version?.status === RISK_VALIDATION_STATUS.PENDIENTE
 
   /** Precondiciones de VALIDADA (espejo de RiskGovernanceDecisionService._validate_validation_preconditions). */
   const validationBlockers = useMemo(() => {
@@ -50,8 +52,8 @@ export function useRiskDecisionFlow(versionId: number | null, onCorrected?: (new
       const { data, failure } = await runMutation(() => submitDecision({ id: versionId, body }).unwrap())
       if (failure) return failure
       const [title, description] = SUCCESS[values.accion]
-      toast.success(values.accion === 'CORREGIDA' && data ? `${title}: ${data.riesgo_codigo} v${data.numero}` : title, { description })
-      if (values.accion === 'CORREGIDA' && data && data.id !== versionId) onCorrected?.(data.id)
+      toast.success(values.accion === RISK_DECISION_ACTION.CORREGIDA && data ? `${title}: ${data.riesgo_codigo} v${data.numero}` : title, { description })
+      if (values.accion === RISK_DECISION_ACTION.CORREGIDA && data && data.id !== versionId) onCorrected?.(data.id)
       return undefined
     },
     [correctionDefaults, onCorrected, submitDecision, versionId],

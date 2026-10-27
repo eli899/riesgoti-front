@@ -3,6 +3,7 @@ import { ShieldCheck } from 'lucide-react'
 import { Button, Dialog, ErrorState, MarkdownViewer, Skeleton, Tabs } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import type { DocumentPreview, DocumentVersion } from '@/types/domain.types'
+import { DOCUMENT_PROCESSING_STATUS } from '@/constants/domain.constants'
 
 interface DocumentPreviewModalProps {
   version: DocumentVersion | null
@@ -19,7 +20,7 @@ const pagesLabel = (start: number | null, end: number | null) =>
 
 /** Inspección de los FRAGMENTO_DOCUMENTO generados antes de autorizar la versión para el RAG. */
 export default function DocumentPreviewModal({ version, preview, isLoading, error, isAuthorizing, onClose, onAuthorize }: DocumentPreviewModalProps) {
-  const canAuthorize = version?.processing === 'PENDIENTE_AUTORIZACION'
+  const canAuthorize = version?.processing === DOCUMENT_PROCESSING_STATUS.PENDIENTE_AUTORIZACION
   return (
     <Dialog
       open={version !== null}

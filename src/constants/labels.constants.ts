@@ -1,4 +1,6 @@
-import type { AuditTargetKind, DocumentPurpose, IncidentStatus, RiskLevelCode, RiskValidationStatus, RoleCode } from '@/types/domain.types'
+import type { AuditTargetKind, DocumentPurpose, EmbeddingProvider, IncidentStatus, LlmProvider, RiskLevelCode, RiskValidationStatus, RoleCode } from '@/types/domain.types'
+import type { AuditAction } from '@/constants/audit.constants'
+import { PERMISSIONS } from '@/constants/rbac.constants'
 
 export const ROLE_LABEL: Record<RoleCode, string> = {
   REPORTANTE: 'Reportante',
@@ -33,36 +35,36 @@ export const PERMISSION_GROUPS: { module: string; items: { code: string; label: 
   {
     module: 'Incidencias',
     items: [
-      { code: 'incidencia.crear', label: 'Registrar incidencias' },
-      { code: 'incidencia.ver_propias', label: 'Ver incidencias propias' },
-      { code: 'incidencia.ver_todas', label: 'Ver todas las incidencias' },
-      { code: 'incidencia.cerrar_propias_por_feedback', label: 'Cerrar propias mediante feedback' },
+      { code: PERMISSIONS.INCIDENT_CREATE, label: 'Registrar incidencias' },
+      { code: PERMISSIONS.INCIDENT_VIEW_OWN, label: 'Ver incidencias propias' },
+      { code: PERMISSIONS.INCIDENT_VIEW_ALL, label: 'Ver todas las incidencias' },
+      { code: PERMISSIONS.INCIDENT_CLOSE_OWN_BY_FEEDBACK, label: 'Cerrar propias mediante feedback' },
     ],
   },
   {
     module: 'Atención de incidencias',
     items: [
-      { code: 'atencion.ver_cola', label: 'Ver cola de atención' },
-      { code: 'atencion.atender', label: 'Atender y cerrar incidencias' },
+      { code: PERMISSIONS.ATTENTION_VIEW_QUEUE, label: 'Ver cola de atención' },
+      { code: PERMISSIONS.ATTENTION_ATTEND, label: 'Atender y cerrar incidencias' },
     ],
   },
   {
     module: 'Riesgos',
     items: [
-      { code: 'riesgo.revisar_agrupacion', label: 'Revisar agrupaciones' },
-      { code: 'riesgo.evaluar', label: 'Evaluar riesgos' },
-      { code: 'riesgo.validar', label: 'Validar, corregir o rechazar' },
-      { code: 'riesgo.consultar', label: 'Consultar riesgos e indicadores' },
+      { code: PERMISSIONS.RISK_REVIEW_GROUPING, label: 'Revisar agrupaciones' },
+      { code: PERMISSIONS.RISK_EVALUATE, label: 'Evaluar riesgos' },
+      { code: PERMISSIONS.RISK_VALIDATE, label: 'Validar, corregir o rechazar' },
+      { code: PERMISSIONS.RISK_QUERY, label: 'Consultar riesgos e indicadores' },
     ],
   },
   {
     module: 'Administración',
     items: [
-      { code: 'activo.administrar', label: 'Administrar activos' },
-      { code: 'documento.administrar', label: 'Administrar documentos' },
-      { code: 'matriz.administrar', label: 'Administrar matriz' },
-      { code: 'usuario.administrar', label: 'Administrar usuarios' },
-      { code: 'rol.administrar', label: 'Administrar roles y permisos' },
+      { code: PERMISSIONS.ASSET_ADMIN, label: 'Administrar activos' },
+      { code: PERMISSIONS.DOCUMENT_ADMIN, label: 'Administrar documentos' },
+      { code: PERMISSIONS.MATRIX_ADMIN, label: 'Administrar matriz' },
+      { code: PERMISSIONS.USER_ADMIN, label: 'Administrar usuarios' },
+      { code: PERMISSIONS.ROLE_ADMIN, label: 'Administrar roles y permisos' },
     ],
   },
 ]
@@ -83,14 +85,20 @@ export const RISK_VERSION_FIELDS: { key: 'title' | 'description' | 'threat' | 'v
   { key: 'recommendation', label: 'Recomendación', wide: true },
 ]
 
-/** Acciones registradas en EVENTO_AUDITORIA por los servicios del backend (el código se muestra si no hay etiqueta). */
-export const AUDIT_ACTION_LABEL: Record<string, string> = {
+/** Etiquetas de EVENTO_AUDITORIA.accion (catálogo en audit.constants.ts; un código desconocido se muestra tal cual). */
+export const AUDIT_ACTION_LABEL: Record<AuditAction, string> = {
   INICIO_SESION: 'Inicio de sesión',
   INICIO_SESION_FALLIDO: 'Inicio de sesión fallido',
   CREAR_USUARIO: 'Creación de usuario',
+  ACTUALIZAR_USUARIO: 'Actualización de usuario',
+  ACTIVAR_USUARIO: 'Activación de usuario',
+  DESACTIVAR_USUARIO: 'Desactivación de usuario',
+  CAMBIAR_ROL_USUARIO: 'Cambio de rol de usuario',
   CREAR_ROL: 'Creación de rol',
   ACTUALIZAR_ROL: 'Actualización de rol',
   CREAR_ACTIVO: 'Creación de activo',
+  ACTUALIZAR_ACTIVO: 'Actualización de activo',
+  ACTIVAR_ACTIVO: 'Activación de activo',
   DESACTIVAR_ACTIVO: 'Desactivación de activo',
   ACTUALIZAR_CONFIG_IA_RAG: 'Actualización de configuración IA/RAG',
   PROBAR_CONEXION_IA: 'Prueba de conexión IA',
@@ -123,4 +131,16 @@ export const AUDIT_TARGET_LABEL: Record<AuditTargetKind, string> = {
   ACTIVO: 'Activo',
   USUARIO: 'Usuario',
   ROL: 'Rol',
+}
+
+export const LLM_PROVIDER_LABEL: Record<LlmProvider, string> = {
+  GEMINI: 'Google Gemini',
+  OPENAI: 'OpenAI',
+  HUGGINGFACE_LOCAL: 'Hugging Face (local)',
+}
+
+export const EMBEDDING_PROVIDER_LABEL: Record<EmbeddingProvider, string> = {
+  SENTENCE_TRANSFORMERS: 'Sentence Transformers (local)',
+  GEMINI: 'Google Gemini',
+  OPENAI: 'OpenAI',
 }

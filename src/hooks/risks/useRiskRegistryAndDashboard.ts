@@ -3,11 +3,12 @@ import { useGetRiskDashboardQuery, useGetRiskVersionsQuery } from '@/app/api/ris
 import { toApiFailure } from '@/lib/apiErrors'
 import { fromApiRiskDashboardToDomain, fromApiRiskVersionToDomain, toRiskRegistryRows } from '@/mappers/risks.mapper'
 import type { RiskRegistryCategory } from '@/types/domain.types'
+import { RISK_REGISTRY_CATEGORY } from '@/constants/domain.constants'
 
 export const REGISTRY_TABS: { id: RiskRegistryCategory; label: string }[] = [
-  { id: 'VALIDADO', label: 'Riesgos validados' },
-  { id: 'PENDIENTE', label: 'Propuestas pendientes' },
-  { id: 'RECHAZADO', label: 'Rechazados' },
+  { id: RISK_REGISTRY_CATEGORY.VALIDADO, label: 'Riesgos validados' },
+  { id: RISK_REGISTRY_CATEGORY.PENDIENTE, label: 'Propuestas pendientes' },
+  { id: RISK_REGISTRY_CATEGORY.RECHAZADO, label: 'Rechazados' },
 ]
 
 /**
@@ -15,7 +16,7 @@ export const REGISTRY_TABS: { id: RiskRegistryCategory; label: string }[] = [
  * (GET /risks/dashboard/), sin duplicar riesgos con varias versiones.
  */
 export function useRiskRegistryAndDashboard() {
-  const [activeTab, setActiveTab] = useState<RiskRegistryCategory>('VALIDADO')
+  const [activeTab, setActiveTab] = useState<RiskRegistryCategory>(RISK_REGISTRY_CATEGORY.VALIDADO)
   const dashboardQuery = useGetRiskDashboardQuery(undefined, { refetchOnMountOrArgChange: true })
   const versionsQuery = useGetRiskVersionsQuery(undefined, { refetchOnMountOrArgChange: true })
 

@@ -1,8 +1,9 @@
 import { Check, Lock, UserRound } from 'lucide-react'
 import { Avatar, Card, KV, SectionTitle } from '@/components/ui'
-import { PERMISSION_GROUPS, ROLE_LABEL } from '@/lib/labels'
+import { PERMISSION_GROUPS, ROLE_LABEL } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import type { SessionUser } from '@/types/domain.types'
+import { ROLES } from '@/constants/rbac.constants'
 
 /** Datos del usuario autenticado y sus permisos efectivos agrupados por módulo (solo lectura). */
 export default function AccountProfileArticle({ profile }: { profile: SessionUser }) {
@@ -22,7 +23,7 @@ export default function AccountProfileArticle({ profile }: { profile: SessionUse
           <KV k="Rol" v={`${ROLE_LABEL[profile.roleCode]} (${profile.roleCode})`} />
           <KV k="Permisos efectivos" v={`${profile.permissions.length}`} />
         </dl>
-        {profile.roleCode === 'ADMIN' && (
+        {profile.roleCode === ROLES.ADMIN && (
           <p className="mt-2 flex items-start gap-2 rounded-control bg-canvas p-3 text-xs text-muted">
             <Lock size={14} className="mt-0.5 shrink-0" aria-hidden />
             Por segregación de funciones (ISO/IEC 27001), el Administrador no revisa, evalúa ni valida riesgos.

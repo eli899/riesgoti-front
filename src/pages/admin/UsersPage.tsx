@@ -8,12 +8,13 @@ import { Button, PageHeader } from '@/components/ui'
 import { useUserRoleManager } from '@/hooks/admin/useUserRoleManager'
 import { fromDomainUserToFormValues } from '@/mappers/admin.mapper'
 import type { AdminUser } from '@/types/domain.types'
+import { ROLES } from '@/constants/rbac.constants'
 
 /** Sub-vista: usuarios de la plataforma (USUARIO). */
 export default function UsersPage() {
   const mgr = useUserRoleManager()
   const [editing, setEditing] = useState<{ user: AdminUser | null } | null>(null)
-  const defaultRoleId = mgr.roles.find((r) => r.code === 'REPORTANTE')?.id ?? mgr.roles[0]?.id
+  const defaultRoleId = mgr.roles.find((r) => r.code === ROLES.REPORTANTE)?.id ?? mgr.roles[0]?.id
 
   return (
     <>
