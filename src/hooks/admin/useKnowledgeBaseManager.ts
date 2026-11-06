@@ -4,12 +4,14 @@ import {
   useActivateDocumentVersionMutation,
   useAuthorizeDocumentVersionMutation,
   useDeactivateDocumentVersionMutation,
+  useDeleteDocumentVersionMutation,
   useGetDocumentPreviewQuery,
   useGetDocumentVersionsQuery,
   useReindexDocumentVersionMutation,
   useRetryDocumentVersionMutation,
   useUploadDocumentVersionMutation,
 } from '@/app/api/adminApi'
+import { useConfirmedDeletion } from '@/hooks/useConfirmedDeletion'
 import { runMutation, toApiFailure, type SubmitResult } from '@/lib/apiErrors'
 import {
   fromApiDocumentPreviewToDomain,
@@ -17,6 +19,7 @@ import {
   fromDomainDocumentUploadToApi,
 } from '@/mappers/admin.mapper'
 import type { DocumentUploadFormValues } from '@/schemas/document.schema'
+import type { DocumentVersion } from '@/types/domain.types'
 import { DOCUMENT_PROCESSING_STATUS } from '@/constants/domain.constants'
 import { POLLING_INTERVALS_MS } from '@/constants/timing.constants'
 import type { DocumentAction } from '@/constants/api.constants'
@@ -47,6 +50,11 @@ export function useKnowledgeBaseManager() {
   const [retry] = useRetryDocumentVersionMutation()
   const [reindex] = useReindexDocumentVersionMutation()
   const [pendingAction, setPendingAction] = useState<{ id: number; action: DocumentAction } | null>(null)
+  const [deleteVersion] = useDeleteDocumentVersionMutation()
+  const deletion = useConfirmedDeletion((version: DocumentVersion) => deleteVersion(version.id).unwrap(), {
+    fallback: 'No se pudo eliminar la versión.',
+    successMessage: (version) => `${version.code} ${version.version} eliminado`,
+  })
 
   const uploadVersion = useCallback(
     async (values: DocumentUploadFormValues): Promise<SubmitResult> => {
@@ -84,6 +92,7 @@ export function useKnowledgeBaseManager() {
     isUploading,
     runAction,
     pendingAction,
+    deletion,
   }
 }
 

@@ -6,6 +6,7 @@ import type {
   IncidentDetailDto,
   IncidentDto,
   IncidentListParamsDto,
+  IncidentUpdateRequestDto,
   OperationalGuidanceDto,
   OrientationFeedbackRequestDto,
   RetryStrategicDto,
@@ -25,6 +26,15 @@ export const incidentsApi = baseApi.injectEndpoints({
     createIncident: build.mutation<IncidentDetailDto, FormData>({
       query: (body) => ({ url: API_ENDPOINTS.INCIDENTS, method: HTTP_METHODS.POST, body }),
       invalidatesTags: [API_TAGS.INCIDENT],
+    }),
+    updateIncident: build.mutation<IncidentDetailDto, { id: number; body: IncidentUpdateRequestDto }>({
+      query: ({ id, body }) => ({ url: API_ENDPOINTS.INCIDENT(id), method: HTTP_METHODS.PATCH, body }),
+      invalidatesTags: [API_TAGS.INCIDENT],
+    }),
+    /** Eliminación física (incidencia.eliminar); 409 si sustenta un riesgo evaluado o decidido. */
+    deleteIncident: build.mutation<void, number>({
+      query: (id) => ({ url: API_ENDPOINTS.INCIDENT(id), method: HTTP_METHODS.DELETE }),
+      invalidatesTags: [API_TAGS.INCIDENT, API_TAGS.RISK_VERSION, API_TAGS.RISK_DASHBOARD],
     }),
     getOperationalGuidance: build.query<OperationalGuidanceDto, number>({
       query: (id) => API_ENDPOINTS.INCIDENT_OPERATIONAL_GUIDANCE(id),
@@ -68,6 +78,8 @@ export const {
   useGetIncidentsQuery,
   useGetIncidentQuery,
   useCreateIncidentMutation,
+  useUpdateIncidentMutation,
+  useDeleteIncidentMutation,
   useGetOperationalGuidanceQuery,
   useSubmitOrientationFeedbackMutation,
   useStartHumanAttentionMutation,

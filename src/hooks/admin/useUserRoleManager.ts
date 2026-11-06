@@ -3,6 +3,8 @@ import { toast } from 'sonner'
 import {
   useCreateRoleMutation,
   useCreateUserMutation,
+  useDeleteRoleMutation,
+  useDeleteUserMutation,
   useGetPermissionsQuery,
   useGetRolesQuery,
   useGetUsersQuery,
@@ -10,6 +12,7 @@ import {
   useUpdateUserMutation,
 } from '@/app/api/adminApi'
 import { useAuthSession } from '@/hooks/useAuthSession'
+import { useConfirmedDeletion } from '@/hooks/useConfirmedDeletion'
 import { runMutation, toApiFailure, type ApiFailure, type SubmitResult } from '@/lib/apiErrors'
 import {
   fromApiPermissionToDomain,
@@ -20,7 +23,7 @@ import {
 } from '@/mappers/admin.mapper'
 import type { RoleFormValues } from '@/schemas/role.schema'
 import type { UserFormValues } from '@/schemas/user.schema'
-import type { AdminUser } from '@/types/domain.types'
+import type { AdminUser, Role } from '@/types/domain.types'
 import { ROLES } from '@/constants/rbac.constants'
 
 /** Caso de uso: usuarios y roles con las reglas de continuidad administrativa y SoD (ISO/IEC 27001 A.5.3). */
@@ -34,6 +37,16 @@ export function useUserRoleManager() {
   const [createRole, { isLoading: isCreatingRole }] = useCreateRoleMutation()
   const [updateRole, { isLoading: isUpdatingRole }] = useUpdateRoleMutation()
   const [togglingUserId, setTogglingUserId] = useState<number | null>(null)
+  const [deleteUser] = useDeleteUserMutation()
+  const [deleteRole] = useDeleteRoleMutation()
+  const userDeletion = useConfirmedDeletion((user: AdminUser) => deleteUser(user.id).unwrap(), {
+    fallback: 'No se pudo eliminar el usuario.',
+    successMessage: (user) => `Usuario ${user.fullName} eliminado`,
+  })
+  const roleDeletion = useConfirmedDeletion((role: Role) => deleteRole(role.id).unwrap(), {
+    fallback: 'No se pudo eliminar el rol.',
+    successMessage: (role) => `Rol ${role.name} eliminado`,
+  })
 
   const users = useMemo(() => (usersQuery.data ?? []).map(fromApiUserToDomain), [usersQuery.data])
   const roles = useMemo(() => (rolesQuery.data ?? []).map(fromApiRoleToDomain), [rolesQuery.data])
@@ -118,8 +131,10 @@ export function useUserRoleManager() {
     isSavingUser: isCreatingUser || isUpdatingUser,
     toggleUserActive,
     togglingUserId,
+    userDeletion,
     saveRole,
     createNewRole,
     isSavingRole: isCreatingRole || isUpdatingRole,
+    roleDeletion,
   }
 }

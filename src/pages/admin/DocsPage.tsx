@@ -4,6 +4,7 @@ import AsyncContent from '@/components/AsyncContent'
 import DocumentPreviewModal from '@/components/admin/DocumentPreviewModal'
 import DocumentUploadModal, { type DocumentUploadSeed } from '@/components/admin/DocumentUploadModal'
 import DocumentVersionsTable from '@/components/admin/DocumentVersionsTable'
+import ConfirmDeleteDialog from '@/components/forms/ConfirmDeleteDialog'
 import PageMeta from '@/components/seo/PageMeta'
 import { Button, PageHeader } from '@/components/ui'
 import { useDocumentPreview, useKnowledgeBaseManager } from '@/hooks/admin/useKnowledgeBaseManager'
@@ -48,6 +49,7 @@ export default function DocsPage() {
               onPreview={(v) => setPreviewId(v.id)}
               onAction={kb.runAction}
               onNewVersion={openNewVersion}
+              onDelete={kb.deletion.request}
             />
           </AsyncContent>
         </section>
@@ -63,6 +65,17 @@ export default function DocsPage() {
         onClose={() => setPreviewId(null)}
         onAuthorize={authorize}
       />
+      <ConfirmDeleteDialog
+        open={kb.deletion.target !== null}
+        title={`Eliminar ${kb.deletion.target?.code ?? ''} ${kb.deletion.target?.version ?? ''}`}
+        isDeleting={kb.deletion.isDeleting}
+        error={kb.deletion.error}
+        onCancel={kb.deletion.cancel}
+        onConfirm={kb.deletion.confirm}
+      >
+        <p>Se eliminarán la versión, sus fragmentos, sus vectores del índice FAISS y el PDF almacenado. Si era la única versión, también se elimina el documento.</p>
+        <p className="text-muted">Una versión con fragmentos citados en orientaciones o riesgos no puede eliminarse: las citas históricas se preservan (INV-04).</p>
+      </ConfirmDeleteDialog>
     </>
   )
 }

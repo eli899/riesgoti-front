@@ -19,12 +19,15 @@ export const PERMISSIONS = {
   INCIDENT_VIEW_OWN: 'incidencia.ver_propias',
   INCIDENT_VIEW_ALL: 'incidencia.ver_todas',
   INCIDENT_CLOSE_OWN_BY_FEEDBACK: 'incidencia.cerrar_propias_por_feedback',
+  INCIDENT_EDIT_OWN: 'incidencia.editar_propias',
+  INCIDENT_DELETE: 'incidencia.eliminar',
   ATTENTION_VIEW_QUEUE: 'atencion.ver_cola',
   ATTENTION_ATTEND: 'atencion.atender',
   RISK_REVIEW_GROUPING: 'riesgo.revisar_agrupacion',
   RISK_EVALUATE: 'riesgo.evaluar',
   RISK_VALIDATE: 'riesgo.validar',
   RISK_QUERY: 'riesgo.consultar',
+  RISK_DELETE: 'riesgo.eliminar',
   ASSET_ADMIN: 'activo.administrar',
   DOCUMENT_ADMIN: 'documento.administrar',
   MATRIX_ADMIN: 'matriz.administrar',
@@ -48,6 +51,8 @@ export const ADMINISTRATIVE_PERMISSIONS: readonly PermissionCode[] = [
   PERMISSIONS.MATRIX_ADMIN,
   PERMISSIONS.DOCUMENT_ADMIN,
   PERMISSIONS.ASSET_ADMIN,
+  PERMISSIONS.INCIDENT_DELETE,
+  PERMISSIONS.RISK_DELETE,
 ]
 
 /** Permisos que el rol ADMIN debe conservar para no perder el gobierno de la plataforma. */

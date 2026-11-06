@@ -477,6 +477,14 @@ export interface OperationalGuidanceDto {
   } | null
 }
 
+/** IncidentUpdateInputSerializer (PATCH parcial; activo_reportado_id = null + activo_texto para «Otro»). */
+export interface IncidentUpdateRequestDto {
+  titulo: string
+  descripcion: string
+  activo_reportado_id: number | null
+  activo_texto: string | null
+}
+
 export interface OrientationFeedbackRequestDto {
   resultado: ResultadoOrientacionDto
 }

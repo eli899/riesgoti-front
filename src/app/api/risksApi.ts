@@ -46,6 +46,10 @@ export const risksApi = baseApi.injectEndpoints({
       query: ({ id, body }) => ({ url: API_ENDPOINTS.RISK_VERSION_DECISION(id), method: HTTP_METHODS.POST, body }),
       invalidatesTags: [API_TAGS.RISK_VERSION, API_TAGS.RISK_DASHBOARD],
     }),
+    deleteRiskVersion: build.mutation<void, number>({
+      query: (id) => ({ url: API_ENDPOINTS.RISK_VERSION(id), method: HTTP_METHODS.DELETE }),
+      invalidatesTags: [API_TAGS.RISK_VERSION, API_TAGS.RISK_DASHBOARD, API_TAGS.INCIDENT],
+    }),
     getRiskDashboard: build.query<RiskDashboardDto, void>({
       query: () => API_ENDPOINTS.RISK_DASHBOARD,
       providesTags: [API_TAGS.RISK_DASHBOARD],
@@ -61,5 +65,6 @@ export const {
   useConfirmRiskGroupingMutation,
   useEvaluateRiskVersionMutation,
   useSubmitRiskDecisionMutation,
+  useDeleteRiskVersionMutation,
   useGetRiskDashboardQuery,
 } = risksApi

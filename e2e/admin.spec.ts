@@ -75,6 +75,33 @@ test.describe('Portal del Administrador', () => {
     await expect(row).toContainText('Inactivo')
   })
 
+  test('elimina un activo sin referencias y explica por qué no elimina uno referenciado', async ({ page }) => {
+    const temporal = { code: `ACT-DEL-${RUN}`, name: `Activo temporal ${RUN}` }
+    await page.goto(ROUTES.ASSETS)
+    await page.getByRole('button', { name: 'Nuevo activo' }).click()
+    const form = dialog(page, 'Nuevo activo')
+    await form.getByLabel('Código').fill(temporal.code)
+    await form.getByLabel('Tipo').selectOption({ label: 'Aplicación' })
+    await form.getByLabel('Nombre').fill(temporal.name)
+    await form.getByRole('button', { name: 'Guardar' }).click()
+    await expect(form).toBeHidden()
+
+    const table = page.getByRole('table', { name: 'Catálogo de activos de información' })
+    await table.getByRole('button', { name: `Eliminar ${temporal.name}` }).click()
+    const confirm = dialog(page, `Eliminar ${temporal.name}`)
+    await confirm.getByRole('button', { name: 'Eliminar definitivamente' }).click()
+    await expect(confirm).toBeHidden()
+    await expect(table.getByRole('row').filter({ hasText: temporal.name })).toHaveCount(0)
+
+    // ERP Contable está referenciado por incidencias semilla: el servidor responde 409 y el diálogo lo explica.
+    await table.getByRole('button', { name: 'Eliminar ERP Contable' }).click()
+    const blocked = dialog(page, 'Eliminar ERP Contable')
+    await blocked.getByRole('button', { name: 'Eliminar definitivamente' }).click()
+    await expect(blocked.getByRole('alert')).toContainText('desactívelo en lugar de eliminarlo')
+    await blocked.getByRole('button', { name: 'Cancelar' }).click()
+    await expect(table.getByRole('row').filter({ hasText: 'ERP Contable' })).toHaveCount(1)
+  })
+
   test('edita celdas de la matriz, descarta y publica una nueva versión', async ({ page }) => {
     await page.goto(ROUTES.MATRIX)
     const publish = page.getByRole('button', { name: 'Guardar como nueva versión' })

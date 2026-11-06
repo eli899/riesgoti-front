@@ -81,6 +81,10 @@ export const adminApi = baseApi.injectEndpoints({
       query: documentAction(DOCUMENT_ACTIONS.REINDEX),
       invalidatesTags: [API_TAGS.DOCUMENT_VERSION],
     }),
+    deleteDocumentVersion: build.mutation<void, number>({
+      query: (id) => ({ url: API_ENDPOINTS.DOCUMENT_VERSION(id), method: HTTP_METHODS.DELETE }),
+      invalidatesTags: [API_TAGS.DOCUMENT_VERSION],
+    }),
 
     // Matriz 5x5 (CONFIGURACION_MATRIZ / CELDA_MATRIZ)
     getActiveMatrix: build.query<MatrixConfigDto, void>({
@@ -109,6 +113,10 @@ export const adminApi = baseApi.injectEndpoints({
       query: ({ id, body }) => ({ url: API_ENDPOINTS.ASSET(id), method: HTTP_METHODS.PATCH, body }),
       invalidatesTags: [API_TAGS.ASSET],
     }),
+    deleteAsset: build.mutation<void, number>({
+      query: (id) => ({ url: API_ENDPOINTS.ASSET(id), method: HTTP_METHODS.DELETE }),
+      invalidatesTags: [API_TAGS.ASSET],
+    }),
 
     // Usuarios (usuario.administrar)
     getUsers: build.query<UserDto[], void>({
@@ -121,6 +129,10 @@ export const adminApi = baseApi.injectEndpoints({
     }),
     updateUser: build.mutation<UserDto, { id: number; body: UserRequestDto }>({
       query: ({ id, body }) => ({ url: API_ENDPOINTS.USER(id), method: HTTP_METHODS.PATCH, body }),
+      invalidatesTags: [API_TAGS.USER, API_TAGS.ROLE],
+    }),
+    deleteUser: build.mutation<void, number>({
+      query: (id) => ({ url: API_ENDPOINTS.USER(id), method: HTTP_METHODS.DELETE }),
       invalidatesTags: [API_TAGS.USER, API_TAGS.ROLE],
     }),
 
@@ -141,6 +153,10 @@ export const adminApi = baseApi.injectEndpoints({
       query: ({ id, body }) => ({ url: API_ENDPOINTS.ROLE(id), method: HTTP_METHODS.PUT, body }),
       invalidatesTags: [API_TAGS.ROLE, API_TAGS.USER],
     }),
+    deleteRole: build.mutation<void, number>({
+      query: (id) => ({ url: API_ENDPOINTS.ROLE(id), method: HTTP_METHODS.DELETE }),
+      invalidatesTags: [API_TAGS.ROLE, API_TAGS.USER],
+    }),
   }),
 })
 
@@ -156,18 +172,22 @@ export const {
   useDeactivateDocumentVersionMutation,
   useRetryDocumentVersionMutation,
   useReindexDocumentVersionMutation,
+  useDeleteDocumentVersionMutation,
   useGetActiveMatrixQuery,
   usePublishMatrixMutation,
   useGetAssetsQuery,
   useGetAssetTypesQuery,
   useCreateAssetMutation,
   useUpdateAssetMutation,
+  useDeleteAssetMutation,
   useGetUsersQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
+  useDeleteUserMutation,
   useGetRolesQuery,
   useGetPermissionsQuery,
   useCreateRoleMutation,
   useUpdateRoleMutation,
+  useDeleteRoleMutation,
   useGetAuditEventsQuery,
 } = adminApi

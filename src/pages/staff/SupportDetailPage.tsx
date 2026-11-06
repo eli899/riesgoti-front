@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
-import { Server } from 'lucide-react'
+import { Server, Trash2 } from 'lucide-react'
 import AsyncContent from '@/components/AsyncContent'
+import ConfirmDeleteDialog from '@/components/forms/ConfirmDeleteDialog'
 import IncidentReportArticle from '@/components/incidents/IncidentReportArticle'
 import OperationalGuidanceSection from '@/components/incidents/OperationalGuidanceSection'
 import OperationalStrategicStatusAside from '@/components/incidents/OperationalStrategicStatusAside'
@@ -9,6 +10,7 @@ import HumanAttentionFormAside from '@/components/staff/HumanAttentionFormAside'
 import PriorAISuggestionBadge from '@/components/staff/PriorAISuggestionBadge'
 import { BackLink, Button, Card, CriticalityBadge, ErrorState, PageHeader, SectionTitle, StatusBadge } from '@/components/ui'
 import { useSupportCaseAttention } from '@/hooks/incidents/useSupportCaseAttention'
+import { useIncidentManagement } from '@/hooks/incidents/useIncidentManagement'
 import { useCitationDrawer } from '@/hooks/useCitationDrawer'
 import { formatDateTime } from '@/lib/format'
 
@@ -18,6 +20,10 @@ export default function SupportDetailPage({ incidentId, onBack, backLabel, onOpe
   const drawer = useCitationDrawer()
   const { closeDrawer } = drawer
   const incident = c.incident
+  const { canDelete, deletion } = useIncidentManagement(incident)
+  const confirmDelete = async () => {
+    if (await deletion.confirm()) onBack()
+  }
 
   useEffect(() => () => {
     closeDrawer()
@@ -51,7 +57,14 @@ export default function SupportDetailPage({ incidentId, onBack, backLabel, onOpe
                 back={back}
                 title={incident.title}
                 sub={<span className="flex flex-wrap items-center gap-2"><span className="font-mono text-primary-pressed">{incident.reference}</span>· {incident.reporter.name} · {formatDateTime(incident.registeredAt)} · <PriorAISuggestionBadge incident={incident} /></span>}
-                actions={<StatusBadge status={incident.status} />}
+                actions={
+                  <>
+                    <StatusBadge status={incident.status} />
+                    {canDelete && (
+                      <Button variant="danger" size="sm" icon={<Trash2 size={16} aria-hidden />} onClick={() => deletion.request(incident)}>Eliminar</Button>
+                    )}
+                  </>
+                }
               />
               <section className="grid gap-4 lg:grid-cols-[1fr_380px]" aria-label="Caso derivado">
                 <section className="min-w-0 space-y-4" aria-label="Contexto del reporte e historial IA previo">
@@ -76,6 +89,17 @@ export default function SupportDetailPage({ incidentId, onBack, backLabel, onOpe
                     isStarting={c.isStarting} isSaving={c.isSaving} onStart={c.start} onSave={c.saveAttention} />
                 </aside>
               </section>
+              <ConfirmDeleteDialog
+                open={deletion.target !== null}
+                title={`Eliminar ${incident.reference}`}
+                isDeleting={deletion.isDeleting}
+                error={deletion.error}
+                onCancel={deletion.cancel}
+                onConfirm={confirmDelete}
+              >
+                <p>Se eliminarán la incidencia, su historial de estados, la atención N2, las evidencias adjuntas y los análisis de IA.</p>
+                <p className="text-muted">No se puede eliminar si sustenta una versión de riesgo ya evaluada o decidida. La bitácora de auditoría conserva el registro de la eliminación.</p>
+              </ConfirmDeleteDialog>
             </>
           )}
         </AsyncContent>

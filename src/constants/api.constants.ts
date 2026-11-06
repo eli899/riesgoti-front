@@ -23,6 +23,7 @@ export const HTTP_METHODS = {
   POST: 'POST',
   PUT: 'PUT',
   PATCH: 'PATCH',
+  DELETE: 'DELETE',
 } as const
 
 /** Acciones sobre una VERSION_DOCUMENTO (segmento final de su ruta). */
@@ -54,6 +55,7 @@ export const API_ENDPOINTS = {
   AI_CONFIG_TEST_CONNECTION: `${ADMIN}/ai-config/test-connection/`,
   DOCUMENT_VERSIONS: `${DOCUMENT_VERSIONS}/`,
   DOCUMENT_VERSION_UPLOAD: `${DOCUMENT_VERSIONS}/upload/`,
+  DOCUMENT_VERSION: (id: number) => `${DOCUMENT_VERSIONS}/${id}/`,
   DOCUMENT_VERSION_PREVIEW: (id: number) => `${DOCUMENT_VERSIONS}/${id}/preview/`,
   DOCUMENT_VERSION_ACTION: (id: number, action: DocumentAction) => `${DOCUMENT_VERSIONS}/${id}/${action}/`,
   // Matriz 5x5 y catálogo de activos

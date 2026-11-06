@@ -95,6 +95,25 @@ test.describe('Portal del Reportante', () => {
     await expect(statusAside(page)).toContainText('Pendiente de atención')
   })
 
+  test('edita el título y la descripción de su incidencia mientras no está cerrada', async ({ page }) => {
+    await page.goto(ROUTES.ROOT)
+    const reference = await reportIncident(page, UNSUPPORTED_INCIDENT)
+    const newTitle = `Título corregido ${uniqueSuffix()}`
+
+    await page.getByRole('button', { name: 'Editar' }).click()
+    const form = dialog(page, `Editar ${reference}`)
+    await form.getByLabel('Título breve').fill('abc')
+    await form.getByRole('button', { name: 'Guardar cambios' }).click()
+    await expect(form.getByText('El título debe describir brevemente el problema (mínimo 5 caracteres)')).toBeVisible()
+
+    await form.getByLabel('Título breve').fill(newTitle)
+    await form.getByLabel('Descripción detallada').fill('Descripción corregida por el reportante con más detalle del problema.')
+    await form.getByRole('button', { name: 'Guardar cambios' }).click()
+    await expect(form).toBeHidden()
+    await expect(page.getByRole('heading', { level: 1, name: newTitle })).toBeVisible()
+    await expect(page.getByRole('article', { name: 'Reporte original' })).toContainText('Descripción corregida por el reportante')
+  })
+
   test('sin manuales aplicables el caso se deriva solo a un analista (SIN_RESPALDO)', async ({ page }) => {
     await page.goto(ROUTES.ROOT)
     await reportIncident(page, UNSUPPORTED_INCIDENT)

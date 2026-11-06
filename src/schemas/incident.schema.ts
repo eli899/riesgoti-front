@@ -6,13 +6,20 @@ const M = VALIDATION_MESSAGES.INCIDENT
 
 const hasAllowedExtension = (file: File) => FILE_LIMITS.EVIDENCE_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext))
 
+const incidentFields = {
+  titulo: z.string().trim().min(L.INCIDENT_TITLE_MIN, M.TITLE_MIN).max(L.INCIDENT_TITLE_MAX),
+  descripcion: z.string().trim().min(L.INCIDENT_DESCRIPTION_MIN, M.DESCRIPTION_MIN),
+  activo_reportado_id: z.number().int().positive().nullable().optional(),
+  activo_texto: z.string().max(L.INCIDENT_ASSET_TEXT_MAX).optional(),
+}
+
+const hasAsset = (data: { activo_reportado_id?: number | null; activo_texto?: string }) =>
+  Boolean(data.activo_reportado_id) || Boolean(data.activo_texto && data.activo_texto.trim().length >= L.INCIDENT_ASSET_TEXT_MIN)
+
 /** Contrato de creación de INCIDENCIA + EVIDENCIA_INCIDENCIA (espejo de IncidentCreateInputSerializer). */
 export const incidentFormSchema = z
   .object({
-    titulo: z.string().trim().min(L.INCIDENT_TITLE_MIN, M.TITLE_MIN).max(L.INCIDENT_TITLE_MAX),
-    descripcion: z.string().trim().min(L.INCIDENT_DESCRIPTION_MIN, M.DESCRIPTION_MIN),
-    activo_reportado_id: z.number().int().positive().nullable().optional(),
-    activo_texto: z.string().max(L.INCIDENT_ASSET_TEXT_MAX).optional(),
+    ...incidentFields,
     evidencias: z
       .array(z.custom<File>((file) => file instanceof File, M.FILE_INVALID))
       .max(FILE_LIMITS.EVIDENCES_PER_INCIDENT_MAX, M.EVIDENCES_MAX)
@@ -20,15 +27,14 @@ export const incidentFormSchema = z
       .refine((files) => files.every((f) => f.size <= FILE_LIMITS.EVIDENCE_MAX_BYTES), M.EVIDENCE_SIZE)
       .optional(),
   })
-  .refine(
-    (data) => Boolean(data.activo_reportado_id) || Boolean(data.activo_texto && data.activo_texto.trim().length >= L.INCIDENT_ASSET_TEXT_MIN),
-    {
-      message: M.ASSET_REQUIRED,
-      path: ['activo_reportado_id'],
-    },
-  )
+  .refine(hasAsset, { message: M.ASSET_REQUIRED, path: ['activo_reportado_id'] })
 
 export type IncidentFormValues = z.infer<typeof incidentFormSchema>
+
+/** Edición del reportante (espejo de IncidentUpdateInputSerializer): mismos campos, sin evidencias. */
+export const incidentEditSchema = z.object(incidentFields).refine(hasAsset, { message: M.ASSET_REQUIRED, path: ['activo_reportado_id'] })
+
+export type IncidentEditValues = z.infer<typeof incidentEditSchema>
 
 /** Respuesta del reportante a la orientación operativa (RESPUESTA_ORIENTACION). */
 export const orientationFeedbackSchema = z.object({

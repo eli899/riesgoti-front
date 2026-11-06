@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react'
 import AsyncContent from '@/components/AsyncContent'
 import AssetFormModal from '@/components/admin/AssetFormModal'
 import AssetsCatalogTable from '@/components/admin/AssetsCatalogTable'
+import ConfirmDeleteDialog from '@/components/forms/ConfirmDeleteDialog'
 import PageMeta from '@/components/seo/PageMeta'
 import { Button, PageHeader } from '@/components/ui'
 import { useAssetCatalogManager } from '@/hooks/admin/useAssetCatalogManager'
@@ -31,10 +32,22 @@ export default function AssetsPage() {
               togglingId={catalog.togglingId}
               onEdit={(asset) => setEditing({ asset })}
               onToggleActive={catalog.toggleActive}
+              onDelete={catalog.deletion.request}
             />
           </AsyncContent>
         </section>
       </main>
+      <ConfirmDeleteDialog
+        open={catalog.deletion.target !== null}
+        title={`Eliminar ${catalog.deletion.target?.name ?? 'activo'}`}
+        isDeleting={catalog.deletion.isDeleting}
+        error={catalog.deletion.error}
+        onCancel={catalog.deletion.cancel}
+        onConfirm={catalog.deletion.confirm}
+      >
+        <p>El activo se eliminará del catálogo de forma permanente.</p>
+        <p className="text-muted">Si alguna incidencia o versión de riesgo lo referencia, no podrá eliminarse: desactívalo para conservar la trazabilidad.</p>
+      </ConfirmDeleteDialog>
       <AssetFormModal
         open={editing !== null}
         isNew={editing?.asset === null}

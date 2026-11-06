@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react'
 import AsyncContent from '@/components/AsyncContent'
 import RoleFormModal from '@/components/admin/RoleFormModal'
 import RolePermissionsMatrixView from '@/components/admin/RolePermissionsMatrixView'
+import ConfirmDeleteDialog from '@/components/forms/ConfirmDeleteDialog'
 import PageMeta from '@/components/seo/PageMeta'
 import { Button, PageHeader } from '@/components/ui'
 import { useUserRoleManager } from '@/hooks/admin/useUserRoleManager'
@@ -34,10 +35,22 @@ export default function RolesPage() {
             isSaving={mgr.isSavingRole}
             onSelectRole={setSelectedRoleId}
             onSave={mgr.saveRole}
+            onDelete={mgr.roleDeletion.request}
           />
         </AsyncContent>
       </main>
       <RoleFormModal open={creating} isSaving={mgr.isSavingRole} onClose={() => setCreating(false)} onSubmit={createRole} />
+      <ConfirmDeleteDialog
+        open={mgr.roleDeletion.target !== null}
+        title={`Eliminar el rol ${mgr.roleDeletion.target?.name ?? ''}`}
+        isDeleting={mgr.roleDeletion.isDeleting}
+        error={mgr.roleDeletion.error}
+        onCancel={mgr.roleDeletion.cancel}
+        onConfirm={mgr.roleDeletion.confirm}
+      >
+        <p>El rol y su asignación de permisos se eliminarán de forma permanente.</p>
+        <p className="text-muted">Solo se eliminan roles personalizados sin usuarios asignados; reasigna primero a sus usuarios.</p>
+      </ConfirmDeleteDialog>
     </>
   )
 }

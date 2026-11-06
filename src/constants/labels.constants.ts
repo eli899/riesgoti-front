@@ -39,6 +39,7 @@ export const PERMISSION_GROUPS: { module: string; items: { code: string; label: 
       { code: PERMISSIONS.INCIDENT_VIEW_OWN, label: 'Ver incidencias propias' },
       { code: PERMISSIONS.INCIDENT_VIEW_ALL, label: 'Ver todas las incidencias' },
       { code: PERMISSIONS.INCIDENT_CLOSE_OWN_BY_FEEDBACK, label: 'Cerrar propias mediante feedback' },
+      { code: PERMISSIONS.INCIDENT_EDIT_OWN, label: 'Editar incidencias propias no cerradas' },
     ],
   },
   {
@@ -65,6 +66,8 @@ export const PERMISSION_GROUPS: { module: string; items: { code: string; label: 
       { code: PERMISSIONS.MATRIX_ADMIN, label: 'Administrar matriz' },
       { code: PERMISSIONS.USER_ADMIN, label: 'Administrar usuarios' },
       { code: PERMISSIONS.ROLE_ADMIN, label: 'Administrar roles y permisos' },
+      { code: PERMISSIONS.INCIDENT_DELETE, label: 'Eliminar incidencias' },
+      { code: PERMISSIONS.RISK_DELETE, label: 'Eliminar propuestas de riesgo pendientes' },
     ],
   },
 ]
@@ -121,6 +124,13 @@ export const AUDIT_ACTION_LABEL: Record<AuditAction, string> = {
   CONFIRMAR_AGRUPACION_RIESGO: 'Confirmación de agrupación',
   EVALUAR_RIESGO: 'Evaluación en matriz 5×5',
   DECIDIR_VERSION_RIESGO: 'Decisión sobre versión de riesgo',
+  ACTUALIZAR_INCIDENCIA: 'Edición de incidencia',
+  ELIMINAR_INCIDENCIA: 'Eliminación de incidencia',
+  ELIMINAR_USUARIO: 'Eliminación de usuario',
+  ELIMINAR_ROL: 'Eliminación de rol',
+  ELIMINAR_ACTIVO: 'Eliminación de activo',
+  ELIMINAR_VERSION_DOCUMENTO: 'Eliminación de documento',
+  ELIMINAR_VERSION_RIESGO: 'Eliminación de propuesta de riesgo',
 }
 
 export const AUDIT_TARGET_LABEL: Record<AuditTargetKind, string> = {

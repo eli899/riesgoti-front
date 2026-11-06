@@ -1,4 +1,4 @@
-import type { HumanAttentionFormValues, IncidentFormValues, OrientationFeedbackValues } from '@/schemas/incident.schema'
+import type { HumanAttentionFormValues, IncidentEditValues, IncidentFormValues, OrientationFeedbackValues } from '@/schemas/incident.schema'
 import type {
   AITaskSummaryDto,
   HumanAttentionDto,
@@ -6,6 +6,7 @@ import type {
   IncidentDetailDto,
   IncidentDto,
   IncidentListParamsDto,
+  IncidentUpdateRequestDto,
   OperationalGuidanceDto,
   OrientationFeedbackRequestDto,
 } from '@/types/api.types'
@@ -109,6 +110,17 @@ export function fromDomainIncidentToApi(values: IncidentFormValues): FormData {
   if (activoTexto) body.append('activo_texto', activoTexto)
   values.evidencias?.forEach((file) => body.append('evidencias', file))
   return body
+}
+
+/** Formulario de edición -> JSON (IncidentUpdateInputSerializer); con activo del catálogo se limpia activo_texto. */
+export function fromDomainIncidentEditToApi(values: IncidentEditValues): IncidentUpdateRequestDto {
+  const activoId = values.activo_reportado_id ?? null
+  return {
+    titulo: values.titulo.trim(),
+    descripcion: values.descripcion.trim(),
+    activo_reportado_id: activoId,
+    activo_texto: activoId ? null : optionalText(values.activo_texto) ?? null,
+  }
 }
 
 /** La orientación sigue pendiente mientras no exista tarea o su estado no sea terminal. */

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, KeyRound, Lock } from 'lucide-react'
+import { ChevronDown, ChevronRight, KeyRound, Lock, Trash2 } from 'lucide-react'
 import { Button, Card, CardHeader, Dialog, Switch } from '@/components/ui'
 import FormAlert from '@/components/forms/FormAlert'
 import { PERMISSION_GROUPS } from '@/constants/labels.constants'
@@ -16,6 +16,8 @@ interface RolePermissionsMatrixViewProps {
   isSaving: boolean
   onSelectRole: (roleId: number) => void
   onSave: (values: RoleFormValues, roleId: number) => Promise<SubmitResult>
+  /** Eliminación física de un rol personalizado sin usuarios. */
+  onDelete: (role: Role) => void
 }
 
 const SOD_LOCK = 'Bloqueado por Segregación de Funciones (ISO 27001)'
@@ -33,7 +35,7 @@ function lockReason(role: Role, draft: string[], code: string): string | null {
 }
 
 /** Asignación de PERMISO a ROL (ROL_PERMISO) agrupada por módulo, con revisión de cambios antes de guardar. */
-export default function RolePermissionsMatrixView({ roles, permissions, selectedRoleId, isSaving, onSelectRole, onSave }: RolePermissionsMatrixViewProps) {
+export default function RolePermissionsMatrixView({ roles, permissions, selectedRoleId, isSaving, onSelectRole, onSave, onDelete }: RolePermissionsMatrixViewProps) {
   const role = roles.find((r) => r.id === selectedRoleId) ?? roles[0]
   return (
     <section className="grid gap-4 md:grid-cols-[260px_1fr]" aria-label="Roles y permisos">
@@ -55,12 +57,12 @@ export default function RolePermissionsMatrixView({ roles, permissions, selected
           </ul>
         </nav>
       </Card>
-      {role && <RoleEditor key={`${role.id}-${role.permissions.join(',')}`} role={role} permissions={permissions} isSaving={isSaving} onSave={onSave} />}
+      {role && <RoleEditor key={`${role.id}-${role.permissions.join(',')}`} role={role} permissions={permissions} isSaving={isSaving} onSave={onSave} onDelete={onDelete} />}
     </section>
   )
 }
 
-function RoleEditor({ role, permissions, isSaving, onSave }: { role: Role; permissions: Permission[]; isSaving: boolean; onSave: RolePermissionsMatrixViewProps['onSave'] }) {
+function RoleEditor({ role, permissions, isSaving, onSave, onDelete }: { role: Role; permissions: Permission[]; isSaving: boolean; onSave: RolePermissionsMatrixViewProps['onSave']; onDelete: RolePermissionsMatrixViewProps['onDelete'] }) {
   const [draft, setDraft] = useState<string[]>(role.permissions)
   const [expanded, setExpanded] = useState<string[]>(PERMISSION_GROUPS.map((g) => g.module))
   const [reviewing, setReviewing] = useState(false)
@@ -97,7 +99,14 @@ function RoleEditor({ role, permissions, isSaving, onSave }: { role: Role; permi
 
   return (
     <Card as="article" aria-labelledby={`role-${role.id}-title`}>
-      <CardHeader titleId={`role-${role.id}-title`} title={role.name} sub={`Código ${role.code}${role.active ? '' : ' · inactivo'}`} />
+      <CardHeader
+        titleId={`role-${role.id}-title`}
+        title={role.name}
+        sub={`Código ${role.code}${role.active ? '' : ' · inactivo'}`}
+        action={!role.system && (
+          <Button size="sm" variant="ghost" icon={<Trash2 size={15} aria-hidden />} onClick={() => onDelete(role)}>Eliminar rol</Button>
+        )}
+      />
       <dl className="grid grid-cols-3 border-b border-line bg-canvas px-4 py-3 text-center md:px-5">
         {[
           ['Permisos activos', draft.length],

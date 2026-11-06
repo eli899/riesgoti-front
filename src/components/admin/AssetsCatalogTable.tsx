@@ -1,4 +1,4 @@
-import { CheckCircle2, Pencil, Power, Server } from 'lucide-react'
+import { CheckCircle2, Pencil, Power, Server, Trash2 } from 'lucide-react'
 import { Button, Card, CriticalityBadge, EmptyState, Switch } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { tableClassName } from '@/styles/tokens.table'
@@ -10,10 +10,11 @@ interface AssetsCatalogTableProps {
   togglingId: number | null
   onEdit: (asset: Asset) => void
   onToggleActive: (asset: Asset) => void
+  onDelete: (asset: Asset) => void
 }
 
 /** Catálogo de ACTIVO. Los inactivos permanecen visibles porque los registros históricos los referencian. */
-export default function AssetsCatalogTable({ assets, canManage, togglingId, onEdit, onToggleActive }: AssetsCatalogTableProps) {
+export default function AssetsCatalogTable({ assets, canManage, togglingId, onEdit, onToggleActive, onDelete }: AssetsCatalogTableProps) {
   if (assets.length === 0) {
     return <Card><EmptyState title="Sin activos" text="Registra el primer activo del catálogo para que los reportantes puedan seleccionarlo." icon={<Server size={22} />} /></Card>
   }
@@ -49,6 +50,7 @@ export default function AssetsCatalogTable({ assets, canManage, togglingId, onEd
                   <span className="flex items-center gap-2 md:justify-end">
                     <Button size="sm" variant="ghost" aria-label={`Editar ${a.name}`} icon={<Pencil size={15} aria-hidden />} onClick={() => onEdit(a)} />
                     <Switch checked={a.active} disabled={togglingId === a.id} label={`${a.active ? 'Desactivar' : 'Activar'} ${a.name}`} onChange={() => onToggleActive(a)} />
+                    <Button size="sm" variant="ghost" aria-label={`Eliminar ${a.name}`} icon={<Trash2 size={15} aria-hidden />} onClick={() => onDelete(a)} />
                   </span>
                 </td>
               )}

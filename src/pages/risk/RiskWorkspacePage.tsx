@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Grid3X3, Lock, Repeat } from 'lucide-react'
+import { Grid3X3, Lock, Repeat, Trash2 } from 'lucide-react'
 import AsyncContent from '@/components/AsyncContent'
+import ConfirmDeleteDialog from '@/components/forms/ConfirmDeleteDialog'
 import ClusterIncidentsSection from '@/components/risk/ClusterIncidentsSection'
 import DecisionReadinessArticle from '@/components/risk/DecisionReadinessArticle'
 import EvaluationFormFieldset from '@/components/risk/EvaluationFormFieldset'
@@ -17,6 +18,7 @@ import { useRiskClusterReview } from '@/hooks/risks/useRiskClusterReview'
 import { useRiskDecisionFlow } from '@/hooks/risks/useRiskDecisionFlow'
 import { useRiskMatrixEvaluation } from '@/hooks/risks/useRiskMatrixEvaluation'
 import { useRiskVersionCompare } from '@/hooks/risks/useRiskVersionCompare'
+import { useRiskVersionDeletion } from '@/hooks/risks/useRiskVersionDeletion'
 import { useCitationDrawer } from '@/hooks/useCitationDrawer'
 import { formatDateTime } from '@/lib/format'
 import { cardClassName } from '@/styles/tokens.layout'
@@ -46,6 +48,10 @@ export default function RiskWorkspacePage({ versionId, onBack, onOpenVersion, on
   const [reviewed, setReviewed] = useState(false)
   const version = cluster.version
   const history = useRiskVersionCompare(version?.riskId ?? null)
+  const removal = useRiskVersionDeletion(version)
+  const confirmRemoval = async () => {
+    if (await removal.deletion.confirm()) onBack()
+  }
 
   useEffect(() => () => {
     closeDrawer()
@@ -84,7 +90,15 @@ export default function RiskWorkspacePage({ versionId, onBack, onOpenVersion, on
                     {version.citations.length} fuentes · {version.origin === RISK_VERSION_ORIGIN.IA ? 'Propuesta de IA' : `Versión de ${version.createdBy.name}`} · {formatDateTime(version.createdAt)}
                   </span>
                 }
-                actions={<><ValidationBadge status={version.status} /><Button size="sm" variant="ghost" onClick={() => onOpenRisk(version.riskId)}>Ver detalle del riesgo</Button></>}
+                actions={
+                  <>
+                    <ValidationBadge status={version.status} />
+                    <Button size="sm" variant="ghost" onClick={() => onOpenRisk(version.riskId)}>Ver detalle del riesgo</Button>
+                    {removal.canDelete && (
+                      <Button size="sm" variant="danger" icon={<Trash2 size={16} aria-hidden />} onClick={() => removal.deletion.request(version)}>Eliminar propuesta</Button>
+                    )}
+                  </>
+                }
               />
 
               {cluster.isReadOnlyRole && (
@@ -147,6 +161,17 @@ export default function RiskWorkspacePage({ versionId, onBack, onOpenVersion, on
         <RiskDecisionDialogView action={deciding} version={version} defaults={decision.defaults} correctionDefaults={decision.correctionDefaults}
           validationBlockers={decision.validationBlockers} isSubmitting={decision.isSubmitting} onClose={() => setDeciding(null)} onSubmit={decision.decide} />
       )}
+      <ConfirmDeleteDialog
+        open={removal.deletion.target !== null}
+        title={`Eliminar ${removal.deletion.target?.riskCode ?? ''} v${removal.deletion.target?.number ?? ''}`}
+        isDeleting={removal.deletion.isDeleting}
+        error={removal.deletion.error}
+        onCancel={removal.deletion.cancel}
+        onConfirm={confirmRemoval}
+      >
+        <p>Se eliminarán la propuesta, sus citas normativas y sus vínculos con incidencias. Las incidencias y sus análisis de IA se conservan.</p>
+        <p className="text-muted">Si el riesgo queda sin versiones, también se elimina. Una versión evaluada o decidida forma parte del registro de riesgos y no puede eliminarse.</p>
+      </ConfirmDeleteDialog>
     </>
   )
 }

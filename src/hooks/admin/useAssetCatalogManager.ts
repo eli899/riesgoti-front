@@ -1,14 +1,15 @@
 import { useCallback, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { useCreateAssetMutation, useGetAssetsQuery, useGetAssetTypesQuery, useUpdateAssetMutation } from '@/app/api/adminApi'
+import { useCreateAssetMutation, useDeleteAssetMutation, useGetAssetsQuery, useGetAssetTypesQuery, useUpdateAssetMutation } from '@/app/api/adminApi'
 import { useAuthSession } from '@/hooks/useAuthSession'
+import { useConfirmedDeletion } from '@/hooks/useConfirmedDeletion'
 import { runMutation, toApiFailure, type SubmitResult } from '@/lib/apiErrors'
 import { fromApiAssetToDomain, fromApiAssetTypeToDomain, fromDomainAssetToApi } from '@/mappers/admin.mapper'
 import type { AssetFormValues } from '@/schemas/asset.schema'
 import type { Asset } from '@/types/domain.types'
 import { PERMISSIONS } from '@/constants/rbac.constants'
 
-/** Caso de uso: catálogo de ACTIVO (alta, edición y activación; nunca se elimina). */
+/** Caso de uso: catálogo de ACTIVO (alta, edición, activación y eliminación física si no tiene referencias). */
 export function useAssetCatalogManager() {
   const { hasPermission } = useAuthSession()
   const canManage = hasPermission(PERMISSIONS.ASSET_ADMIN)
@@ -17,6 +18,11 @@ export function useAssetCatalogManager() {
   const [createAsset, { isLoading: isCreating }] = useCreateAssetMutation()
   const [updateAsset, { isLoading: isUpdating }] = useUpdateAssetMutation()
   const [togglingId, setTogglingId] = useState<number | null>(null)
+  const [deleteAsset] = useDeleteAssetMutation()
+  const deletion = useConfirmedDeletion((asset: Asset) => deleteAsset(asset.id).unwrap(), {
+    fallback: 'No se pudo eliminar el activo.',
+    successMessage: (asset) => `Activo ${asset.code} eliminado`,
+  })
 
   const assets = useMemo(() => (assetsQuery.data ?? []).map(fromApiAssetToDomain), [assetsQuery.data])
   const assetTypes = useMemo(() => (typesQuery.data ?? []).map(fromApiAssetTypeToDomain).filter((t) => t.active), [typesQuery.data])
@@ -60,5 +66,6 @@ export function useAssetCatalogManager() {
     isSaving: isCreating || isUpdating,
     toggleActive,
     togglingId,
+    deletion,
   }
 }

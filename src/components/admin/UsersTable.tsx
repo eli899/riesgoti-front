@@ -1,4 +1,4 @@
-import { Pencil } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { Avatar, Button, Card, EmptyState, Switch } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import type { AdminUser } from '@/types/domain.types'
@@ -11,10 +11,11 @@ interface UsersTableProps {
   deactivationBlock: (user: AdminUser) => string | null
   onEdit: (user: AdminUser) => void
   onToggleActive: (user: AdminUser) => void
+  onDelete: (user: AdminUser) => void
 }
 
 /** Listado de USUARIO con su rol y estado. */
-export default function UsersTable({ users, currentUserId, togglingUserId, deactivationBlock, onEdit, onToggleActive }: UsersTableProps) {
+export default function UsersTable({ users, currentUserId, togglingUserId, deactivationBlock, onEdit, onToggleActive, onDelete }: UsersTableProps) {
   if (users.length === 0) return <Card><EmptyState title="Sin usuarios" text="Crea el primer usuario de la plataforma." /></Card>
   return (
     <Card>
@@ -38,6 +39,9 @@ export default function UsersTable({ users, currentUserId, togglingUserId, deact
                   label={block ? `${u.fullName}: ${block}` : `${u.active ? 'Desactivar' : 'Activar'} a ${u.fullName}`}
                   onChange={() => onToggleActive(u)} />
               </span>
+              {u.id !== currentUserId && (
+                <Button size="sm" variant="ghost" aria-label={`Eliminar a ${u.fullName}`} icon={<Trash2 size={15} aria-hidden />} onClick={() => onDelete(u)} />
+              )}
             </li>
           )
         })}
