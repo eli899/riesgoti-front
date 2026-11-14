@@ -52,20 +52,20 @@ function AssetForm({ defaultValues, assetTypes, isSaving, onClose, onSubmit }: O
       <FormAlert message={errors.root?.server?.message} />
       <fieldset className="grid gap-4 sm:grid-cols-2">
         <legend className="sr-only">Identificación</legend>
-        <Field id="asset-codigo" label="Código" error={errors.codigo?.message} help="Se guarda en mayúsculas.">
+        <Field id="asset-codigo" required label="Código" error={errors.codigo?.message} help="Se guarda en mayúsculas.">
           <input id="asset-codigo" {...register('codigo')} aria-invalid={!!errors.codigo} className={input(!!errors.codigo)} />
         </Field>
-        <Field id="asset-tipo" label="Tipo" error={errors.tipo_id?.message}>
+        <Field id="asset-tipo" required label="Tipo" error={errors.tipo_id?.message}>
           <select id="asset-tipo" {...register('tipo_id', { valueAsNumber: true })} aria-invalid={!!errors.tipo_id} className={input(!!errors.tipo_id)}>
             <option value={0} disabled>Selecciona un tipo</option>
             {assetTypes.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
           </select>
         </Field>
       </fieldset>
-      <Field id="asset-nombre" label="Nombre" error={errors.nombre?.message}>
+      <Field id="asset-nombre" required label="Nombre" error={errors.nombre?.message}>
         <input id="asset-nombre" {...register('nombre')} aria-invalid={!!errors.nombre} className={input(!!errors.nombre)} />
       </Field>
-      <Field id="asset-criticidad" label="Criticidad" error={errors.criticidad?.message} help="Solo visible para perfiles autorizados.">
+      <Field id="asset-criticidad" required label="Criticidad" error={errors.criticidad?.message} help="Solo visible para perfiles autorizados.">
         <select id="asset-criticidad" {...register('criticidad', { setValueAs: (v) => (v === '' || v === null ? null : Number(v)) })} className={input(!!errors.criticidad)}>
           <option value="">Sin criticidad</option>
           {CRITICALITY_OPTIONS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}

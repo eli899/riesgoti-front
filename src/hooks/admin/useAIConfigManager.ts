@@ -8,9 +8,11 @@ import {
   fromDomainAIConfigToApi,
   fromDomainAIConfigToConnectionTestApi,
   fromDomainAIConfigToFormValues,
+  initialAIConfigFormValues,
 } from '@/mappers/admin.mapper'
 import type { AIConfigFormValues } from '@/schemas/aiConfig.schema'
 import type { AIConnectionTestResult } from '@/types/domain.types'
+import { HTTP_STATUS } from '@/constants/api.constants'
 
 /** Caso de uso: configuración IA/RAG vigente, publicación de nueva versión y prueba de conectividad. */
 export function useAIConfigManager() {
@@ -21,7 +23,10 @@ export function useAIConfigManager() {
   const [testError, setTestError] = useState<string | null>(null)
 
   const config = useMemo(() => (data ? fromApiAIConfigToDomain(data) : null), [data])
-  const formDefaults = useMemo(() => (config ? fromDomainAIConfigToFormValues(config) : null), [config])
+  const failure = error ? toApiFailure(error) : null
+  // Semilla base (CHG-0039): sin configuración publicada se ofrece el formulario inicial con valores sugeridos.
+  const isMissing = failure?.status === HTTP_STATUS.NOT_FOUND
+  const formDefaults = useMemo(() => (config ? fromDomainAIConfigToFormValues(config) : isMissing ? initialAIConfigFormValues() : null), [config, isMissing])
 
   const save = useCallback(
     async (values: AIConfigFormValues): Promise<SubmitResult> => {
@@ -52,7 +57,8 @@ export function useAIConfigManager() {
     config,
     formDefaults,
     isLoading,
-    loadError: error ? toApiFailure(error).message : null,
+    isMissing,
+    loadError: failure && !isMissing ? failure.message : null,
     retryLoad: refetch,
     save,
     isSaving,

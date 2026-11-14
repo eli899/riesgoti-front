@@ -42,10 +42,10 @@ function RoleForm({ isSaving, onClose, onSubmit }: Omit<RoleFormModalProps, 'ope
   return (
     <form onSubmit={submit} noValidate aria-label="Datos del rol" className="space-y-4">
       <FormAlert message={errors.root?.server?.message} />
-      <Field id="role-nombre" label="Nombre del rol" error={errors.nombre?.message}>
+      <Field id="role-nombre" required label="Nombre del rol" error={errors.nombre?.message}>
         <input id="role-nombre" placeholder="Ej. Auditor de seguridad" {...register('nombre')} aria-invalid={!!errors.nombre} className={input(!!errors.nombre)} />
       </Field>
-      <Field id="role-codigo" label="Código" error={errors.codigo?.message} help="MAYÚSCULAS, dígitos y guion bajo. No podrá cambiarse en roles del sistema.">
+      <Field id="role-codigo" required label="Código" error={errors.codigo?.message} help="MAYÚSCULAS, dígitos y guion bajo. No podrá cambiarse en roles del sistema.">
         <input id="role-codigo" placeholder="AUDITOR_TI" {...register('codigo', { setValueAs: (v: string) => v.toUpperCase() })} aria-invalid={!!errors.codigo} className={cn(input(!!errors.codigo), 'font-mono uppercase')} />
       </Field>
       <footer className={fieldClassName.footer}>

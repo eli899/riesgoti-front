@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { AlertTriangle, CheckCircle2, Clock, Eye, FilePlus2, FileText, Loader2, Power, RefreshCw, RotateCw, Search, ShieldCheck, Trash2 } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, Clock, Eye, FilePlus2, FileText, Loader2, Power, RefreshCw, RotateCw, Search, ShieldCheck, Trash2, Upload } from 'lucide-react'
 import { Button, Card, EmptyState } from '@/components/ui'
 import { formatDateTime } from '@/lib/format'
 import { DOCUMENT_PURPOSE_LABEL } from '@/constants/labels.constants'
@@ -26,12 +26,14 @@ interface DocumentVersionsTableProps {
   onPreview: (version: DocumentVersion) => void
   onAction: (id: number, action: DocumentAction) => void
   onNewVersion: (version: DocumentVersion) => void
+  /** Solo versiones en ERROR: carga nuevamente el PDF (p. ej. uno sin capa de texto) conservando código y versión. */
+  onReplaceFile: (version: DocumentVersion) => void
   /** Solo versiones inactivas fuera de procesamiento; el servidor responde 409 si tienen fragmentos citados. */
   onDelete: (version: DocumentVersion) => void
 }
 
 /** Ciclo de vida de VERSION_DOCUMENTO: estado de procesamiento, autorización y activación con sus acciones. */
-export default function DocumentVersionsTable({ versions, pendingAction, onPreview, onAction, onNewVersion, onDelete }: DocumentVersionsTableProps) {
+export default function DocumentVersionsTable({ versions, pendingAction, onPreview, onAction, onNewVersion, onReplaceFile, onDelete }: DocumentVersionsTableProps) {
   const [query, setQuery] = useState('')
   const term = query.trim().toLowerCase()
   const visible = term
@@ -87,7 +89,11 @@ export default function DocumentVersionsTable({ versions, pendingAction, onPrevi
 
                   <footer className="mt-auto flex flex-wrap gap-2 pt-4">
                     {state === DOCUMENT_DISPLAY_STATE.ERROR && (
-                      <Button size="sm" variant="danger" icon={<RotateCw size={15} aria-hidden />} disabled={busy(v.id, 'retry')} onClick={() => onAction(v.id, 'retry')}>Reintentar</Button>
+                      <>
+                        <Button size="sm" icon={<Upload size={15} aria-hidden />} onClick={() => onReplaceFile(v)}>Cargar nuevamente</Button>
+                        <Button size="sm" variant="secondary" icon={<RotateCw size={15} aria-hidden />} disabled={busy(v.id, 'retry')} onClick={() => onAction(v.id, 'retry')}>Reintentar</Button>
+                        <Button size="sm" variant="danger" icon={<Trash2 size={15} aria-hidden />} onClick={() => onDelete(v)}>Eliminar</Button>
+                      </>
                     )}
                     {state === DOCUMENT_DISPLAY_STATE.PENDIENTE_AUTORIZACION && (
                       <Button size="sm" icon={<ShieldCheck size={15} aria-hidden />} onClick={() => onPreview(v)}>Previsualizar y autorizar</Button>
@@ -107,7 +113,7 @@ export default function DocumentVersionsTable({ versions, pendingAction, onPrevi
                         <Button size="sm" variant="ghost" icon={<FilePlus2 size={15} aria-hidden />} onClick={() => onNewVersion(v)}>Nueva versión</Button>
                       </>
                     )}
-                    {!v.active && v.processing !== DOCUMENT_PROCESSING_STATUS.PROCESANDO && (
+                    {!v.active && v.processing !== DOCUMENT_PROCESSING_STATUS.PROCESANDO && state !== DOCUMENT_DISPLAY_STATE.ERROR && (
                       <Button size="sm" variant="ghost" icon={<Trash2 size={15} aria-hidden />} onClick={() => onDelete(v)}>Eliminar</Button>
                     )}
                   </footer>

@@ -62,7 +62,7 @@ export default function AdminPortal() {
         <Routes>
           <Route index element={<Navigate replace to={home} />} />
           <Route element={<PermissionRoute permission={PERMISSIONS.RISK_QUERY} redirectTo={home} />}>
-            <Route path={ROUTE_PATHS.DASHBOARD} element={<AdminDashboardPage onOpenDocuments={() => navigate(ROUTES.DOCUMENTS)} />} />
+            <Route path={ROUTE_PATHS.DASHBOARD} element={<AdminDashboardPage onOpenDocuments={() => navigate(ROUTES.DOCUMENTS)} onOpenAssets={() => navigate(ROUTES.ASSETS)} onOpenMatrix={() => navigate(ROUTES.MATRIX)} onOpenAIConfig={() => navigate(ROUTES.AI_CONFIG)} />} />
             <Route path={ROUTE_PATHS.RISKS} element={<RiskRegistryPage onOpen={openRisk} />} />
             <Route path={ROUTE_PATHS.RISK_DETAIL} element={
               <RouteIdParam param={ROUTE_PARAMS.RISK_ID}>

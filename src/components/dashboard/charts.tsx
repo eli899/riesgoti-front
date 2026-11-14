@@ -16,7 +16,7 @@ interface ChartCardProps {
 
 export function ChartCard({ id, title, period, summary, children }: ChartCardProps) {
   return (
-    <Card as="article" aria-labelledby={`${id}-title`} className="min-w-0 p-4 md:p-5">
+    <Card as="article" aria-labelledby={`${id}-title`} className="relative min-w-0 overflow-hidden p-4 md:p-5">
       <header className="mb-4">
         <SectionTitle as="h3" id={`${id}-title`}>{title}</SectionTitle>
         <p className="text-xs text-muted">{period}</p>
@@ -34,7 +34,7 @@ export function DailyBarChart({ data, unit }: { data: { date: string; total: num
   const label = (iso: string) => new Date(`${iso}T00:00:00`).toLocaleDateString('es-PE', { day: '2-digit', month: 'short' })
 
   return (
-    <figure>
+    <figure className="relative">
       <div className="relative h-40" onMouseLeave={() => setActive(null)}>
         {active !== null && (
           <p role="status" className="pointer-events-none absolute -top-1 z-10 -translate-x-1/2 rounded-inset bg-ink px-2 py-1 text-2xs font-medium whitespace-nowrap text-white"

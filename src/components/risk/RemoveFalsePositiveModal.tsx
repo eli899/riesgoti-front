@@ -46,7 +46,7 @@ function RemoveForm({ incident, isSubmitting, onClose, onSubmit }: RemoveFalsePo
       <FormAlert message={errors.root?.server?.message} />
       <fieldset>
         <legend className="sr-only">Justificación del retiro</legend>
-        <Field id="remove-reason" label="Motivo del retiro" error={errors.motivo_retiro?.message}
+        <Field id="remove-reason" required label="Motivo del retiro" error={errors.motivo_retiro?.message}
           help="Ejemplo: coincidencia semántica por lentitud, pero el activo afectado es una impresora y no el servidor del ERP.">
           <textarea id="remove-reason" rows={4} autoFocus {...register('motivo_retiro')} aria-invalid={!!errors.motivo_retiro}
             aria-describedby={errors.motivo_retiro ? 'remove-reason-err' : 'remove-reason-help'} className={cn(inputClassName(!!errors.motivo_retiro), 'py-2')} />

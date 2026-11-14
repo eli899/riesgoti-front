@@ -90,10 +90,10 @@ function AttentionForm({ incident, isSaving, onSave }: { incident: IncidentDetai
       <FormAlert message={errors.root?.server?.message} />
       <fieldset className="space-y-3">
         <legend className="sr-only">Intervención técnica</legend>
-        <Field id="att-acciones" label="Acciones realizadas" error={errors.acciones?.message} help="Qué verificaste o ejecutaste para resolver el caso.">
+        <Field id="att-acciones" required label="Acciones realizadas" error={errors.acciones?.message} help="Qué verificaste o ejecutaste para resolver el caso.">
           <textarea id="att-acciones" rows={4} {...register('acciones')} aria-invalid={!!errors.acciones} className={area(!!errors.acciones)} />
         </Field>
-        <Field id="att-nota" label="Nota de resolución" error={errors.nota_resolucion?.message} help="Queda como historial; no alimenta el RAG.">
+        <Field id="att-nota" required label="Nota de resolución" error={errors.nota_resolucion?.message} help="Queda como historial; no alimenta el RAG.">
           <textarea id="att-nota" rows={4} {...register('nota_resolucion')} aria-invalid={!!errors.nota_resolucion} className={area(!!errors.nota_resolucion)} />
         </Field>
       </fieldset>

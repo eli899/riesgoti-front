@@ -2,7 +2,7 @@ import { useDropzone } from 'react-dropzone'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FileText, Upload, X } from 'lucide-react'
-import { Button, Dialog, Field, IconButton } from '@/components/ui'
+import { Button, Dialog, Field, IconButton, RequiredMark } from '@/components/ui'
 import FormAlert from '@/components/forms/FormAlert'
 import { applyServerErrors } from '@/components/forms/applyServerErrors'
 import { formatSize } from '@/lib/format'
@@ -60,16 +60,16 @@ function UploadForm({ seed, isUploading, onCancel, onSubmit }: { seed: DocumentU
       <FormAlert message={errors.root?.server?.message} />
       <fieldset className="grid gap-4 sm:grid-cols-2">
         <legend className="sr-only">Datos del documento</legend>
-        <Field id="doc-codigo" label="Código" error={errors.codigo?.message} help="Ej. POL-SGSI-01">
+        <Field id="doc-codigo" required label="Código" error={errors.codigo?.message} help="Ej. POL-SGSI-01">
           <input id="doc-codigo" {...register('codigo')} readOnly={!!seed} aria-invalid={!!errors.codigo} className={cn(input(!!errors.codigo), seed && 'bg-canvas')} />
         </Field>
-        <Field id="doc-version" label="Versión" error={errors.version?.message} help="Ej. v2.1">
+        <Field id="doc-version" required label="Versión" error={errors.version?.message} help="Ej. v2.1">
           <input id="doc-version" {...register('version')} aria-invalid={!!errors.version} className={input(!!errors.version)} />
         </Field>
-        <Field id="doc-titulo" label="Título" error={errors.titulo?.message}>
+        <Field id="doc-titulo" required label="Título" error={errors.titulo?.message}>
           <input id="doc-titulo" {...register('titulo')} aria-invalid={!!errors.titulo} className={input(!!errors.titulo)} />
         </Field>
-        <Field id="doc-finalidad" label="Finalidad" error={errors.finalidad?.message} help="Define qué rama de IA puede citarlo.">
+        <Field id="doc-finalidad" required label="Finalidad" error={errors.finalidad?.message} help="Define qué rama de IA puede citarlo.">
           <select id="doc-finalidad" {...register('finalidad')} className={input(!!errors.finalidad)}>
             {(Object.keys(DOCUMENT_PURPOSE_LABEL) as (keyof typeof DOCUMENT_PURPOSE_LABEL)[]).map((k) => <option key={k} value={k}>{DOCUMENT_PURPOSE_LABEL[k]}</option>)}
           </select>
@@ -90,7 +90,7 @@ function UploadForm({ seed, isUploading, onCancel, onSubmit }: { seed: DocumentU
   )
 }
 
-function PdfDropzone({ file, error, onChange }: { file: File | null; error?: string; onChange: (file: File | undefined) => void }) {
+export function PdfDropzone({ file, error, onChange }: { file: File | null; error?: string; onChange: (file: File | undefined) => void }) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { 'application/pdf': ['.pdf'] },
     maxFiles: 1,
@@ -101,9 +101,9 @@ function PdfDropzone({ file, error, onChange }: { file: File | null; error?: str
 
   return (
     <fieldset>
-      <legend className="mb-1.5 block text-sm font-semibold">Archivo PDF</legend>
+      <legend className={fieldClassName.label}>Archivo PDF<RequiredMark /></legend>
       {file ? (
-        <p className={cn('flex items-center gap-3 rounded-tile border p-3', error ? 'border-2 border-deep bg-soft' : 'border-line bg-soft')}>
+        <p className={cn('flex items-center gap-3 rounded-tile border p-3', error ? 'border-2 border-danger bg-soft' : 'border-line bg-soft')}>
           <FileText size={20} className="shrink-0 text-primary" aria-hidden />
           <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold">{file.name}</span><span className="block text-xs text-muted">{formatSize(file.size)}</span></span>
           <IconButton label="Quitar archivo" onClick={() => onChange(undefined)}><X size={18} aria-hidden /></IconButton>
@@ -111,14 +111,14 @@ function PdfDropzone({ file, error, onChange }: { file: File | null; error?: str
       ) : (
         <section {...getRootProps({ 'aria-label': 'Zona para arrastrar o seleccionar un PDF' })}
           className={cn('flex cursor-pointer flex-col items-center rounded-card border-2 border-dashed px-4 py-8 text-center transition-colors',
-            isDragActive ? 'border-primary bg-soft' : error ? 'border-deep bg-soft' : 'border-mid hover:border-primary hover:bg-soft')}>
+            isDragActive ? 'border-primary bg-soft' : error ? 'border-danger bg-soft' : 'border-mid hover:border-primary hover:bg-soft')}>
           <input {...getInputProps()} />
           <Upload size={24} className="mb-2 text-primary" aria-hidden />
           <span className="text-base font-semibold">{isDragActive ? 'Suelta el PDF aquí' : 'Arrastra un PDF o haz clic para seleccionarlo'}</span>
           <span className="mt-1 text-xs text-muted">Máximo {FILE_LIMITS.PDF_MAX_BYTES / BYTES_PER_MB} MB</span>
         </section>
       )}
-      {error && <p id="doc-archivo-err" role="alert" className="mt-1 text-xs font-medium text-deep">{error}</p>}
+      {error && <p id="doc-archivo-err" role="alert" className="mt-1 text-xs font-medium text-danger">{error}</p>}
     </fieldset>
   )
 }

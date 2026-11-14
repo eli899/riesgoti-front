@@ -8,6 +8,7 @@ import {
   useGetDocumentPreviewQuery,
   useGetDocumentVersionsQuery,
   useReindexDocumentVersionMutation,
+  useReplaceDocumentFileMutation,
   useRetryDocumentVersionMutation,
   useUploadDocumentVersionMutation,
 } from '@/app/api/adminApi'
@@ -16,9 +17,10 @@ import { runMutation, toApiFailure, type SubmitResult } from '@/lib/apiErrors'
 import {
   fromApiDocumentPreviewToDomain,
   fromApiDocumentVersionToDomain,
+  fromDomainDocumentReplaceFileToApi,
   fromDomainDocumentUploadToApi,
 } from '@/mappers/admin.mapper'
-import type { DocumentUploadFormValues } from '@/schemas/document.schema'
+import type { DocumentReplaceFileFormValues, DocumentUploadFormValues } from '@/schemas/document.schema'
 import type { DocumentVersion } from '@/types/domain.types'
 import { DOCUMENT_PROCESSING_STATUS } from '@/constants/domain.constants'
 import { POLLING_INTERVALS_MS } from '@/constants/timing.constants'
@@ -49,6 +51,7 @@ export function useKnowledgeBaseManager() {
   const [deactivate] = useDeactivateDocumentVersionMutation()
   const [retry] = useRetryDocumentVersionMutation()
   const [reindex] = useReindexDocumentVersionMutation()
+  const [replaceFile, { isLoading: isReplacing }] = useReplaceDocumentFileMutation()
   const [pendingAction, setPendingAction] = useState<{ id: number; action: DocumentAction } | null>(null)
   const [deleteVersion] = useDeleteDocumentVersionMutation()
   const deletion = useConfirmedDeletion((version: DocumentVersion) => deleteVersion(version.id).unwrap(), {
@@ -64,6 +67,20 @@ export function useKnowledgeBaseManager() {
       return undefined
     },
     [upload],
+  )
+
+  /** Carga nuevamente el PDF de una versión en ERROR (p. ej. sin capa de texto) conservando código y versión. */
+  const replaceVersionFile = useCallback(
+    async (id: number, values: DocumentReplaceFileFormValues): Promise<SubmitResult> => {
+      const { failure } = await runMutation(
+        () => replaceFile({ id, body: fromDomainDocumentReplaceFileToApi(values) }).unwrap(),
+        'No se pudo cargar nuevamente el PDF.',
+      )
+      if (failure) return failure
+      toast.success('PDF reemplazado', { description: 'Se está procesando nuevamente la versión.' })
+      return undefined
+    },
+    [replaceFile],
   )
 
   const runAction = useCallback(
@@ -90,6 +107,8 @@ export function useKnowledgeBaseManager() {
     isPolling: hasProcessing,
     uploadVersion,
     isUploading,
+    replaceVersionFile,
+    isReplacing,
     runAction,
     pendingAction,
     deletion,

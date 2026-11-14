@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ChevronRight, Search } from 'lucide-react'
 import { Button, Card, Chips, EmptyState, Pager, StatusBadge } from '@/components/ui'
-import { formatDate } from '@/lib/format'
+import { formatDateTime } from '@/lib/format'
 import { INCIDENT_STATUS_LABEL } from '@/constants/labels.constants'
 import { cn } from '@/lib/utils'
 import { inputClassName } from '@/styles/tokens.form'
@@ -70,14 +70,14 @@ export default function IncidentsTable({ incidents, onOpen }: { incidents: Incid
                   <tr key={i.id} className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 px-4 py-3 hover:bg-soft lg:table-row lg:p-0">
                     <td className="lg:px-5 lg:py-3">
                       <button type="button" onClick={() => onOpen(i.id)} className={cn(monoClassName, 'hover:underline')} aria-label={`Abrir ${i.reference}: ${i.title}`}>{i.reference}</button>
-                      <span className="ml-2 text-xs text-muted lg:hidden">{formatDate(i.registeredAt)}</span>
+                      <time dateTime={i.registeredAt} className="ml-2 whitespace-nowrap text-xs text-muted lg:hidden">{formatDateTime(i.registeredAt)}</time>
                     </td>
                     <td className="col-start-1 font-medium lg:py-3">{i.title}</td>
                     <td className="col-start-1 text-sm text-muted lg:py-3">{i.assetName ?? 'Activo no especificado'}</td>
                     <td className="col-start-2 row-span-3 row-start-1 self-center lg:py-3">
                       <span className="flex items-center gap-2"><StatusBadge status={i.status} /><ChevronRight size={18} className="text-control lg:hidden" aria-hidden /></span>
                     </td>
-                    <td className="hidden pr-5 text-muted lg:table-cell lg:py-3">{formatDate(i.registeredAt)}</td>
+                    <td className="hidden whitespace-nowrap pr-5 text-muted lg:table-cell lg:py-3"><time dateTime={i.registeredAt}>{formatDateTime(i.registeredAt)}</time></td>
                   </tr>
                 ))}
               </tbody>

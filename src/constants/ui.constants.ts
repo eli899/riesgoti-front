@@ -35,9 +35,18 @@ export const MATRIX_TABS = {
   MATRIX: 'matrix',
   PROBABILITY: 'probability',
   IMPACT: 'impact',
+  LEVELS: 'levels',
 } as const
 
 export type MatrixTab = (typeof MATRIX_TABS)[keyof typeof MATRIX_TABS]
+
+/** Pestañas de la vista de activos del Administrador (CHG-0039). */
+export const ASSET_TABS = {
+  ASSETS: 'assets',
+  TYPES: 'types',
+} as const
+
+export type AssetTab = (typeof ASSET_TABS)[keyof typeof ASSET_TABS]
 
 /** Claves de error de formulario y de respuesta DRF. */
 export const FORM_ERROR_KEYS = {

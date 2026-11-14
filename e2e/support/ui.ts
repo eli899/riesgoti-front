@@ -11,7 +11,7 @@ export async function loginAs(page: Page, user: UserKey, password = SEED_PASSWOR
 /** Completa el formulario de login ya visible (p. ej. tras la redirección de un enlace directo sin sesión). */
 export async function submitLogin(page: Page, user: UserKey, password = SEED_PASSWORD) {
   await page.getByLabel('Correo institucional').fill(USERS[user].email)
-  await page.getByLabel('Contraseña', { exact: true }).fill(password)
+  await page.getByLabel('Contraseña (obligatorio)', { exact: true }).fill(password)
   await page.getByRole('button', { name: 'Ingresar', exact: true }).click()
   await expect(page.getByRole('banner')).toContainText(USERS[user].fullName)
 }

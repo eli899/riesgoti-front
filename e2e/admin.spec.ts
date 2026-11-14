@@ -197,6 +197,13 @@ test.describe('Portal del Administrador', () => {
     await failed.getByRole('button', { name: 'Reintentar' }).click()
     await expect(failed.getByRole('alert')).toContainText('capa de texto', { timeout: PROCESSING_TIMEOUT })
     await expect(failed.getByRole('button', { name: 'Reintentar' })).toBeVisible()
+    // CHG-0037: una versión en ERROR ofrece cargar nuevamente el PDF o eliminarla.
+    await expect(failed.getByRole('button', { name: 'Eliminar' })).toBeVisible()
+    await failed.getByRole('button', { name: 'Cargar nuevamente' }).click()
+    const dialog = page.getByRole('dialog', { name: 'Cargar nuevamente el PDF' })
+    await expect(dialog).toContainText('capa de texto')
+    await dialog.getByRole('button', { name: 'Cancelar' }).click()
+    await expect(dialog).toBeHidden()
   })
 
   test('valida, prueba la conexión y publica una nueva configuración IA/RAG', async ({ page }) => {
@@ -247,7 +254,7 @@ test.describe('Portal del Administrador', () => {
     const userPage = await userContext.newPage()
     await userPage.goto(ROUTES.ROOT)
     await userPage.getByLabel('Correo institucional').fill(email)
-    await userPage.getByLabel('Contraseña', { exact: true }).fill(password)
+    await userPage.getByLabel('Contraseña (obligatorio)', { exact: true }).fill(password)
     await userPage.getByRole('button', { name: 'Ingresar', exact: true }).click()
     await expect(userPage.getByRole('banner')).toContainText(fullName)
     await logout(userPage)
@@ -261,7 +268,7 @@ test.describe('Portal del Administrador', () => {
     await expect(page.getByRole('switch', { name: `Activar a ${fullName}` })).not.toBeChecked()
 
     await userPage.getByLabel('Correo institucional').fill(email)
-    await userPage.getByLabel('Contraseña', { exact: true }).fill(password)
+    await userPage.getByLabel('Contraseña (obligatorio)', { exact: true }).fill(password)
     await userPage.getByRole('button', { name: 'Ingresar', exact: true }).click()
     await expect(userPage.getByRole('form', { name: 'Inicio de sesión' }).getByRole('alert').first()).toBeVisible()
     await expect(userPage.getByRole('heading', { level: 1, name: 'Iniciar sesión' })).toBeVisible()

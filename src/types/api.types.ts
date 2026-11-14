@@ -289,6 +289,13 @@ export interface AssetTypeDto {
   id: number
   nombre: string
   activo: boolean
+  total_activos: number
+}
+
+/** TipoActivoInputSerializer (POST completo / PATCH parcial). CHG-0039. */
+export interface AssetTypeRequestDto {
+  nombre?: string
+  activo?: boolean
 }
 
 /** ActivoInputSerializer (POST completo / PATCH parcial). Nunca se elimina: se desactiva. */

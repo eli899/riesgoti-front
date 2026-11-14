@@ -38,7 +38,7 @@ export default defineConfig({
     // Front dedicado a la suite (5174) apuntando a la API aislada (8001); no interfiere con `pnpm dev` (5173).
     command: `pnpm exec vite --port ${E2E_FRONT_PORT} --strictPort`,
     url: E2E_FRONT_URL,
-    env: { VITE_API_BASE_URL: E2E_API_URL, VITE_DEMO_PASSWORD: '' },
+    env: { VITE_API_BASE_URL: E2E_API_URL },
     reuseExistingServer: !isCI,
     timeout: 120_000,
   },

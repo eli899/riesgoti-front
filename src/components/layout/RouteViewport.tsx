@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom'
 export default function RouteViewport({ children }: { children: ReactNode }) {
   const { pathname } = useLocation()
   useEffect(() => {
-    window.scrollTo({ top: 0 })
+    window.scrollTo({ top: 0, left: 0 })
   }, [pathname])
-  return <div key={pathname}>{children}</div>
+  return <div key={pathname} className="min-w-0 w-full">{children}</div>
 }

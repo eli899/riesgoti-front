@@ -191,6 +191,8 @@ export interface AssetType {
   id: number
   name: string
   active: boolean
+  /** Activos que usan el tipo: si es mayor que 0 el tipo no puede eliminarse (solo desactivarse). */
+  assetCount: number
 }
 
 // ---------------------------------------------------------------------------

@@ -41,7 +41,7 @@ function PublishForm({ currentName, changedCells, isPublishing, onClose, onPubli
       <p className="text-base">
         Se publicará una nueva configuración con <strong>{changedCells} {changedCells === 1 ? 'celda modificada' : 'celdas modificadas'}</strong>. Las evaluaciones registradas en EVALUACION_RIESGO conservan la celda y la matriz con las que se hicieron.
       </p>
-      <Field id="matrix-name" label="Nombre de la configuración">
+      <Field id="matrix-name" required label="Nombre de la configuración">
         <input id="matrix-name" value={name} maxLength={FIELD_LIMITS.MATRIX_NAME_MAX} onChange={(e) => { setName(e.target.value); setError(undefined) }} className={cn(inputClassName(!!error), 'h-11 md:h-10')} />
       </Field>
       <FormAlert message={error} />

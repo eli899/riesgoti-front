@@ -54,10 +54,10 @@ function IncidentForm({ assets, isSubmitting, onCancel, onSubmit }: Omit<CreateI
       <FormAlert message={errors.root?.server?.message} />
       <fieldset className="space-y-4">
         <legend className="sr-only">Qué ocurrió</legend>
-        <Field id="inc-titulo" label="Título breve" error={errors.titulo?.message} help="Ejemplo: El ERP está lento al guardar facturas">
+        <Field id="inc-titulo" required label="Título breve" error={errors.titulo?.message} help="Ejemplo: El ERP está lento al guardar facturas">
           <input id="inc-titulo" maxLength={FIELD_LIMITS.INCIDENT_TITLE_MAX} {...register('titulo')} aria-invalid={!!errors.titulo} aria-describedby={describedBy('inc-titulo', !!errors.titulo)} className={input(!!errors.titulo)} />
         </Field>
-        <Field id="inc-activo" label="Activo afectado" error={errors.activo_reportado_id?.message} help="Si no aparece en la lista, elige «Otro / No estoy seguro».">
+        <Field id="inc-activo" required label="Activo afectado" error={errors.activo_reportado_id?.message} help="Si no aparece en la lista, elige «Otro / No estoy seguro».">
           <Controller control={control} name="activo_reportado_id" render={({ field }) => (
             <select id="inc-activo" ref={field.ref} name={field.name} onBlur={field.onBlur}
               value={otherSelected ? 'other' : field.value ?? ''}
@@ -75,11 +75,11 @@ function IncidentForm({ assets, isSubmitting, onCancel, onSubmit }: Omit<CreateI
           )} />
         </Field>
         {otherSelected && (
-          <Field id="inc-activo-texto" label="¿Qué recurso se vio afectado?" error={errors.activo_texto?.message} help="Describe el equipo, aplicación o servicio con tus palabras.">
+          <Field id="inc-activo-texto" required label="¿Qué recurso se vio afectado?" error={errors.activo_texto?.message} help="Describe el equipo, aplicación o servicio con tus palabras.">
             <input id="inc-activo-texto" maxLength={FIELD_LIMITS.INCIDENT_ASSET_TEXT_MAX} {...register('activo_texto')} aria-invalid={!!errors.activo_texto} className={input(!!errors.activo_texto)} />
           </Field>
         )}
-        <Field id="inc-descripcion" label="Descripción detallada" error={errors.descripcion?.message} help="Qué ocurrió, desde cuándo y qué estabas haciendo. No incluyas contraseñas ni secretos.">
+        <Field id="inc-descripcion" required label="Descripción detallada" error={errors.descripcion?.message} help="Qué ocurrió, desde cuándo y qué estabas haciendo. No incluyas contraseñas ni secretos.">
           <textarea id="inc-descripcion" rows={5} {...register('descripcion')} aria-invalid={!!errors.descripcion} aria-describedby={describedBy('inc-descripcion', !!errors.descripcion)} className={cn(inputClassName(!!errors.descripcion), 'py-2.5')} />
         </Field>
       </fieldset>
@@ -105,7 +105,7 @@ function EvidenceDropzone({ files, error, onChange }: { files: File[]; error?: s
       <legend className="mb-1.5 text-sm font-semibold">Evidencias <span className="font-normal text-muted">(opcional)</span></legend>
       <section {...getRootProps({ 'aria-label': 'Zona para arrastrar o seleccionar evidencias' })}
         className={cn('flex min-h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-tile border-2 border-dashed p-4 text-center text-sm transition-colors',
-          isDragActive ? 'border-primary bg-line' : error ? 'border-deep bg-soft' : 'border-mid bg-soft hover:border-primary')}>
+          isDragActive ? 'border-primary bg-line' : error ? 'border-danger bg-soft' : 'border-mid bg-soft hover:border-primary')}>
         <input {...getInputProps()} />
         <Paperclip size={20} className="text-primary-pressed" aria-hidden />
         <span className="font-semibold text-primary-pressed">{isDragActive ? 'Suelta los archivos aquí' : 'Adjuntar capturas, logs o documentos'}</span>
@@ -113,7 +113,7 @@ function EvidenceDropzone({ files, error, onChange }: { files: File[]; error?: s
           {FILE_LIMITS.EVIDENCE_EXTENSIONS.map((e) => e.slice(1).toUpperCase()).join(', ')} · máximo {FILE_LIMITS.EVIDENCE_MAX_BYTES / BYTES_PER_MB} MB por archivo y {FILE_LIMITS.EVIDENCES_PER_INCIDENT_MAX}  archivos. Los archivos nunca se ejecutan.
         </span>
       </section>
-      {error && <p id="inc-evidencias-err" role="alert" className="mt-1 text-xs font-medium text-deep">{error}</p>}
+      {error && <p id="inc-evidencias-err" role="alert" className="mt-1 text-xs font-medium text-danger">{error}</p>}
       {files.length > 0 && (
         <ul className="mt-3 space-y-2" aria-label="Evidencias seleccionadas">
           {files.map((f, i) => (

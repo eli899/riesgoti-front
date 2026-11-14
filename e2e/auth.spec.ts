@@ -10,7 +10,7 @@ test.describe('Inicio de sesión y navegación general', () => {
     await expect(page.getByRole('form', { name: 'Inicio de sesión' }).getByRole('alert').first()).toBeVisible()
 
     await page.getByLabel('Correo institucional').fill(USERS.reporter.email)
-    await page.getByLabel('Contraseña', { exact: true }).fill('ClaveIncorrecta123')
+    await page.getByLabel('Contraseña (obligatorio)', { exact: true }).fill('ClaveIncorrecta123')
     await page.getByRole('button', { name: 'Ingresar', exact: true }).click()
     await expect(page.getByRole('form', { name: 'Inicio de sesión' }).getByRole('alert').first()).toBeVisible()
     await expect(page.getByRole('heading', { level: 1, name: 'Iniciar sesión' })).toBeVisible()
@@ -18,7 +18,7 @@ test.describe('Inicio de sesión y navegación general', () => {
 
   test('muestra y oculta la contraseña con el icono del ojo', async ({ page }) => {
     await page.goto(ROUTES.ROOT)
-    const password = page.getByLabel('Contraseña', { exact: true })
+    const password = page.getByLabel('Contraseña (obligatorio)', { exact: true })
     await password.fill(SEED_PASSWORD)
     await expect(password).toHaveAttribute('type', 'password')
     await page.getByRole('button', { name: 'Mostrar contraseña' }).click()

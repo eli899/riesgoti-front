@@ -73,6 +73,12 @@ export type RiskLevelCode = ValueOf<typeof RISK_LEVEL>
 
 export const RISK_LEVELS_ASCENDING: readonly RiskLevelCode[] = [RISK_LEVEL.BAJO, RISK_LEVEL.MEDIO, RISK_LEVEL.ALTO, RISK_LEVEL.CRITICO]
 
+/** Dimensión de la matriz de riesgo (probabilidad e impacto en escala 1..5). */
+export const MATRIX_SIZE = 5
+
+/** Puntaje mínimo (probabilidad × impacto) con el que se sugiere cada nivel al configurar la matriz inicial. */
+export const MATRIX_SUGGESTED_LEVEL_MIN_SCORE: Readonly<Record<RiskLevelCode, number>> = { BAJO: 1, MEDIO: 4, ALTO: 9, CRITICO: 15 }
+
 /** Niveles que el tablero agrupa como «alto o crítico». */
 export const RISK_LEVELS_HIGH_OR_CRITICAL: readonly RiskLevelCode[] = [RISK_LEVEL.ALTO, RISK_LEVEL.CRITICO]
 
@@ -137,6 +143,21 @@ export const EMBEDDING_PROVIDER = {
 } as const
 
 export type EmbeddingProvider = ValueOf<typeof EMBEDDING_PROVIDER>
+
+/**
+ * Valores sugeridos para la primera CONFIGURACION_IA_RAG (CHG-0039). El embedding local coincide con
+ * RIESGOTI_PRELOAD_EMBEDDING_MODEL del stack Docker, por lo que funciona sin API key.
+ */
+export const AI_CONFIG_INITIAL_DEFAULTS = {
+  LLM_PROVIDER: LLM_PROVIDER.GEMINI,
+  LLM_MODEL: 'gemini-2.5-flash',
+  EMBEDDING_PROVIDER: EMBEDDING_PROVIDER.SENTENCE_TRANSFORMERS,
+  EMBEDDING_MODEL: 'sentence-transformers/paraphrase-multilingual-mpnet-base-v2',
+  CHUNK_SIZE: 800,
+  CHUNK_OVERLAP: 120,
+  TOP_K: 4,
+  SIMILARITY_THRESHOLD: 0.4,
+} as const
 
 /** Categoría del registro de riesgos (derivada en el mapper a partir del estado de la última versión). */
 export const RISK_REGISTRY_CATEGORY = {

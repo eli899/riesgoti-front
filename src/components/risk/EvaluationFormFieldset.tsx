@@ -55,7 +55,7 @@ export default function EvaluationFormFieldset({ matrix, levelAt, evaluation, ed
       <fieldset disabled={!editable} className="min-w-0 space-y-4">
         <legend className="sr-only">Probabilidad, impacto y justificación de la evaluación</legend>
         <section className="grid gap-3 sm:grid-cols-2" aria-label="Selección de criterios">
-          <Field id="eval-probability" label="Probabilidad" error={errors.probabilidad?.message}>
+          <Field id="eval-probability" required label="Probabilidad" error={errors.probabilidad?.message}>
             <select id="eval-probability" {...register('probabilidad', { setValueAs: toNumber })} aria-invalid={!!errors.probabilidad}
               className={cn(inputClassName(!!errors.probabilidad), 'h-11 md:h-10')}>
               <option value="">Selecciona un criterio</option>
@@ -64,7 +64,7 @@ export default function EvaluationFormFieldset({ matrix, levelAt, evaluation, ed
               ))}
             </select>
           </Field>
-          <Field id="eval-impact" label="Impacto" error={errors.impacto?.message}>
+          <Field id="eval-impact" required label="Impacto" error={errors.impacto?.message}>
             <select id="eval-impact" {...register('impacto', { setValueAs: toNumber })} aria-invalid={!!errors.impacto}
               className={cn(inputClassName(!!errors.impacto), 'h-11 md:h-10')}>
               <option value="">Selecciona un criterio</option>
@@ -85,7 +85,7 @@ export default function EvaluationFormFieldset({ matrix, levelAt, evaluation, ed
           <RiskLevelBadge level={level} />
         </output>
 
-        <Field id="eval-justification" label="Justificación de la evaluación" error={errors.justificacion?.message}
+        <Field id="eval-justification" required label="Justificación de la evaluación" error={errors.justificacion?.message}
           help="Explica por qué eliges esta probabilidad e impacto (mínimo 15 caracteres).">
           <textarea id="eval-justification" rows={3} {...register('justificacion')} aria-invalid={!!errors.justificacion}
             className={cn(inputClassName(!!errors.justificacion), 'py-2')} />

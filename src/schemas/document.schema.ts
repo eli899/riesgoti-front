@@ -4,6 +4,11 @@ import { FIELD_LIMITS as L, FILE_LIMITS, VALIDATION_MESSAGES } from '@/constants
 
 const M = VALIDATION_MESSAGES.DOCUMENT
 
+const pdfFileSchema = z
+  .custom<File>((file) => file instanceof File, M.FILE_REQUIRED)
+  .refine((file) => file?.type === FILE_LIMITS.PDF_MIME_TYPE || file?.name.toLowerCase().endsWith(FILE_LIMITS.PDF_EXTENSION), M.FILE_TYPE)
+  .refine((file) => file?.size <= FILE_LIMITS.PDF_MAX_BYTES, M.FILE_SIZE)
+
 /** Contrato de carga de VERSION_DOCUMENTO (espejo de DocumentUploadInputSerializer). */
 export const documentUploadSchema = z.object({
   codigo: z
@@ -16,10 +21,12 @@ export const documentUploadSchema = z.object({
   descripcion: z.string().optional(),
   version: z.string().trim().min(L.DOCUMENT_VERSION_MIN, M.VERSION_REQUIRED).max(L.DOCUMENT_VERSION_MAX),
   finalidad: z.nativeEnum(DOCUMENT_PURPOSE),
-  archivo: z
-    .custom<File>((file) => file instanceof File, M.FILE_REQUIRED)
-    .refine((file) => file?.type === FILE_LIMITS.PDF_MIME_TYPE || file?.name.toLowerCase().endsWith(FILE_LIMITS.PDF_EXTENSION), M.FILE_TYPE)
-    .refine((file) => file?.size <= FILE_LIMITS.PDF_MAX_BYTES, M.FILE_SIZE),
+  archivo: pdfFileSchema,
 })
 
 export type DocumentUploadFormValues = z.infer<typeof documentUploadSchema>
+
+/** Contrato para cargar nuevamente el PDF de una versión en ERROR (espejo de DocumentReplaceFileInputSerializer). */
+export const documentReplaceFileSchema = z.object({ archivo: pdfFileSchema })
+
+export type DocumentReplaceFileFormValues = z.infer<typeof documentReplaceFileSchema>

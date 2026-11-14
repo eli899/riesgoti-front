@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import AsyncContent from '@/components/AsyncContent'
+import InitialMatrixSetupForm from '@/components/admin/InitialMatrixSetupForm'
 import Matrix5x5EditorGrid from '@/components/admin/Matrix5x5EditorGrid'
 import MatrixCriteriaList from '@/components/admin/MatrixCriteriaList'
 import PublishMatrixDialog from '@/components/admin/PublishMatrixDialog'
+import RiskLevelsList from '@/components/admin/RiskLevelsList'
 import PageMeta from '@/components/seo/PageMeta'
-import { Button, Card, PageHeader, SectionTitle, Tabs } from '@/components/ui'
+import { Button, Card, EmptyState, PageHeader, SectionTitle, Tabs } from '@/components/ui'
 import { useAuthSession } from '@/hooks/useAuthSession'
 import { useMatrixConfigManager } from '@/hooks/admin/useMatrixConfigManager'
 import { formatDateTime } from '@/lib/format'
@@ -28,12 +30,16 @@ export default function MatrixPage() {
           sub={m.matrix ? <>Configuración vigente: <strong>{m.matrix.name}</strong> {m.matrix.version}, publicada por {m.matrix.createdBy.name} el {formatDateTime(m.matrix.createdAt)}</> : 'Criterios y niveles de riesgo.'}
         />
         <AsyncContent isLoading={m.isLoading} error={m.loadError} onRetry={m.retryLoad} label="la matriz vigente">
+          {m.isMissing && (canEdit
+            ? <InitialMatrixSetupForm levelAt={m.initialLevelAt} isChanged={m.isInitialCellChanged} onCycle={m.cycleInitialCell} isPublishing={m.isPublishing} onSubmit={m.publishInitial} />
+            : <Card><EmptyState title="Matriz sin configurar" text="Un administrador debe publicar la matriz de riesgo inicial antes de evaluar riesgos." /></Card>)}
           {m.matrix && (
             <>
               <Tabs label="Componentes de la matriz" value={tab} onChange={setTab}
-                tabs={[{ id: MATRIX_TABS.MATRIX, label: 'Matriz 5×5' }, { id: MATRIX_TABS.PROBABILITY, label: 'Probabilidad' }, { id: MATRIX_TABS.IMPACT, label: 'Impacto' }]} />
+                tabs={[{ id: MATRIX_TABS.MATRIX, label: 'Matriz 5×5' }, { id: MATRIX_TABS.PROBABILITY, label: 'Probabilidad' }, { id: MATRIX_TABS.IMPACT, label: 'Impacto' }, { id: MATRIX_TABS.LEVELS, label: 'Niveles de riesgo' }]} />
               {tab === MATRIX_TABS.PROBABILITY && <MatrixCriteriaList title="Criterios de probabilidad" criteria={m.matrix.probabilityCriteria} />}
               {tab === MATRIX_TABS.IMPACT && <MatrixCriteriaList title="Criterios de impacto" criteria={m.matrix.impactCriteria} />}
+              {tab === MATRIX_TABS.LEVELS && <RiskLevelsList levels={m.matrix.levels} />}
               {tab === MATRIX_TABS.MATRIX && (
                 <Card aria-labelledby="matrix-grid-title" className="p-4 md:p-5">
                   <SectionTitle id="matrix-grid-title">Niveles por celda</SectionTitle>

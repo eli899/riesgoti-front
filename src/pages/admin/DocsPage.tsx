@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Loader2, Upload } from 'lucide-react'
 import AsyncContent from '@/components/AsyncContent'
 import DocumentPreviewModal from '@/components/admin/DocumentPreviewModal'
+import DocumentReplaceFileModal from '@/components/admin/DocumentReplaceFileModal'
 import DocumentUploadModal, { type DocumentUploadSeed } from '@/components/admin/DocumentUploadModal'
 import DocumentVersionsTable from '@/components/admin/DocumentVersionsTable'
 import ConfirmDeleteDialog from '@/components/forms/ConfirmDeleteDialog'
@@ -16,6 +17,7 @@ export default function DocsPage() {
   const kb = useKnowledgeBaseManager()
   const [upload, setUpload] = useState<{ seed: DocumentUploadSeed | null } | null>(null)
   const [previewId, setPreviewId] = useState<number | null>(null)
+  const [replaceTarget, setReplaceTarget] = useState<DocumentVersion | null>(null)
   const preview = useDocumentPreview(previewId)
   // Se busca en la lista viva para reflejar el nuevo estado tras autorizar (polling / invalidación).
   const previewVersion = kb.versions.find((v) => v.id === previewId) ?? null
@@ -49,6 +51,7 @@ export default function DocsPage() {
               onPreview={(v) => setPreviewId(v.id)}
               onAction={kb.runAction}
               onNewVersion={openNewVersion}
+              onReplaceFile={setReplaceTarget}
               onDelete={kb.deletion.request}
             />
           </AsyncContent>
@@ -56,6 +59,7 @@ export default function DocsPage() {
       </main>
 
       <DocumentUploadModal open={upload !== null} seed={upload?.seed ?? null} isUploading={kb.isUploading} onClose={() => setUpload(null)} onSubmit={kb.uploadVersion} />
+      <DocumentReplaceFileModal version={replaceTarget} isReplacing={kb.isReplacing} onClose={() => setReplaceTarget(null)} onSubmit={kb.replaceVersionFile} />
       <DocumentPreviewModal
         version={previewVersion}
         preview={preview.preview}

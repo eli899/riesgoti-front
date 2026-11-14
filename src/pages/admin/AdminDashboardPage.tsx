@@ -1,5 +1,6 @@
 import AsyncContent from '@/components/AsyncContent'
 import KpiSection from '@/components/dashboard/KpiSection'
+import InitialSetupChecklist from '@/components/admin/InitialSetupChecklist'
 import SystemStatusArticle from '@/components/admin/SystemStatusArticle'
 import { ChartCard, DailyBarChart, HorizontalBars } from '@/components/dashboard/charts'
 import PageMeta from '@/components/seo/PageMeta'
@@ -11,7 +12,14 @@ import type { IncidentStatus } from '@/types/domain.types'
 import { DASHBOARD_LIMITS } from '@/constants/ui.constants'
 
 /** Sub-vista: panorama del administrador (indicadores agregados de RiskDashboardAggregationService). */
-export default function AdminDashboardPage({ onOpenDocuments }: { onOpenDocuments: () => void }) {
+export interface AdminSetupNavigation {
+  onOpenDocuments: () => void
+  onOpenAssets: () => void
+  onOpenMatrix: () => void
+  onOpenAIConfig: () => void
+}
+
+export default function AdminDashboardPage({ onOpenDocuments, onOpenAssets, onOpenMatrix, onOpenAIConfig }: AdminSetupNavigation) {
   const overview = useAdminOverview()
   const d = overview.dashboard
 
@@ -24,6 +32,15 @@ export default function AdminDashboardPage({ onOpenDocuments }: { onOpenDocument
       <PageMeta title="Panel de administración" description="Indicadores de incidencias, riesgos vigentes y estado de la IA y la base de conocimiento de RiesgoTI." />
       <main id="main-content" className="page-in">
         <PageHeader title="Panel de administración" sub={d ? `Datos generados el ${formatDateTime(d.generatedAt)}` : 'Indicadores de la plataforma.'} />
+        {overview.setup && (
+          <InitialSetupChecklist steps={[
+            { id: 'asset-types', label: 'Registrar tipos de activo', description: 'Clasifican los activos (por ejemplo, Aplicación o Servidor).', done: overview.setup.assetTypes, actionLabel: 'Ir a Tipos de activo', onOpen: onOpenAssets },
+            { id: 'assets', label: 'Registrar activos', description: 'Los reportantes los eligen al registrar una incidencia.', done: overview.setup.assets, actionLabel: 'Ir a Activos', onOpen: onOpenAssets },
+            { id: 'matrix', label: 'Publicar la matriz de riesgo inicial', description: 'Sin matriz, los analistas no pueden evaluar riesgos.', done: overview.setup.matrix, actionLabel: 'Ir a Matriz', onOpen: onOpenMatrix },
+            { id: 'ai-config', label: 'Publicar la configuración IA/RAG inicial', description: 'Sin ella, las incidencias pasan directamente a atención humana.', done: overview.setup.aiConfig, actionLabel: 'Ir a Configuración IA/RAG', onOpen: onOpenAIConfig },
+            { id: 'documents', label: 'Cargar y autorizar documentos normativos', description: 'La IA solo orienta con documentos autorizados y activos.', done: overview.setup.documents, actionLabel: 'Ir a Documentos', onOpen: onOpenDocuments },
+          ]} />
+        )}
         <AsyncContent isLoading={overview.isLoading} error={overview.loadError} onRetry={overview.retryLoad} label="los indicadores">
           {d && (
             <>

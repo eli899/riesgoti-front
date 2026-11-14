@@ -48,23 +48,23 @@ function UserForm({ isNew, defaultValues, roles, isSaving, onClose, onSubmit }: 
       <FormAlert message={errors.root?.server?.message} />
       <fieldset className="grid gap-4 sm:grid-cols-2">
         <legend className="sr-only">Identidad</legend>
-        <Field id="user-nombres" label="Nombres" error={errors.nombres?.message}>
+        <Field id="user-nombres" required label="Nombres" error={errors.nombres?.message}>
           <input id="user-nombres" autoComplete="off" {...register('nombres')} aria-invalid={!!errors.nombres} className={input(!!errors.nombres)} />
         </Field>
-        <Field id="user-apellidos" label="Apellidos" error={errors.apellidos?.message}>
+        <Field id="user-apellidos" required label="Apellidos" error={errors.apellidos?.message}>
           <input id="user-apellidos" autoComplete="off" {...register('apellidos')} aria-invalid={!!errors.apellidos} className={input(!!errors.apellidos)} />
         </Field>
       </fieldset>
-      <Field id="user-correo" label="Correo" error={errors.correo?.message}>
+      <Field id="user-correo" required label="Correo" error={errors.correo?.message}>
         <input id="user-correo" type="email" autoComplete="off" {...register('correo')} aria-invalid={!!errors.correo} className={input(!!errors.correo)} />
       </Field>
-      <Field id="user-rol" label="Rol" error={errors.rol_id?.message}>
+      <Field id="user-rol" required label="Rol" error={errors.rol_id?.message}>
         <select id="user-rol" {...register('rol_id', { valueAsNumber: true })} aria-invalid={!!errors.rol_id} className={input(!!errors.rol_id)}>
           <option value={0} disabled>Selecciona un rol</option>
           {roles.filter((r) => r.active).map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
         </select>
       </Field>
-      <Field id="user-password" label={isNew ? 'Contraseña inicial' : 'Nueva contraseña'} optional={!isNew} error={errors.password?.message}
+      <Field id="user-password" label={isNew ? 'Contraseña inicial' : 'Nueva contraseña'} required={isNew} optional={!isNew} error={errors.password?.message}
         help={isNew ? 'Mínimo 8 caracteres; no puede parecerse al correo ni ser común.' : 'Déjala vacía para conservar la contraseña actual.'}>
         <input id="user-password" type="password" autoComplete="new-password" {...register('password')} aria-invalid={!!errors.password} className={input(!!errors.password)} />
       </Field>

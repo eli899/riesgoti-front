@@ -46,13 +46,13 @@ export default function AppShell({ navLabel, items, user, onLogout, children }: 
         </span>
       </header>
 
-      <div className="mx-auto flex max-w-[1440px]">
+      <div className="flex min-h-[calc(100vh-4rem)] w-full">
         <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 overflow-y-auto border-r border-line bg-white p-4 md:block">
           <NavList label={navLabel} items={items} onGo={go} />
         </aside>
         <div className="flex min-h-[calc(100vh-4rem)] min-w-0 flex-1 flex-col px-4 pt-6 md:px-8 md:pt-8">
-          <div className="flex-1">{children}</div>
-          <footer className="mt-10 flex flex-col gap-1 border-t border-line py-4 text-2xs text-muted sm:flex-row sm:items-center sm:justify-between">
+          <div className="mx-auto w-full max-w-[1440px] min-w-0 flex-1">{children}</div>
+          <footer className="mx-auto mt-10 flex w-full max-w-[1440px] flex-col gap-1 border-t border-line py-4 text-2xs text-muted sm:flex-row sm:items-center sm:justify-between">
             <p className="flex items-center gap-1.5"><ShieldCheck size={13} className="text-primary" aria-hidden />RiesgoTI · Gestión de incidencias y riesgos alineada con ISO/IEC 27001, 27002 y 27005.</p>
             <p>Las acciones críticas quedan registradas en la auditoría.</p>
           </footer>

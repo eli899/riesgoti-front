@@ -39,7 +39,8 @@ Abre http://localhost:5173. El puerto está fijado en `vite.config.ts` y debe fi
 | --- | --- | --- |
 | `VITE_API_BASE_URL` | `http://localhost:8000/api/v1` | URL base de la API. |
 | `VITE_APP_NAME` | `RiesgoTI — Gestión de Incidencias y Riesgos ISO 27005` | Nombre que muestra la aplicación. |
-| `VITE_DEMO_PASSWORD` | (comentada) | Solo desarrollo. Con la contraseña de los usuarios semilla, el login muestra accesos de un clic por perfil. No la versiones. |
+
+Las cuentas semilla de desarrollo generadas por `seed_riesgoti` están documentadas en [`../docs/cuentas_demo.md`](../docs/cuentas_demo.md).
 
 ### Scripts
 

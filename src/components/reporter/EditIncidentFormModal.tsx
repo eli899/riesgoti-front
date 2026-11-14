@@ -57,10 +57,10 @@ function EditIncidentForm({ incident, assets, isSubmitting, onCancel, onDone, on
       <FormAlert message={errors.root?.server?.message} />
       <fieldset className="space-y-4">
         <legend className="sr-only">Datos de la incidencia</legend>
-        <Field id="edit-inc-titulo" label="Título breve" error={errors.titulo?.message}>
+        <Field id="edit-inc-titulo" required label="Título breve" error={errors.titulo?.message}>
           <input id="edit-inc-titulo" maxLength={FIELD_LIMITS.INCIDENT_TITLE_MAX} {...register('titulo')} aria-invalid={!!errors.titulo} className={input(!!errors.titulo)} />
         </Field>
-        <Field id="edit-inc-activo" label="Activo afectado" error={errors.activo_reportado_id?.message}>
+        <Field id="edit-inc-activo" required label="Activo afectado" error={errors.activo_reportado_id?.message}>
           <Controller control={control} name="activo_reportado_id" render={({ field }) => (
             <select id="edit-inc-activo" ref={field.ref} name={field.name} onBlur={field.onBlur}
               value={otherSelected ? 'other' : field.value ?? ''}
@@ -78,11 +78,11 @@ function EditIncidentForm({ incident, assets, isSubmitting, onCancel, onDone, on
           )} />
         </Field>
         {otherSelected && (
-          <Field id="edit-inc-activo-texto" label="¿Qué recurso se vio afectado?" error={errors.activo_texto?.message}>
+          <Field id="edit-inc-activo-texto" required label="¿Qué recurso se vio afectado?" error={errors.activo_texto?.message}>
             <input id="edit-inc-activo-texto" maxLength={FIELD_LIMITS.INCIDENT_ASSET_TEXT_MAX} {...register('activo_texto')} aria-invalid={!!errors.activo_texto} className={input(!!errors.activo_texto)} />
           </Field>
         )}
-        <Field id="edit-inc-descripcion" label="Descripción detallada" error={errors.descripcion?.message} help="No incluyas contraseñas ni secretos.">
+        <Field id="edit-inc-descripcion" required label="Descripción detallada" error={errors.descripcion?.message} help="No incluyas contraseñas ni secretos.">
           <textarea id="edit-inc-descripcion" rows={5} {...register('descripcion')} aria-invalid={!!errors.descripcion} className={cn(inputClassName(!!errors.descripcion), 'py-2.5')} />
         </Field>
       </fieldset>

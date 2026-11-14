@@ -119,10 +119,15 @@ export function SectionTitle({ as: As = 'h2', id, icon, className, children }: {
 // ---------------------------------------------------------------------------
 // Formularios
 // ---------------------------------------------------------------------------
-export function Field({ id, label, help, error, children, optional }: { id: string; label: string; help?: string; error?: string; children: ReactNode; optional?: boolean }) {
+/** Asterisco rojo de campo obligatorio; los lectores de pantalla anuncian «(obligatorio)». */
+export function RequiredMark() {
+  return <><span aria-hidden className={fieldClassName.required}>*</span><span className="sr-only"> (obligatorio)</span></>
+}
+
+export function Field({ id, label, help, error, children, optional, required }: { id: string; label: string; help?: string; error?: string; children: ReactNode; optional?: boolean; required?: boolean }) {
   return (
     <p className="m-0">
-      <label htmlFor={id} className={fieldClassName.label}>{label}{optional && <span className={fieldClassName.optional}>(opcional)</span>}</label>
+      <label htmlFor={id} className={fieldClassName.label}>{label}{required && <RequiredMark />}{optional && <span className={fieldClassName.optional}>(opcional)</span>}</label>
       {children}
       {help && !error && <span id={`${id}-help`} className={fieldClassName.help}>{help}</span>}
       {error && <span id={`${id}-err`} role="alert" className={fieldClassName.error}><XCircle size={14} className="mt-px shrink-0" aria-hidden />{error}</span>}
@@ -153,7 +158,7 @@ function Pill({ className, icon, children }: { className: string; icon: ReactNod
 const incidentStatusStyle: Record<IncidentStatus, [string, ReactNode]> = {
   REGISTRADA: ['bg-white border border-control text-muted', <CircleDot size={14} aria-hidden />],
   EN_ANALISIS: ['bg-soft text-primary border border-line', <Loader2 size={14} className="animate-spin" aria-hidden />],
-  PENDIENTE_ATENCION_HUMANA: ['bg-line text-primary-pressed border border-dashed border-primary', <Headset size={14} aria-hidden />],
+  PENDIENTE_ATENCION_HUMANA: ['bg-soft text-primary-pressed border border-mid', <Headset size={14} aria-hidden />],
   EN_ATENCION: ['bg-mid text-deep', <Wrench size={14} aria-hidden />],
   CERRADA: ['bg-disabled text-muted', <Archive size={14} aria-hidden />],
 }

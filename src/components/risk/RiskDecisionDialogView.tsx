@@ -100,7 +100,7 @@ function DecisionForm({ action, version, defaults, correctionDefaults, validatio
         </legend>
 
         {isValidation && !version.hasStrategicCitations && (
-          <Field id="decision-no-sources" label="Justificación de validación sin fuentes documentales" error={errors.justificacion_sin_fuentes?.message}
+          <Field id="decision-no-sources" required label="Justificación de validación sin fuentes documentales" error={errors.justificacion_sin_fuentes?.message}
             help="La propuesta no cita fuentes estratégicas: explica por qué la validas igualmente (mínimo 15 caracteres).">
             <textarea id="decision-no-sources" rows={3} {...register('justificacion_sin_fuentes')} aria-invalid={!!errors.justificacion_sin_fuentes} className={area(!!errors.justificacion_sin_fuentes)} />
           </Field>
@@ -117,7 +117,7 @@ function DecisionForm({ action, version, defaults, correctionDefaults, validatio
           </fieldset>
         )}
 
-        <Field id="decision-observation" label={action === RISK_DECISION_ACTION.RECHAZADA ? 'Motivo del rechazo' : 'Observación'} error={errors.observacion?.message}
+        <Field id="decision-observation" required label={action === RISK_DECISION_ACTION.RECHAZADA ? 'Motivo del rechazo' : 'Observación'} error={errors.observacion?.message}
           help="Mínimo 10 caracteres. Queda registrada en la decisión y en la auditoría.">
           <textarea id="decision-observation" rows={3} {...register('observacion')} aria-invalid={!!errors.observacion} className={area(!!errors.observacion)} />
         </Field>

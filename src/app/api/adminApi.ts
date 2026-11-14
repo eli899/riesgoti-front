@@ -8,6 +8,7 @@ import type {
   AssetDto,
   AssetRequestDto,
   AssetTypeDto,
+  AssetTypeRequestDto,
   AuditEventDto,
   AuditEventListParamsDto,
   DocumentPreviewDto,
@@ -81,6 +82,11 @@ export const adminApi = baseApi.injectEndpoints({
       query: documentAction(DOCUMENT_ACTIONS.REINDEX),
       invalidatesTags: [API_TAGS.DOCUMENT_VERSION],
     }),
+    /** Cuerpo multipart armado por fromDomainDocumentReplaceFileToApi (solo versiones en ERROR). */
+    replaceDocumentFile: build.mutation<DocumentVersionDto, { id: number; body: FormData }>({
+      query: ({ id, body }) => ({ url: API_ENDPOINTS.DOCUMENT_VERSION_REPLACE_FILE(id), method: HTTP_METHODS.POST, body }),
+      invalidatesTags: [API_TAGS.DOCUMENT_VERSION],
+    }),
     deleteDocumentVersion: build.mutation<void, number>({
       query: (id) => ({ url: API_ENDPOINTS.DOCUMENT_VERSION(id), method: HTTP_METHODS.DELETE }),
       invalidatesTags: [API_TAGS.DOCUMENT_VERSION],
@@ -104,6 +110,18 @@ export const adminApi = baseApi.injectEndpoints({
     getAssetTypes: build.query<AssetTypeDto[], void>({
       query: () => API_ENDPOINTS.ASSET_TYPES,
       providesTags: [API_TAGS.ASSET],
+    }),
+    createAssetType: build.mutation<AssetTypeDto, AssetTypeRequestDto>({
+      query: (body) => ({ url: API_ENDPOINTS.ASSET_TYPES, method: HTTP_METHODS.POST, body }),
+      invalidatesTags: [API_TAGS.ASSET],
+    }),
+    updateAssetType: build.mutation<AssetTypeDto, { id: number; body: AssetTypeRequestDto }>({
+      query: ({ id, body }) => ({ url: API_ENDPOINTS.ASSET_TYPE(id), method: HTTP_METHODS.PATCH, body }),
+      invalidatesTags: [API_TAGS.ASSET],
+    }),
+    deleteAssetType: build.mutation<void, number>({
+      query: (id) => ({ url: API_ENDPOINTS.ASSET_TYPE(id), method: HTTP_METHODS.DELETE }),
+      invalidatesTags: [API_TAGS.ASSET],
     }),
     createAsset: build.mutation<AssetDto, AssetRequestDto>({
       query: (body) => ({ url: API_ENDPOINTS.ASSETS, method: HTTP_METHODS.POST, body }),
@@ -171,12 +189,16 @@ export const {
   useActivateDocumentVersionMutation,
   useDeactivateDocumentVersionMutation,
   useRetryDocumentVersionMutation,
+  useReplaceDocumentFileMutation,
   useReindexDocumentVersionMutation,
   useDeleteDocumentVersionMutation,
   useGetActiveMatrixQuery,
   usePublishMatrixMutation,
   useGetAssetsQuery,
   useGetAssetTypesQuery,
+  useCreateAssetTypeMutation,
+  useUpdateAssetTypeMutation,
+  useDeleteAssetTypeMutation,
   useCreateAssetMutation,
   useUpdateAssetMutation,
   useDeleteAssetMutation,

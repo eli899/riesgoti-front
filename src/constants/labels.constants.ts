@@ -11,7 +11,7 @@ export const ROLE_LABEL: Record<RoleCode, string> = {
 export const INCIDENT_STATUS_LABEL: Record<IncidentStatus, string> = {
   REGISTRADA: 'Registrada',
   EN_ANALISIS: 'En análisis',
-  PENDIENTE_ATENCION_HUMANA: 'Pendiente de atención',
+  PENDIENTE_ATENCION_HUMANA: 'Pendiente',
   EN_ATENCION: 'En atención',
   CERRADA: 'Cerrada',
 }
@@ -111,6 +111,7 @@ export const AUDIT_ACTION_LABEL: Record<AuditAction, string> = {
   DESACTIVAR_VERSION_DOCUMENTO: 'Desactivación de documento',
   REPROCESAR_VERSION_DOCUMENTO: 'Reproceso de documento',
   REINDEXAR_VERSION_DOCUMENTO: 'Reindexación de documento',
+  REEMPLAZAR_ARCHIVO_VERSION_DOCUMENTO: 'Nueva carga del PDF de documento',
   PUBLICAR_CONFIGURACION_MATRIZ: 'Publicación de matriz',
   REGISTRAR_INCIDENCIA: 'Registro de incidencia',
   CONFIRMAR_ORIENTACION_OPERATIVA: 'Respuesta a la orientación',

@@ -25,9 +25,13 @@ export const FIELD_LIMITS = {
   ASSET_NAME_MAX: 150,
   ASSET_CRITICALITY_MIN: 1,
   ASSET_CRITICALITY_MAX: 4,
+  ASSET_TYPE_NAME_MIN: 2,
+  ASSET_TYPE_NAME_MAX: 100,
   // CONFIGURACION_MATRIZ
   MATRIX_NAME_MIN: 3,
   MATRIX_NAME_MAX: 100,
+  MATRIX_CRITERION_NAME_MIN: 2,
+  MATRIX_CRITERION_NAME_MAX: 100,
   // DOCUMENTO / VERSION_DOCUMENTO
   DOCUMENT_CODE_MIN: 2,
   DOCUMENT_CODE_MAX: 50,
@@ -103,8 +107,15 @@ export const VALIDATION_MESSAGES = {
     NAME_MIN: `Ingrese un nombre de al menos ${L.ASSET_NAME_MIN} caracteres`,
     NAME_MAX: `Máximo ${L.ASSET_NAME_MAX} caracteres`,
   },
+  ASSET_TYPE: {
+    NAME_MIN: `Ingrese un nombre de al menos ${L.ASSET_TYPE_NAME_MIN} caracteres`,
+    NAME_MAX: `Máximo ${L.ASSET_TYPE_NAME_MAX} caracteres`,
+  },
   MATRIX: {
     NAME_MIN: `Ingresa un nombre de al menos ${L.MATRIX_NAME_MIN} caracteres.`,
+    NAME_MAX: `Máximo ${L.MATRIX_NAME_MAX} caracteres.`,
+    CRITERION_NAME_MIN: `Ingresa un nombre de al menos ${L.MATRIX_CRITERION_NAME_MIN} caracteres.`,
+    CRITERION_NAME_MAX: `Máximo ${L.MATRIX_CRITERION_NAME_MAX} caracteres.`,
   },
   DOCUMENT: {
     CODE_REQUIRED: 'El código del documento es obligatorio (ej. POL-SGSI-01)',

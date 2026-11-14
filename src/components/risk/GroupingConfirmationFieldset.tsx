@@ -93,7 +93,7 @@ function GroupingForm({ defaultAssetId, assets, reportedAssetIds, includedCount,
       <FormAlert message={errors.root?.server?.message} />
       <fieldset className="min-w-0 space-y-3">
         <legend className="sr-only">Activo afectado definitivo</legend>
-        <Field id="grouping-asset" label="Activo afectado definitivo" error={errors.activo_confirmado_id?.message}>
+        <Field id="grouping-asset" required label="Activo afectado definitivo" error={errors.activo_confirmado_id?.message}>
           <select id="grouping-asset" {...register('activo_confirmado_id', { setValueAs: (v) => (v === '' || v === undefined ? undefined : Number(v)) })}
             aria-invalid={!!errors.activo_confirmado_id} className={cn(inputClassName(!!errors.activo_confirmado_id), 'h-11 md:h-10')}>
             <option value="">Selecciona un activo del catálogo</option>
@@ -102,7 +102,7 @@ function GroupingForm({ defaultAssetId, assets, reportedAssetIds, includedCount,
         </Field>
         {selected?.criticality && <p className="flex items-center gap-2 text-xs" aria-live="polite"><CriticalityBadge criticality={selected.criticality} /></p>}
         {changed && (
-          <Field id="grouping-justification" label="Justificación del cambio de activo" error={errors.justificacion_cambio_activo?.message}
+          <Field id="grouping-justification" required label="Justificación del cambio de activo" error={errors.justificacion_cambio_activo?.message}
             help="El activo elegido no coincide con el reportado en las incidencias.">
             <textarea id="grouping-justification" rows={2} {...register('justificacion_cambio_activo')} aria-invalid={!!errors.justificacion_cambio_activo}
               className={cn(inputClassName(!!errors.justificacion_cambio_activo), 'py-2')} />

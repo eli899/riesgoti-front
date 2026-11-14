@@ -52,7 +52,7 @@ test.describe('Gobierno de riesgos: revisión, evaluación y decisión del Anali
     const removal = dialog(page, 'Retirar de la agrupación')
     await removal.getByRole('button', { name: 'Retirar incidencia' }).click()
     await expect(removal.getByText(/Explique el motivo por el cual retira este falso positivo/)).toBeVisible()
-    await removal.getByLabel('Motivo del retiro', { exact: true }).fill('La impresora no forma parte del servicio ERP Contable.')
+    await removal.getByLabel('Motivo del retiro (obligatorio)', { exact: true }).fill('La impresora no forma parte del servicio ERP Contable.')
     await removal.getByRole('button', { name: 'Retirar incidencia' }).click()
     await expect(removal).toBeHidden()
     await expect(printer).toHaveCount(0)

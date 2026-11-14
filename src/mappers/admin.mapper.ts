@@ -1,6 +1,7 @@
 import type { AIConfigFormValues } from '@/schemas/aiConfig.schema'
 import type { AssetFormValues } from '@/schemas/asset.schema'
-import type { DocumentUploadFormValues } from '@/schemas/document.schema'
+import type { AssetTypeFormValues } from '@/schemas/assetType.schema'
+import type { DocumentReplaceFileFormValues, DocumentUploadFormValues } from '@/schemas/document.schema'
 import type { RoleFormValues } from '@/schemas/role.schema'
 import type { UserFormValues } from '@/schemas/user.schema'
 import type {
@@ -11,6 +12,7 @@ import type {
   AssetDto,
   AssetRequestDto,
   AssetTypeDto,
+  AssetTypeRequestDto,
   AuditEventDto,
   AuditEventListParamsDto,
   DocumentFragmentDto,
@@ -46,7 +48,7 @@ import type {
   Permission,
   Role,
 } from '@/types/domain.types'
-import { AUDIT_TARGET_KIND } from '@/constants/domain.constants'
+import { AI_CONFIG_INITIAL_DEFAULTS, AUDIT_TARGET_KIND } from '@/constants/domain.constants'
 import { SYSTEM_ROLE_CODES } from '@/constants/rbac.constants'
 import { fromApiCriticalityToDomain, optionalText, toUserRef } from './common.mapper'
 
@@ -91,6 +93,24 @@ export function fromDomainAIConfigToFormValues(config: AIConfig): AIConfigFormVa
     chunk_overlap: config.chunkOverlap,
     top_k: config.topK,
     umbral_similitud: config.similarityThreshold,
+  }
+}
+
+/** Formulario de la primera configuración IA/RAG cuando aún no existe ninguna (CHG-0039). */
+export function initialAIConfigFormValues(): AIConfigFormValues {
+  const D = AI_CONFIG_INITIAL_DEFAULTS
+  return {
+    proveedor_llm: D.LLM_PROVIDER,
+    modelo_llm: D.LLM_MODEL,
+    endpoint_base_llm: '',
+    api_key_llm: '',
+    proveedor_embedding: D.EMBEDDING_PROVIDER,
+    modelo_embedding: D.EMBEDDING_MODEL,
+    api_key_embedding: '',
+    chunk_size: D.CHUNK_SIZE,
+    chunk_overlap: D.CHUNK_OVERLAP,
+    top_k: D.TOP_K,
+    umbral_similitud: D.SIMILARITY_THRESHOLD,
   }
 }
 
@@ -192,6 +212,13 @@ export function fromDomainDocumentUploadToApi(values: DocumentUploadFormValues):
   return body
 }
 
+/** Nueva carga del PDF de una versión en ERROR -> multipart esperado por DocumentReplaceFileInputSerializer. */
+export function fromDomainDocumentReplaceFileToApi(values: DocumentReplaceFileFormValues): FormData {
+  const body = new FormData()
+  body.append('archivo', values.archivo)
+  return body
+}
+
 // ---------------------------------------------------------------------------
 // Activos y matriz 5x5
 // ---------------------------------------------------------------------------
@@ -252,7 +279,12 @@ export function fromDomainMatrixToApi(model: MatrixPublishInput): MatrixPublishR
 const CRITICALITY_VALUE: Record<AssetCriticality, number> = { BAJO: 1, MEDIO: 2, ALTO: 3, CRITICO: 4 }
 
 export function fromApiAssetTypeToDomain(dto: AssetTypeDto): AssetType {
-  return { id: dto.id, name: dto.nombre, active: dto.activo }
+  return { id: dto.id, name: dto.nombre, active: dto.activo, assetCount: dto.total_activos ?? 0 }
+}
+
+/** Formulario de TIPO_ACTIVO -> TipoActivoInputSerializer (espacios internos normalizados). */
+export function fromDomainAssetTypeToApi(values: AssetTypeFormValues): AssetTypeRequestDto {
+  return { nombre: values.nombre.trim().replace(/s+/g, ' ') }
 }
 
 export function fromDomainAssetToFormValues(asset: Asset | null, defaultTypeId?: number): AssetFormValues {

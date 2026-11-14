@@ -26,6 +26,12 @@ export const HTTP_METHODS = {
   DELETE: 'DELETE',
 } as const
 
+/** Códigos de estado HTTP con significado de negocio en el frontend. */
+export const HTTP_STATUS = {
+  /** Recurso de configuración aún inexistente (matriz o configuración IA/RAG sin publicar, CHG-0039). */
+  NOT_FOUND: 404,
+} as const
+
 /** Acciones sobre una VERSION_DOCUMENTO (segmento final de su ruta). */
 export const DOCUMENT_ACTIONS = {
   AUTHORIZE: 'authorize',
@@ -58,11 +64,13 @@ export const API_ENDPOINTS = {
   DOCUMENT_VERSION: (id: number) => `${DOCUMENT_VERSIONS}/${id}/`,
   DOCUMENT_VERSION_PREVIEW: (id: number) => `${DOCUMENT_VERSIONS}/${id}/preview/`,
   DOCUMENT_VERSION_ACTION: (id: number, action: DocumentAction) => `${DOCUMENT_VERSIONS}/${id}/${action}/`,
+  DOCUMENT_VERSION_REPLACE_FILE: (id: number) => `${DOCUMENT_VERSIONS}/${id}/replace-file/`,
   // Matriz 5x5 y catálogo de activos
   MATRIX_ACTIVE: 'matrices/active/',
   MATRIX_PUBLISH: `${ADMIN}/matrices/publish/`,
   ASSETS: 'assets/',
   ASSET: (id: number) => `assets/${id}/`,
+  ASSET_TYPE: (id: number) => `asset-types/${id}/`,
   ASSET_TYPES: 'asset-types/',
   // Usuarios, roles y permisos
   USERS: `${ADMIN}/users/`,

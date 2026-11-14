@@ -11,6 +11,8 @@
   --color-primary-hover: #1d4ed8;
   --color-primary-pressed: #1e40af;
   --color-deep: #172554;
+  /* Rojo de error de validación (red-600): contraste ≈ 4,8:1 sobre blanco (WCAG AA). */
+  --color-danger: #dc2626;
   --color-soft: #eff6ff;
   --color-canvas: #f4f7fc;
   --color-line: #dbeafe;
@@ -45,7 +47,7 @@
   --radius-sheet: 22px;
 }
 
-html, body, #root { background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-sans); font-size: 14px; }
+html, body, #root { background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-sans); font-size: 14px; overflow-x: clip; width: 100%; }
 
 /* En la capa base para que un componente pueda trasladar el indicador (p. ej. a su tarjeta contenedora). */
 @layer base {
