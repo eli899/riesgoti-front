@@ -19,11 +19,11 @@ type PriorReason = (typeof PRIOR_REASON)[keyof typeof PRIOR_REASON]
 
 const REASONS: Record<PriorReason, { label: string; icon: ReactNode; className: string }> = {
   SENSIBLE: { label: 'Escalada por seguridad', icon: <ShieldAlert size={13} aria-hidden />, className: 'bg-deep text-white' },
-  SIN_RESPALDO: { label: 'Sin respaldo documental', icon: <FileQuestion size={13} aria-hidden />, className: 'border border-dashed border-control bg-disabled text-muted' },
-  NO_FUNCIONO: { label: 'No solucionó', icon: <ThumbsDown size={13} aria-hidden />, className: 'bg-mid text-deep' },
-  FUNCIONO: { label: 'Solucionó', icon: <CheckCircle2 size={13} aria-hidden />, className: 'bg-line text-primary-pressed' },
-  FALLO_IA: { label: 'Falló el servicio de IA', icon: <Unplug size={13} aria-hidden />, className: 'border-2 border-deep text-deep' },
-  PENDIENTE: { label: 'Orientación en curso', icon: <Loader2 size={13} className="animate-spin" aria-hidden />, className: 'bg-soft text-primary' },
+  SIN_RESPALDO: { label: 'Sin respaldo documental', icon: <FileQuestion size={13} aria-hidden />, className: 'border border-warning/40 bg-warning-soft text-warning-strong' },
+  NO_FUNCIONO: { label: 'No solucionó', icon: <ThumbsDown size={13} aria-hidden />, className: 'bg-alert-soft text-alert-strong' },
+  FUNCIONO: { label: 'Solucionó', icon: <CheckCircle2 size={13} aria-hidden />, className: 'bg-success-soft text-success-strong' },
+  FALLO_IA: { label: 'Falló el servicio de IA', icon: <Unplug size={13} aria-hidden />, className: 'border border-danger/40 bg-danger-soft text-danger-strong' },
+  PENDIENTE: { label: 'Orientación en curso', icon: <Loader2 size={13} className="animate-spin" aria-hidden />, className: 'bg-ai-soft text-ai-strong' },
   SIN_RESPUESTA: { label: 'Sugerida, sin respuesta', icon: <CheckCircle2 size={13} aria-hidden />, className: 'border border-line bg-white text-muted' },
 }
 

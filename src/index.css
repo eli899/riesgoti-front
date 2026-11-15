@@ -13,6 +13,26 @@
   --color-deep: #172554;
   /* Rojo de error de validación (red-600): contraste ≈ 4,8:1 sobre blanco (WCAG AA). */
   --color-danger: #dc2626;
+  --color-danger-soft: #fee2e2;
+  --color-danger-strong: #991b1b;
+
+  /* Acentos semánticos (CHG-0043). Los tonos -strong sobre su -soft y los base sobre blanco superan 4,5:1 (WCAG AA). */
+  --color-success: #15803d;
+  --color-success-soft: #dcfce7;
+  --color-success-strong: #166534;
+  --color-warning: #b45309;
+  --color-warning-soft: #fef3c7;
+  --color-warning-strong: #92400e;
+  --color-alert: #c2410c;
+  --color-alert-soft: #ffedd5;
+  --color-alert-strong: #9a3412;
+  --color-ai: #7c3aed;
+  --color-ai-soft: #ede9fe;
+  --color-ai-strong: #5b21b6;
+  /* Cian: indicador brillante sobre la barra lateral oscura; -strong para texto sobre fondos claros. */
+  --color-accent: #22d3ee;
+  --color-accent-soft: #cffafe;
+  --color-accent-strong: #0e7490;
   --color-soft: #eff6ff;
   --color-canvas: #f4f7fc;
   --color-line: #dbeafe;

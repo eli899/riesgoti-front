@@ -14,9 +14,9 @@ const lifecycleOf = (v: DocumentVersion): DocumentDisplayState =>
 
 const LIFECYCLE: Record<DocumentDisplayState, { label: string; icon: ReactNode; className: string }> = {
   PROCESANDO: { label: 'Procesando PDF a Markdown…', icon: <Loader2 size={14} className="animate-spin" aria-hidden />, className: 'bg-soft text-primary border border-line' },
-  ERROR: { label: 'Error de procesamiento', icon: <AlertTriangle size={14} aria-hidden />, className: 'border-2 border-deep bg-soft text-deep' },
-  PENDIENTE_AUTORIZACION: { label: 'Pendiente de autorización', icon: <Clock size={14} aria-hidden />, className: 'border border-primary bg-white text-primary-pressed' },
-  DISPONIBLE: { label: 'Disponible en RAG', icon: <CheckCircle2 size={14} aria-hidden />, className: 'bg-primary text-white' },
+  ERROR: { label: 'Error de procesamiento', icon: <AlertTriangle size={14} aria-hidden />, className: 'border border-danger/40 bg-danger-soft text-danger-strong' },
+  PENDIENTE_AUTORIZACION: { label: 'Pendiente de autorización', icon: <Clock size={14} aria-hidden />, className: 'border border-warning/40 bg-warning-soft text-warning-strong' },
+  DISPONIBLE: { label: 'Disponible en RAG', icon: <CheckCircle2 size={14} aria-hidden />, className: 'bg-success-soft text-success-strong' },
   INACTIVO: { label: 'Autorizado · inactivo', icon: <Power size={14} aria-hidden />, className: 'border border-control bg-white text-muted' },
 }
 

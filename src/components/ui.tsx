@@ -20,14 +20,15 @@ import { UI_TIMINGS } from '@/constants/timing.constants'
 // ---------------------------------------------------------------------------
 // Identidad
 // ---------------------------------------------------------------------------
-export function Logo({ compact }: { compact?: boolean }) {
+/** `invertFromMd`: desde md, nombre en blanco y sin subtítulo (no cabe en los 256 px de la zona de marca oscura que continúa la barra lateral, CHG-0044). */
+export function Logo({ compact, invertFromMd }: { compact?: boolean; invertFromMd?: boolean }) {
   return (
     <span className="flex items-center gap-2.5">
       <span className="grid size-9 shrink-0 place-items-center rounded-control bg-primary text-white"><ShieldCheck size={20} aria-hidden /></span>
       {!compact && (
         <span className="leading-tight">
-          <span className="block text-md font-bold">RiesgoTI</span>
-          <span className="block text-2xs text-muted">Incidencias que ayudan a identificar riesgos</span>
+          <span className={cn('block text-md font-bold', invertFromMd && 'md:text-white')}>RiesgoTI</span>
+          <span className={cn('block text-2xs text-muted', invertFromMd && 'md:hidden')}>Incidencias que ayudan a identificar riesgos</span>
         </span>
       )}
     </span>
@@ -36,7 +37,7 @@ export function Logo({ compact }: { compact?: boolean }) {
 
 export function Avatar({ name, size = 32 }: { name: string; size?: number }) {
   const initials = name.split(' ').map((p) => p[0]).slice(0, 2).join('')
-  return <span style={{ width: size, height: size }} className="grid shrink-0 place-items-center rounded-full bg-primary text-xs font-semibold text-white" aria-hidden>{initials}</span>
+  return <span style={{ width: size, height: size }} className="grid shrink-0 place-items-center rounded-full bg-linear-to-br from-primary to-ai text-xs font-semibold text-white" aria-hidden>{initials}</span>
 }
 
 // ---------------------------------------------------------------------------
@@ -158,9 +159,9 @@ function Pill({ className, icon, children }: { className: string; icon: ReactNod
 const incidentStatusStyle: Record<IncidentStatus, [string, ReactNode]> = {
   REGISTRADA: ['bg-white border border-control text-muted', <CircleDot size={14} aria-hidden />],
   EN_ANALISIS: ['bg-soft text-primary border border-line', <Loader2 size={14} className="animate-spin" aria-hidden />],
-  PENDIENTE_ATENCION_HUMANA: ['bg-soft text-primary-pressed border border-mid', <Headset size={14} aria-hidden />],
-  EN_ATENCION: ['bg-mid text-deep', <Wrench size={14} aria-hidden />],
-  CERRADA: ['bg-disabled text-muted', <Archive size={14} aria-hidden />],
+  PENDIENTE_ATENCION_HUMANA: ['bg-warning-soft text-warning-strong border border-warning/40', <Headset size={14} aria-hidden />],
+  EN_ATENCION: ['bg-accent-soft text-accent-strong border border-accent-strong/30', <Wrench size={14} aria-hidden />],
+  CERRADA: ['bg-success-soft text-success-strong', <Archive size={14} aria-hidden />],
 }
 export function StatusBadge({ status }: { status: IncidentStatus }) {
   const [className, icon] = incidentStatusStyle[status]
@@ -168,10 +169,10 @@ export function StatusBadge({ status }: { status: IncidentStatus }) {
 }
 
 const validationStyle: Record<RiskValidationStatus, [string, ReactNode]> = {
-  PENDIENTE: ['bg-white text-primary-pressed border border-primary', <Clock size={14} aria-hidden />],
-  VALIDADA: ['bg-line text-primary-pressed', <CheckCircle2 size={14} aria-hidden />],
+  PENDIENTE: ['bg-warning-soft text-warning-strong border border-warning/40', <Clock size={14} aria-hidden />],
+  VALIDADA: ['bg-success-soft text-success-strong', <CheckCircle2 size={14} aria-hidden />],
   CORREGIDA: ['bg-mid text-deep', <Pencil size={14} aria-hidden />],
-  RECHAZADA: ['bg-deep text-white', <XCircle size={14} aria-hidden />],
+  RECHAZADA: ['bg-danger-soft text-danger-strong', <XCircle size={14} aria-hidden />],
 }
 export function ValidationBadge({ status }: { status: RiskValidationStatus }) {
   const [className, icon] = validationStyle[status]
@@ -179,10 +180,10 @@ export function ValidationBadge({ status }: { status: RiskValidationStatus }) {
 }
 
 const riskLevelStyle: Record<RiskLevelCode, string> = {
-  BAJO: 'bg-soft border border-mid text-primary-pressed',
-  MEDIO: 'bg-line text-primary-pressed',
-  ALTO: 'bg-primary text-white',
-  CRITICO: 'bg-deep text-white',
+  BAJO: 'bg-success-soft border border-success/30 text-success-strong',
+  MEDIO: 'bg-warning-soft border border-warning/30 text-warning-strong',
+  ALTO: 'bg-alert text-white',
+  CRITICO: 'bg-danger text-white',
 }
 const riskLevelBars: Record<RiskLevelCode, number> = { BAJO: 1, MEDIO: 2, ALTO: 3, CRITICO: 4 }
 
@@ -201,7 +202,7 @@ export function CriticalityBadge({ criticality }: { criticality: AssetCriticalit
 }
 
 export function AIBadge() {
-  return <span className="inline-flex items-center gap-1 rounded-full bg-soft px-2 py-0.5 text-2xs font-semibold text-primary"><Sparkles size={12} aria-hidden />Generado por IA</span>
+  return <span className="inline-flex items-center gap-1 rounded-full bg-ai-soft px-2 py-0.5 text-2xs font-semibold text-ai-strong"><Sparkles size={12} aria-hidden />Generado por IA</span>
 }
 
 export function Mono({ children }: { children: ReactNode }) {

@@ -5,10 +5,10 @@ import { cn } from '@/lib/utils'
 import type { MatrixCriterion, RiskLevelCode } from '@/types/domain.types'
 
 const levelCellStyle: Record<RiskLevelCode, string> = {
-  BAJO: 'bg-soft text-primary-pressed border-mid',
-  MEDIO: 'bg-line text-primary-pressed border-mid',
-  ALTO: 'bg-primary text-white border-primary',
-  CRITICO: 'bg-deep text-white border-deep',
+  BAJO: 'bg-success-soft text-success-strong border-success/40',
+  MEDIO: 'bg-warning-soft text-warning-strong border-warning/40',
+  ALTO: 'bg-alert text-white border-alert',
+  CRITICO: 'bg-danger text-white border-danger',
 }
 
 interface InteractiveRiskMatrix5x5GridProps {

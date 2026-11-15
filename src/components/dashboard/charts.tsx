@@ -76,7 +76,7 @@ export function HorizontalBars({ data, unit, emptyText }: { data: { label: strin
             <span className="font-semibold">{d.value}<span className="sr-only"> {unit}</span></span>
           </p>
           <span className="block h-2 overflow-hidden rounded-full bg-canvas" aria-hidden>
-            <span className="block h-full rounded-full bg-primary" style={{ width: `${(d.value / max) * 100}%` }} />
+            <span className="block h-full rounded-full bg-linear-to-r from-primary to-accent-strong" style={{ width: `${(d.value / max) * 100}%` }} />
           </span>
         </li>
       ))}
