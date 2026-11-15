@@ -24,7 +24,7 @@ export default function StrategicSourcesAside({ citations, onInspect }: { citati
           ))}
         </ol>
       ) : (
-        <p className="flex gap-2 rounded-tile border border-dashed border-control bg-canvas p-3 text-xs text-muted">
+        <p className="flex gap-2 rounded-tile border border-control bg-canvas p-3 text-xs text-muted">
           <AlertTriangle size={16} className="shrink-0" aria-hidden />
           No se encontró respaldo documental estratégico. Validar esta propuesta exigirá justificar la decisión sin fuentes.
         </p>

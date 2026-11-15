@@ -89,7 +89,7 @@ function LinkedIncidentArticle({ incident, excluded, action }: { incident: RiskL
   const titleId = `linked-${incident.analysisId}-title`
   const low = incident.similarity !== null && incident.similarity < LOW_SIMILARITY
   return (
-    <article aria-labelledby={titleId} className={cn('rounded-tile border p-3', excluded ? 'border-dashed border-control bg-canvas' : low ? 'border-mid bg-soft/40' : 'border-line bg-white')}>
+    <article aria-labelledby={titleId} className={cn('rounded-tile border p-3', excluded ? 'border-control bg-canvas' : low ? 'border-mid bg-soft/40' : 'border-line bg-white')}>
       <header className="flex flex-wrap items-center gap-2">
         <span className={monoClassName}>{incident.reference}</span>
         <time dateTime={incident.registeredAt} className="text-2xs text-muted">{formatDate(incident.registeredAt)}</time>

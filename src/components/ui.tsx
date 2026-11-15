@@ -168,7 +168,7 @@ export function StatusBadge({ status }: { status: IncidentStatus }) {
 }
 
 const validationStyle: Record<RiskValidationStatus, [string, ReactNode]> = {
-  PENDIENTE: ['bg-disabled text-muted border border-dashed border-control', <Clock size={14} aria-hidden />],
+  PENDIENTE: ['bg-white text-primary-pressed border border-primary', <Clock size={14} aria-hidden />],
   VALIDADA: ['bg-line text-primary-pressed', <CheckCircle2 size={14} aria-hidden />],
   CORREGIDA: ['bg-mid text-deep', <Pencil size={14} aria-hidden />],
   RECHAZADA: ['bg-deep text-white', <XCircle size={14} aria-hidden />],

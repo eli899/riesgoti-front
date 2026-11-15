@@ -8,7 +8,7 @@ import type { RiskRegistryRow } from '@/types/domain.types'
 import { RISK_REGISTRY_CATEGORY } from '@/constants/domain.constants'
 
 const NewProposalBadge = ({ number }: { number: number }) => (
-  <span className="mt-0.5 inline-flex items-center gap-1 rounded-full border border-dashed border-primary bg-soft px-2 py-0.5 text-2xs font-semibold text-primary-pressed">
+  <span className="mt-0.5 inline-flex items-center gap-1 rounded-full border border-primary bg-soft px-2 py-0.5 text-2xs font-semibold text-primary-pressed">
     <Repeat size={11} aria-hidden />Nueva propuesta pendiente (v{number})
   </span>
 )

@@ -102,7 +102,7 @@ export default function RiskWorkspacePage({ versionId, onBack, onOpenVersion, on
               />
 
               {cluster.isReadOnlyRole && (
-                <p role="note" className="mb-4 flex items-start gap-2 rounded-tile border border-dashed border-control bg-canvas p-3 text-sm text-muted">
+                <p role="note" className="mb-4 flex items-start gap-2 rounded-tile border border-control bg-canvas p-3 text-sm text-muted">
                   <Lock size={16} className="mt-0.5 shrink-0" aria-hidden />
                   Modo lectura · Segregación de funciones (ISO/IEC 27001): el Administrador no revisa, evalúa ni valida riesgos.
                 </p>

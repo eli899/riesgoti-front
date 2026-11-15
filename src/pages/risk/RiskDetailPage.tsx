@@ -72,7 +72,7 @@ export default function RiskDetailPage({ riskId, onBack, onOpenWorkspace }: Risk
                 }
               />
               {d.validated && d.pending && (
-                <p role="note" className="mb-4 flex items-start gap-2 rounded-tile border border-dashed border-primary bg-soft p-3 text-sm">
+                <p role="note" className="mb-4 flex items-start gap-2 rounded-tile border border-primary bg-soft p-3 text-sm">
                   <Repeat size={16} className="mt-0.5 shrink-0 text-primary-pressed" aria-hidden />
                   La versión {d.validated.number} está validada y vigente. Existe una nueva propuesta (v{d.pending.number}) pendiente de decisión.
                 </p>
